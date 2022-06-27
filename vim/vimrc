@@ -1,0 +1,224 @@
+
+" ----------------------------- generic --------------------------
+"set viminfo='20,\"50,f0
+set nu
+set ts=4
+set noautoindent
+set nowrap
+set scroll=10
+"set scrolloff=15
+set backspace=indent,eol,start
+"set term=builtin_linux   " for TeraTerm
+syntax on
+
+set noincsearch
+set noignorecase
+map q :noh<CR>
+"set ignorecase
+
+set laststatus=2
+"set statusline=%f
+"set statusline=%<%f%h%m%r%=%b\ 0x%B\ \ %l,%c%V\ %P
+"set statusline=%<%f%h%m%r%=%b\ 0x%B\ \ %l,%c\ %P\ %o
+set title
+
+set cindent
+set wh=24
+"set viminfo='20,\"50,f0
+
+" Oritatami
+"set foldmethod=indent
+
+"set diffopt=filler,iwhite
+
+set cursorline
+
+
+"========================= color config ======================
+set t_Co=256
+colorscheme 256_hoge
+
+
+
+" --------------------------- autocmd ----------------------------
+" recovery last position
+:au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+:au BufRead,BufNewFile *.conf set filetype=conf
+:au BufRead,BufNewFile *.txt set filetype=txt
+":au BufRead,BufNewFile * set nu
+
+" --------------------------- tag ----------------------------
+map <C-t> <C-t>zz
+map <C-]> <C-]>zz
+map <C-o> yiw:tabnew <CR>:tag <C-R>"<CR>zz
+map <C-y> ye:tag <C-R>"<CR>zz
+map T :!ctags `cat all.txt`<CR>
+map <F8> yiw<C-W>l:tag <C-R>"<CR>zz
+map <F4> y:!TagParse.sh <C-R>"<CR>:tabnew<CR>:vs<CR><C-W>25<:r ~/.vim/hoge.tmp<CR>$<F8>zz
+
+
+
+" ----------------------------- grep --------------------------
+"set keywordprg=Grep2
+map K yiw:!man.pl <C-R>" <CR>:tabnew<CR>:r ~/.vim/mmm<CR>:set syntax=man<CR>/<C-R>"<CR>
+set grepprg=Grep2
+
+" grep with all.txt
+map <F5>   y:lgrep    <C-R>"<CR>:lop<CR>
+map <F6> yiw:lgrep -w <C-R>"<CR>:lop<CR>
+
+" grep with current file
+map <C-g> yiw:Mygrep <C-R>"<CR>
+
+if !&cp && has("user_commands")
+command! -nargs=* Mygrep call MYGREP(<f-args>)
+function! MYGREP (pattern)
+	let tmp = ":!grep -EHn " . a:pattern . " " . expand("%p") .  " > ~/.vim/ttt"
+	execute tmp 
+	unlet tmp
+	execute ":lfile ~/.vim/ttt"
+	execute ":lopen"
+endfunction
+endif
+
+" file filter to current buffer
+map ff y:MyFilter <C-R>" -h  <CR><C-W>25<<C-f>
+map fv y:MyFilter <C-R>" -hv <CR><C-W>25<<C-f>
+if !&cp && has("user_commands")
+command! -nargs=* MyFilter call MYFILTER (<f-args>)
+function! MYFILTER (v1, v2)
+	execute ":w! ~/.vim/hoge.tmp"
+	execute ":!grep " . a:v1 . " " . a:v2 . " ~/.vim/hoge.tmp > ~/.vim/hoge.grep"
+	execute ":tabnew"
+"	execute ":enew"
+	execute ":r ~/.vim/hoge.grep"
+	execute ":vs"
+endfunction
+endif
+
+
+" -------------------------- for Search ------------------------
+map <F2> b<C-v>eeey<C-w>l:open all.txt<CR>/<C-r>"<CR><C-f>
+"map <F2> b<C-v>eeey<C-w>l:open all.txt<CR>:Mygrep <C-r>"<CR><C-k><C-f>
+map <F3> yiw/<Up>\\|\<<C-R>"\><CR>
+map <F7> yiw<C-w>l/\<<C-r>"\><CR>
+map Y ye/<C-R>"<CR>
+"noremap & *Nzz
+
+
+" --------------------------  replace ----------------------------
+map s yiw:1,$s/<C-R>"/<C-R>"
+map S yiw:1,$s/\<<C-R>"\>/<C-R>"
+
+" replace location-list
+map c yiw:MyConvert  \<<C-R>"\>  <C-R>"
+if !&cp && has("user_commands")
+command! -nargs=* MyConvert call MYCONVERT(<f-args>)
+function! MYCONVERT (v1, v2)
+	let loclist = getloclist(0)
+	let target = "!@#$"
+	let filenum = 0
+	for list in loclist
+		"echo bufname(list.bufnr) ':' list.lnum '=' list.text
+		if bufname(list.bufnr) !=# target
+			if filenum !=# 0
+				execute ":w"
+			endif
+			execute ":open " bufname(list.bufnr)
+			let filenum = filenum + 1
+		endif
+
+		let tmp = ':' . list.lnum . ',' . list.lnum . 's/' . a:v1 . '/' . a:v2 . '/'
+		execute tmp
+		unlet tmp
+		let target = bufname(list.bufnr)
+	endfor
+	
+	execute ":w"
+	unlet loclist
+	unlet target
+	unlet filenum
+endfunction
+endif
+
+
+" --------------------------  cut and paste ----------------------
+"map <C-c> :wv<CR>
+"map <C-p> :rv!<CR>
+map <C-c> :!rm -f ~/.vim/ttt<CR>:new ~/.vim/ttt<CR>p:wq<CR>
+map <C-p> :r ~/.vim/ttt<CR>
+
+
+" --------------------------- window/tab/mouse ------------------------
+map <F1> :q!<CR>
+map <F9>  <C-j><C-W>3+
+map <F10> <C-j><C-W>3-
+map <F11> <C-w>l<C-W>3>
+map <F12> <C-w>l<C-W>3<
+
+map <C-l> :tabnext<CR>
+map <C-h> :tabprev<CR>
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+set mouse=a
+"set ttymouse=xterm " ??? iranai ???
+
+
+" -------------------------- all.txt, All.sh ----------------------------
+"map <C-f> 0y$:tabfirst<CR><C-h>:tabnew <C-r>"<CR>
+map <C-f> 0y$<C-w>l:open <C-r>"<CR>
+map <C-a> mA:tabnew all.txt<CR>:vs<CR><C-W>25<<C-W>l'Azz
+"map A :!./All.sh<CR>:open all.txt<CR>T
+map A :open all.txt<CR>
+map F 0y$:open <C-r>"<CR>
+
+
+" -------------------------- etc ----------------------------
+map W :!cp hoge.diff hoge.diff.org<CR>0wwy$:TabClose <C-r>"<CR>:!svn revert <C-r>"<CR>:q!<CR>Q
+"map Q :TabClose hoge.diff<CR>:!svn diff --diff-cmd /usr/bin/diff -x "-ubBw" > hoge.diff<CR>:tabnew hoge.diff<CR>
+"map Q :TabClose hoge.diff<CR>:!svn diff > hoge.diff<CR>:tabnew hoge.diff<CR>
+map Q :!svn diff > hoge.diff<CR>:tabnew<CR>:r hoge.diff<CR>:set syntax=diff<CR>
+map L :TabClose .svn.log<CR>:!svn log -v > .svn.log<CR>:tabnew .svn.log<CR>
+
+"map M :lmake<CR>:lopen<CR><C-W>j/error\\|warning<CR>zz<CR>zz
+map M :lmake<CR>:lopen<CR>
+
+noremap # :.,.+5s/^/#/<CR>:noh<CR>j
+
+" C-b: back buffer, C-n: next buffer
+noremap <C-b> <C-o>
+noremap <C-n> <C-i>
+
+"map c I/* <C-[>A */<C-[>
+
+" insert mode key config
+map! ;s switch() {}<C-[>i<CR><CR><C-[>ka<TAB>case HOGE_A:<C-[>o<BS>break;<CR><BS>default:<CR>break;<C-[>
+
+" reload diff display
+map U :diffu<CR><C-d><C-d><C-u><C-u><C-w>w<C-w>w<C-l><C-h>
+
+map [[ [[zz
+map ]] ]]zz
+
+
+" ----------------------------- for SJIS --------------------------
+"set encoding=sjis
+
+"if has('iconv')
+"    set fileencodings+=iso-2022-jp
+"      set fileencodings+=utf-8,ucs-2le,ucs-2
+      "if &encoding ''# 'euc-jp'''
+      "if encoding ''# 'euc-jp'''
+      "  set fileencodings+=cp932
+      "else
+      "  set fileencodings+=euc-jp
+      "endif
+"endif
+"set printfont=MS_Gothic:h12:cSHIFTJIS
+"set printfont=MS_Gothic:h12:cEUC
+
+
+let c_no_curly_error=1
+
+
