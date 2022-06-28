@@ -32,6 +32,13 @@
 *.out
 *.app
 
+# gcov
+*.gcda
+*.gcno
+
 # etc
 *.swp
+all.txt
+tags
+
 
