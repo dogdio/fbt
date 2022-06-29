@@ -2,25 +2,26 @@
 WARNING    = -Wall -Wno-unused-value -Wno-unused
 COVERAGE   = -fprofile-arcs -ftest-coverage -fno-inline #-fno-exceptions
 OPTIMIZE   = # -O3
-CXXFLAGS  ?= $(WARNING) $(OPTIMIZE) -std=c++11 -fPIC -g
-LDFLAGS   ?= -shared
-INCLUDES  ?= -I../../test-tool/include -I../target
+CXXFLAGS   = $(WARNING) $(OPTIMIZE) -std=c++11 -fPIC -g
+LDFLAGS    = -shared
+INCLUDES   = -I../../test-tool/include -I../target
+LIBS       = -lgcov
 
-FILES2    = TestSample.cpp
-FILES3    = TestSample2.cpp
-FILES_ALL = $(FILES2) $(FILES3)
-TMPDIR    = .objs
+FILES2     = TestSample.cpp
+FILES3     = TestSample2.cpp
+FILES_ALL  = $(FILES2) $(FILES3)
+TMPDIR     = .objs
 
-SYM_DIR   = ../target
-OBJS1    := $(shell find $(SYM_DIR) -name "*.o")
+SYM_DIR    = ../target
+OBJS1      = $(shell find $(SYM_DIR) -name "*.o")
 
-OBJS2    := $(addprefix $(TMPDIR)/, $(FILES2:.cpp=.o))
-OBJS3    := $(addprefix $(TMPDIR)/, $(FILES3:.cpp=.o))
-DEPENDS1  = $(addprefix $(TMPDIR)/, $(FILES_ALL:.cpp=.d))
+OBJS2      = $(addprefix $(TMPDIR)/, $(FILES2:.cpp=.o))
+OBJS3      = $(addprefix $(TMPDIR)/, $(FILES3:.cpp=.o))
+DEPENDS1   = $(addprefix $(TMPDIR)/, $(FILES_ALL:.cpp=.d))
 
-TARGET1   = libUtilsGcov.so  # etc..
-TARGET2   = libUtilsGcov2.so # Log/Config
-TARGETS   = $(TARGET1) $(TARGET2)
+TARGET1    = libUtilsGcov.so  # etc..
+TARGET2    = libUtilsGcov2.so # Log/Config
+TARGETS    = $(TARGET1) $(TARGET2)
 
 all: $(TARGETS)
 
@@ -36,11 +37,11 @@ $(TMPDIR)/%.o: %.cpp
 
 $(TARGET1): $(OBJS1) $(OBJS2)
 	@echo "  [LIB] $@"
-	@$(LD) $(LDFLAGS) $^ /usr/lib/gcc/x86_64-linux-gnu/10/libgcov.a -o $@
+	@$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
 
 $(TARGET2): $(OBJS1) $(OBJS3)
 	@echo "  [LIB] $@"
-	@$(LD) $(LDFLAGS) $^ /usr/lib/gcc/x86_64-linux-gnu/10/libgcov.a -o $@
+	@$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
 
 -include $(DEPENDS1)
 
