@@ -72,14 +72,14 @@ $(FILES2)に含まれるすべての \*.cpp が、\*.exe に変換される
   TARGET2 = $(FILES2:.cpp=.exe)
   ```
 
-$(FILES_ALL)に含まれるすべての \*.cpp が、\*.d に変換され、さらに先頭に$(TMPDIR)が追加される
+FILES_ALL に含まれるすべての \*.cpp が、\*.d に変換され、さらに先頭に TMPDIR が追加される
   ```makefile
   DEPENDS1 = $(addprefix $(TMPDIR)/, $(FILES_ALL:.cpp=.d))
   ```
 
 <br>
 
-findコマンドを使用して、$(SYM_DIR)の配下にある \*.o を $(OBJS1)に格納する
+findコマンドを使用して、SYM_DIRの配下にある \*.o を OBJS1 に格納する
   ```makefile
   OBJS1 := $(shell find $(SYM_DIR) -name "*.o")
   ```
