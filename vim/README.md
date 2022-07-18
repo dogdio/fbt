@@ -551,8 +551,8 @@ print FH $buf;
 close(FH);
 ```
 
-![light](https://github.com/dogdio/fbt/blob/for_img/img/light.png "light")
-出力結果を取り込むときは、`:tabnew` してから `:r` で読み込むのが安パイ。vim上でTMPファイルを開かないことでバッティングを防げる（連続で実行可能となる）<br>
+![light](https://github.com/dogdio/fbt/blob/for_img/img/light.png "light") **出力結果の取り込み**<br>
+出力結果を取り込むときは、`:tabnew` してから `:r` で読み込むのがお手軽だ。vimでTMPファイルを開かないことでバッティングを防げる（連続で実行可能となる）。TMPファイルの名前は常に同じでも問題ない（乱数や連番でファイル名を毎回変える必要がない）。
 
 ★ 拡張子の関連付け<br>
 `*.txt` のファイルを開いたら、filetype=txt として解釈する<br>
