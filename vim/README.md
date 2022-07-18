@@ -534,8 +534,9 @@ M :lmake<CR>:lopen<CR>
 この結果はデフォルトではlessに渡されており、vimの操作ができないため実は不便<br>
 **以下の設定で、新規タブに結果を取り込める（新規タブから、引数の型、必要な includeファイル名等をコピペできる）**
 ```
-map K yiw:!man.pl <C-R>" <CR>:tabnew<CR>:r ~/.vim/mmm<CR>:set syntax=man<CR>/<C-R>"<CR>
+map K yiw:!man.pl <C-R>" <CR>:tabnew<CR>:r ~/.vim/mmm<CR>:set syntax=man<CR>/<C-R>"<CR>:set nonu<CR>
 ```
+manの出力結果は行数を含んでいないので、`:set nonu` しないと行末が少し欠けてしまう
 
 ```perl
 #!/usr/bin/perl
