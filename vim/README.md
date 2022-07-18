@@ -158,6 +158,8 @@ noremap <C-n> <C-i>
 :au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 ```
 
+***
+
 ★ 検索<br>
 カーソル位置で `*`で、単語の境界有りで前方検索。`n` で続けて前方検索、`N`だと後方検索<br>
 単語境界有りの場合は、`/\<hoge\>` のように、括る
@@ -204,6 +206,8 @@ map <F3> yiw/<Up>\\|\<<C-R>"\><CR>
 map <F7> yiw<C-w>l/\<<C-R>"\><CR>
 ```
 
+***
+
 ★ tag-jump<br>
 all.txt が存在するディレクトリに、tagsファイルを生成しておく。<br>
 （all.txtに含まれるファイル全てをtagsの対象とする）
@@ -230,7 +234,7 @@ map <C-]> <C-]>zz
 
 tag-jump先が複数ある場合（同じ名前の定義が複数存在する）
 ```
-<Ctrl+]>
+Ctrl+]
 :ts
 番号を選択して、<Enter>
 ```
@@ -259,13 +263,197 @@ map <C-y> ye:tag <C-R>"<CR>zz
 map <F8> yiw<C-W>l:tag <C-R>"<CR>zz
 ```
 
-### 注意
-```
+![warn1](https://github.com/dogdio/fbt/blob/for_img/img/warning-min.jpg "warn1") **注意！！**<br>
 tag-jump出来ない場合は、all.txt とは別ファイルで定義されている、もしくは糞マクロにより定義部がパースできていない、
 外部のライブラリに定義がある、、等が考えられる。
 マクロが原因の場合は、そのようなマクロは避けた方がいい（関数の定義部分をマクロにしちゃう、、）。
 基本的に、ctagsでパースできないようなコードは書くべきでは無い（メリットよりもデメリットの方が多い）
+
+<br>
+
+***
+
+★ grep(vim 内部grep)<br>
+grepの対象をall.txtに記載されているファイル全てとする（検索対象が見つからない場合は、all.txtのリストを見直す）<br>
+vimはデフォルトで内部grepを起動するので、grepprgであらかじめ外部コマンドを割り当てておく
+grepはcgrep, lgrepの2種類があるが、基本はlgrep だけでおｋ
 ```
+set grepprg=Grep2
+```
+
+[Grep2](https://github.com/dogdio/fbt/blob/master/vim/bin/Grep2) コマンドはall.txtの全ての要素に対して、grepを仕掛けるだけでOK
+```shell
+#!/bin/sh
+cat all.txt |xargs grep -nE --color $@
+```
+
+**カーソル位置にある単語を境界ありで、lgrepする** `F6`<br>
+grep結果を参照するときは、`:lopen` （省略すると `:lop`）
+```
+map <F6> yiw:lgrep -w <C-R>"<CR>:lop<CR>
+```
+
+**選択した範囲をlgrepする** `F5`
+```
+map <F5>   y:lgrep    <C-R>"<CR>:lop<CR>
+```
+
+★ lfile, cfile(外部grep結果の取得)<br>
+`lfile` `cfile` は外部コマンドで行った、grep出力結果をvimに取り込む（ファイル名、行番号が含まれていること）<br>
+取り込んだ結果に対して `Enter` もしくは、ダブルクリックでジャンプできる (`:set mouse=a` しておくこと)<br>
+**`l` は各タブごとに確保されるが、`c` は全体で共有される。基本的には `l` を使う**<br>
+`lfile` で先頭の要素にジャンプし、`lopen` で一覧(location-list)を画面下に表示する
+```
+$ Grep2 aaa | grep -v bbb > hoge.txt
+:lfile hoge.txt
+:lopen
+```  
+
+★ 開いているファイル内のgrep<br>
+grepprgはGrep2が既に設定されているので、外部grepを使用するMygrepを作る（毎回、grepprgを再設定するのもあり）<br>
+カーソル位置の単語を、現在開いているファイルのみでlgrepする `Ctrl+g`
+```
+map <C-g> yiw:Mygrep <C-R>"<CR>
+```
+
+```vim
+if !&cp && has("user_commands")
+command! -nargs=* Mygrep call MYGREP(<f-args>)
+function! MYGREP (pattern)
+	let tmp = ":!grep -EHn " . a:pattern . " " . expand("%p") .  " > ~/.vim/ttt"
+	execute tmp 
+	unlet tmp
+	execute ":lfile ~/.vim/ttt"
+	execute ":lopen"
+endfunction
+endif
+```
+
+★ 指定したファイルをall.txtから探す(include fileなどを探す)<br>
+カーソル位置にあるファイルをall.txt から探して、左側に表示する `F2`<br>
+拡張子までを含めてヤンクするために `b` で単語の先頭に戻っている（単語の先頭文字で `F2` を入力できないので注意）
+```
+map <F2> b<C-v>eeey<C-w>l:open all.txt<CR>/<C-r>"<CR><C-f>
+```
+
+## Edit
+
+◆ 入力補完<br>
+インサートモードでキーワードを途中まで入力してから `Ctrl+n`, `Ctrl+p` <br>
+次の候補に移動するときは、`Ctrl+n` 戻るときは `Ctrl+p` <br>
+補完を完了するときは `ESC` で抜ける<br>
+
+◆ Undo/Redo<br>
+`u` でUndo, `Ctrl-r` でRedo<br>
+Undoすると、1つ前の編集位置に戻る（カーソル位置を元の位置に戻す目的でも使える）<br>
+
+◆ 以前の編集操作を繰り返す<br>
+何か編集してから、`.` （ピリオド）<br>
+移動コマンドの後に `.` を連続して交互に押して高速に処理できる<br>
+（`j` で下に移動して、`.`で貼り付け、、を繰り返す、等）<br>
+
+◆ 範囲選択<br>
+`Shift+v` のあと上下移動で、1行ずつ選択範囲を増やせる<br>
+`Ctrl+v` だと、矩形選択が可能。1行の途中まで選択も可能<br>
+`v` だと矩形選択はできないが、1文字ずつ選択範囲を広げられる（行の途中から次の行の途中まで、が可能）<br>
+<br>
+選択範囲が決まったら、`y`でヤンクして、`p`で貼り付ける。（`d`で切り取りも可能）<br>
+矩形選択された文字列は矩形としてペーストされる<br>
+`p`を押した位置を起点として、X,Y方向に展開される（足りない部分は空白が付与される）<br>
+
+現在の括弧の中全部（スコープ）を選択するコマンド
+```
+vi{
+```
+  
+★ 文字列置換（現在編集中のファイル）<br>
+現在開いているファイルで、カーソル位置の単語に、単語境界ありで置換処理を行う `S`、境界無しの場合は `s`<br>
+最後にエンターを押すまで置換処理は走らない。置換後の文字列を手動で設定してから `Enter` を押す（置換前の文字列をベースにして設定する）。<br>
+1行に処理を繰り返して行う場合は、`/g` を付与する
+```
+map s yiw:1,$s/<C-R>"/<C-R>"
+map S yiw:1,$s/\<<C-R>"\>/<C-R>"
+```
+
+```
+:1,$s/\<before\>/after/g
+:1,$s/\<before\>/after
+:1,$s/before/after/g
+:1,$s/before/after
+```
+
+行数を指定する場合(100行目から200行目、現在の行から200行目）
+```
+:100,200s/before/after
+:.,200s/before/after
+```
+  
+★ 文字列置換（複数ファイル）<br>
+置換したいキーワードをあらかじめgrepしておく（location-listにあれば何でもOK） <br>
+**location-listに表示されている項目に対して、置換処理を行う** `c`<br>
+変換したいキーワードにカーソルを合わせて `c` を入力し、置換後の文字を決めて、`Enter` する
+```
+:MyConvert before after
+map c yiw:MyConvert  \<<C-R>"\>  <C-R>"
+```
+
+```vim
+if !&cp && has("user_commands")
+command! -nargs=* MyConvert call MYCONVERT(<f-args>)
+function! MYCONVERT (v1, v2)
+	let loclist = getloclist(0)
+	let target = "!@#$"
+	let filenum = 0
+	for list in loclist
+		"echo bufname(list.bufnr) ':' list.lnum '=' list.text
+		if bufname(list.bufnr) !=# target
+			if filenum !=# 0
+				execute ":w"
+			endif
+			execute ":open " bufname(list.bufnr)
+			let filenum = filenum + 1
+		endif
+
+		let tmp = ':' . list.lnum . ',' . list.lnum . 's/' . a:v1 . '/' . a:v2 . '/'
+		execute tmp
+		unlet tmp
+		let target = bufname(list.bufnr)
+	endfor
+	
+	execute ":w"
+	unlet loclist
+	unlet target
+	unlet filenum
+endfunction
+endif
+```
+
+**lgrepの結果(location-list) の編集**<br>
+置換前などに不要なものを削除できる<br>
+`modifiable` でgrep結果が編集可能となり、`lbuffer` で編集結果が反映される(`dd` で不要な行を消す）
+```
+:set modifiable
+dd
+:lbuffer
+```
+
+★ Copy/Paste（プロセス跨いだコピペ）<br>
+タブ、ウィンドウを跨いでコピペする場合は `yy` `p` でOK<br>
+ターミナル1のvimからターミナル2のvimへコピペを行う場合は `yy` `Ctrl+c` `Ctrl+p` とする<br>
+<br>
+手順は以下の3つ（`yy` `Ctrl+c` までがターミナル1、`Ctrl+p` を別のターミナル2で実行）
+```
+ターミナル1
+何かしら文字列をヤンクする(Shift+v から yy など)
+<C-c> :!rm -f ~/.vim/ttt<CR>:new ~/.vim/ttt<CR>p:wq<CR>
+```
+```
+ターミナル2
+<C-p> :r ~/.vim/ttt<CR>
+```
+当然ながら、上記のやり方では、ホストを跨いだコピペは出来ない<br>
+TeraTermで、コピペを行う場合は、インサートモードにして `set mouse=` の状態（aをはずす）で、貼り付けを行うこと。<br>
+TMPファイルを `~/tmp/hoge.txt` 配下にコピーして、それを `:r ~/tmp/hoge.txt` で読み取れば良いだけ。<br>
 
 
 
