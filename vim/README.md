@@ -216,7 +216,7 @@ $ ctags `cat all.txt`
 $ vim all.txt
 ```
 
-tag-jumpする場合は、`Ctrl+]`、戻る場合は`Ctrl+T`<br>
+tag-jumpする場合は、`Ctrl+]`、戻る場合は`Ctrl+t`<br>
 画面を水平に分割しつつtag-jumpをするときは、`Ctrl+w Ctrl+]`<br>
 `zz`で中央に表示する
 ```
@@ -275,7 +275,7 @@ tag-jump出来ない場合は、all.txt とは別ファイルで定義されて�
 
 ★ grep(vim 内部grep)<br>
 grepの対象をall.txtに記載されているファイル全てとする（検索対象が見つからない場合は、all.txtのリストを見直す）<br>
-vimはデフォルトで内部grepを起動するので、grepprgであらかじめ外部コマンドを割り当てておく
+vimはデフォルトで内部grepを起動するので、grepprgであらかじめ外部コマンドを割り当てておく<br>
 grepはcgrep, lgrepの2種類があるが、基本はlgrep だけでおｋ
 ```
 set grepprg=Grep2
@@ -294,6 +294,7 @@ map <F6> yiw:lgrep -w <C-R>"<CR>:lop<CR>
 ```
 
 **選択した範囲をlgrepする** `F5`
+`Ctrl+v` などで選択した状態から `F5` を押す
 ```
 map <F5>   y:lgrep    <C-R>"<CR>:lop<CR>
 ```
@@ -455,5 +456,141 @@ dd
 TeraTermで、コピペを行う場合は、インサートモードにして `set mouse=` の状態（aをはずす）で、貼り付けを行うこと。<br>
 TMPファイルを `~/tmp/hoge.txt` 配下にコピーして、それを `:r ~/tmp/hoge.txt` で読み取れば良いだけ。<br>
 
+★ Diff<br>
+`diff -rq` で差分の一覧を表示させ、そのファイルをvimで開く。<br>
+差分を見たいファイルにカーソルを合わせて `:Diff`
+```
+$ diff -rq before/ after/ > hoge.diff
+$ vim hoge.diff
+カーソルを上下に移動(Files aaa.c and bbb.c differ のリストから選ぶ)
+:Diff
+```
 
+差分が記述されている箇所はカーソルを合わせることが出来る（削除された領域はカーソルを合わせることは出来ない）<br>
+差分を適用する場合は `dp`、差分を受け取る（削除する）場合は `do`<br>
+下の差分に移動する場合は `]c`、上の差分に移動する場合は`[c`<br>
+編集中に差分を更新して再描画する場合は、`:diffu`<br>
+Undo/Redoは普段通り使える。all.txt と同じディレクトリで、差分ファイルを開けば、普段と同じ作業がそのまま可能となる<br>
+```vim
+if !&cp && has("user_commands")
+  command -range=% Diff :call DIFF()
+  func DIFF()
+    let line = getline(".")
+	let mx='Files\s\(\f\+\)\sand\s*\(\f\+\)'
+	let l = matchstr(line, mx)
+	let file1 = substitute(l, mx, '\1', '')
+	let file2 = substitute(l, mx, '\2', '')
+	let exe1 = "tabnew " . file2
+	let exe2 = ":vert diffsplit " . file1
 
+	execute ":set scrolloff=3"
+	execute exe1
+	execute ":set syntax=off"
+	execute exe2
+	execute ":set syntax=off"
+
+	unlet line
+	unlet mx
+	unlet l
+	unlet file1
+	unlet file2
+	unlet exe1
+	unlet exe2
+  endfunc
+endif
+```
+
+set diffopt によって、Diffの設定を変えられる<br>
+上記の場合は削除領域を黒で埋める(filler)、空白の差分を無視する(iwhite)。
+
+## etc
+
+★ カーソル位置にラインを引く <br>
+set cursorline しておかないと、hi CursorLine は有効にならない<br>
+```
+set cursorline
+```
+
+色設定
+```
+hi CursorLine      cterm=none ctermbg=246
+```
+
+★ 外部コマンド(git/svn/make) 連携<br>
+現在作業中のリポジトリに対して、Diffをとる `Q`<br>
+all.txt を開いているディレクトリがリポジトリのトップである場合は単純だが、リポジトリが複数ある場合は細工が必要<br>
+svnのところをgit に変えてもOK。TMPファイルに吐き出してそれを新しいタブで読み取るだけ
+```
+Q :!svn diff > hoge.diff<CR>:tabnew<CR>:r hoge.diff<CR>:set syntax=diff<CR>
+```
+
+Make環境のトップディレクトリにall.txt を配置しておいて、makeもvimから行う、`M`
+```
+M :lmake<CR>:lopen<CR>
+```
+
+★ man結果の取り込み<br>
+カーソル位置のキーワードに対して、man を行うのが `Shift+k` である<br>
+この結果はデフォルトではlessに渡されており、vimの操作ができないため実は不便<br>
+**以下の設定で、新規タブに結果を取り込める（新規タブから、引数の型、必要な includeファイル名等をコピペできる）**
+```
+map K yiw:!man.pl <C-R>" <CR>:tabnew<CR>:r ~/.vim/mmm<CR>:set syntax=man<CR>/<C-R>"<CR>
+```
+
+```perl
+#!/usr/bin/perl
+
+my $arg = shift;
+my $buf = `man 2 $arg`;
+if(length($buf) == 0) {
+	$buf = `man 3 $arg`;
+}
+open(FH, "> $ENV{HOME}/.vim/mmm") or die;
+print FH $buf;
+
+close(FH);
+```
+
+![light](https://github.com/dogdio/fbt/blob/for_img/img/light.png "light")
+出力結果を取り込むときは、`:tabnew` してから `:r` で読み込むのが安パイ。vim上でTMPファイルを開かないことでバッティングを防げる（連続で実行可能となる）<br>
+
+★ 拡張子の関連付け<br>
+`*.txt` のファイルを開いたら、filetype=txt として解釈する<br>
+`~/.vim/syntax/txt.vim` を作成すれば、syntaxを独自に定義できる<br>
+```
+:au BufRead,BufNewFile *.conf set filetype=conf
+:au BufRead,BufNewFile *.txt set filetype=txt
+```
+
+★ ステータス<br>
+ステータスラインを常に表示する(=2)。0は常に表示しない。1だとウィンドウが複数の場合のみ
+```
+set laststatus=2
+```
+
+★ 256色対応<br>
+colorscheme で設定した名前と同じファイル [~/.vim/colors/256_hoge.vim](https://github.com/dogdio/fbt/blob/master/vim/colors/256_hoge.vim) を用意しておく。
+カラー設定は詳細に決められるので、好きなように記載する。
+```
+set t_Co=256
+colorscheme 256_hoge
+```
+`/usr/share/vim/XXX/syntax` の配下に、大量の `***.vim` ファイルがある。
+ここで各プログラム言語で使用されているSyntaxの設定がある。
+これを `.vim/` 配下のファイルでオーバーライドできる。パラメータの名前はこのファイルから探せばOK。
+
+★ 折りたたみ<br>
+巨大な関数があり全体を把握しにくいときは、折りたたみを使う<br>
+インデント単位で折りたたむ場合は、`foldmethod=indent` とする<br>
+折りたたみを開くのが `zo`, 閉じる場合は `zc`, 全て開く場合は `zR`, 全て閉じるときは`zM` <br>
+```
+:set foldmethod=indent
+```
+
+★ c++ のラムダ式を構文エラーと見なさない
+```
+let c_no_curly_error=1
+```
+
+★ C++に対応したctags<br>
+https://github.com/universal-ctags/ctags
