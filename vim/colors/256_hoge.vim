@@ -85,6 +85,10 @@ hi vimFuncName       	ctermfg=26 cterm=bold
 hi vimVar        	 	ctermfg=Black
 "hi Identifier        	ctermfg=26 cterm=bold 
 
+hi PerlIdentifier  ctermfg=232
+hi PerlStatement   ctermfg=57
+hi PerlSubName ctermfg=26 cterm=bold
+
 "
 "hi Visual          ctermfg=236 ctermbg=210 cterm=reverse
 "hi Title           ctermfg=15 ctermbg=236 cterm=bold

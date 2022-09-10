@@ -61,7 +61,7 @@ map <F4> y:!TagParse.sh <C-R>"<CR>:tabnew<CR>:vs<CR><C-W>25<:r ~/.vim/hoge.tmp<C
 
 " ----------------------------- grep --------------------------
 "set keywordprg=Grep2
-map K yiw:!man.pl <C-R>" <CR>:tabnew<CR>:r ~/.vim/mmm<CR>:set syntax=man<CR>/<C-R>"<CR>
+map K yiw:!man.pl <C-R>" <CR>:tabnew<CR>:r ~/.vim/mmm<CR>:set syntax=man<CR>/<C-R>"<CR>:set nonu<CR>
 set grepprg=Grep2
 
 " grep with all.txt
