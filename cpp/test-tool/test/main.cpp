@@ -25,6 +25,7 @@ int main(int argc, char **argv)
 {
 	int opt = 0;
 	int opt_suf = 0;
+	int ret = -1;
 
 	main::Init();
 
@@ -63,7 +64,12 @@ int main(int argc, char **argv)
 		goto end;
 	}
 
-	printf("\nresult: %s\n", main::Run() == true ? "OK" : "NG");
+	if(main::Run()) {
+		printf("\nresult: OK\n");
+		ret = 0;
+	}
+	else
+		printf("\nresult: NG\n");
 end:
-	return 0;
+	return ret;
 }
