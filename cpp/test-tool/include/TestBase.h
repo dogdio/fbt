@@ -4,10 +4,10 @@
 #ifndef TEST_BASE_H
 #define TEST_BASE_H
 
-class TestMain;
-struct TestBasePrivate;
-
 namespace test {
+	struct TestBasePrivate;
+	class TestMain;
+
 	/** ### Test interface class
 	    - Test target class inherit this class
 	    - Framework and client code are independent of each

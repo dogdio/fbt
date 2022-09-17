@@ -13,24 +13,26 @@
 	  - @b VecInstances have user instance which added by test::TestBase::AddBaseQueue()
 
     @dotfile PrivData2.dot
-    @see     TestMain::RunTests */
+    @see     test::TestMain::RunTests */
 #ifndef TEST_BASE_PRIVATE_H
 #define TEST_BASE_PRIVATE_H
 
 #include <functional>
 #include <vector>
 
-typedef struct {
-	const char *TestID;       /*!< Test identifier */
-	TestBase::TEST_FUNC func; /*!< Function pointer for test code */
-} TEST_LIST;
+namespace test {
+	typedef struct {
+		const char *TestID;       /*!< Test identifier */
+		TestBase::TEST_FUNC func; /*!< Function pointer for test code */
+	} TEST_LIST;
 
-struct TestBasePrivate {
-	FILE *LogFile;                   /*!< File pointer for log output */
-	const char *CurrentTestID;       /*!< This member is available by test::TestBase::GetTestID() */
-	std::vector<TEST_LIST> TestList; /*!< Internal test list with setting by test::TestBase::Register() */
-	bool EnableRegister;             /*!< If this is true, test::TestBase::Register() is available */
-};
+	struct TestBasePrivate {
+		FILE *LogFile;                   /*!< File pointer for log output */
+		const char *CurrentTestID;       /*!< This member is available by TestBase::GetTestID() */
+		std::vector<TEST_LIST> TestList; /*!< Internal test list with setting by TestBase::Register() */
+		bool EnableRegister;             /*!< If this is true, TestBase::Register() is available */
+	};
+}
 
 namespace test {
 namespace base_priv {
@@ -46,6 +48,7 @@ namespace base_priv {
 	    @param[in] func function pointer (lambda is available)
 	    @return    number of instance */
 	int ForeachQueue(DO_TEST func);
+
 }
 }
 

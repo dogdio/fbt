@@ -16,34 +16,35 @@ using namespace test;
 #include "TestConfigName.h"
 #include "TestMain.h"
 
-/** friend of test::TestBase \n
+namespace test {
+/** friend of TestBase \n
     this class can access TestBase private member
-    @see TestBasePrivate.h
+    @see @ref TestBasePrivate.h
     @see TestMain.cpp */
-class TestMain {
-public:
-	TestMain() {}
-	~TestMain() {}
+	class TestMain {
+	public:
+		TestMain() {}
+		~TestMain() {}
 
-	bool DoTestEachInstance(TestBase *Base);
-	bool RunTests(FILE *fp);
-};
+		bool DoTestEachInstance(TestBase *Base);
+		bool RunTests(FILE *fp);
+	};
+}
 
 namespace {
 	TestMain TM;
 	config::ConfigIF *CIF = config::GetInstance(CONFIG_CATEGORY_GLOBAL);
-
-}; // namespace
+}
 
 /** Do the following for each test
-    -# test::TestBase::InitializePerTest()
-    -# test::TestBase::TEST_FUNC()
-    -# test::TestBase::FinalizePerTest()
+    -# TestBase::InitializePerTest()
+    -# TestBase::TEST_FUNC()
+    -# TestBase::FinalizePerTest()
 
 	Test execution depends on the any configs (Default: exec all tests once) \n
 	These are setting by command line parameter: see help()
-	@see TestConfigName.h
-    @see test::TestBase
+	@see @ref TestConfigName.h
+    @see TestBase
 
     @param[in] Base test target instance
     @retval true test success
@@ -100,10 +101,10 @@ bool TestMain::DoTestEachInstance(TestBase *Base)
 }
 
 /** Do the following for each instances by lambda
-    -# test::TestBase::RegisterTests()
-    -# test::TestBase::InitializeOnce()
+    -# TestBase::RegisterTests()
+    -# TestBase::InitializeOnce()
     -# DoTestEachInstance()
-    -# test::TestBase::FinalizeOnce()
+    -# TestBase::FinalizeOnce()
 
     @attention
       Instance queue is implement at TestBase.cpp \n
@@ -145,6 +146,7 @@ bool TestMain::RunTests(FILE *fp)
 
 	return fail == 0 ? true: false;
 }
+
 
 namespace test {
 namespace main {

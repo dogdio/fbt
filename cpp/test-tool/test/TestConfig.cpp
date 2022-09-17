@@ -53,7 +53,6 @@ void SetConfigInstance(const char *Name, config::ConfigIF *Arg)
 	Map[Name] = Arg;
 }
 
-} // anonymous
 
 ///////////////////////////////////////////////////////////
 //
@@ -99,6 +98,8 @@ void TestConfig::Dump(void)
 	for(auto it : ConfigInt)
 		printf("I: '%s' = %d\n", it.first.c_str(), it.second);
 }
+
+} // anonymous
 
 namespace test {
 namespace config {
