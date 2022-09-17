@@ -11,10 +11,10 @@ set background=light
 "hi Normal          ctermfg=Black ctermbg=252
 "hi clear          
 
-hi Normal          ctermfg=Black ctermbg=247
-hi LineNr          ctermfg=238 ctermbg=245
+hi Normal          ctermfg=Black ctermbg=249
+hi LineNr          ctermfg=238 ctermbg=247
 hi Cursor          ctermfg=White ctermbg=Black
-hi CursorLine      cterm=none ctermbg=246
+hi CursorLine      cterm=none ctermbg=248
 "hi CursorLine      cterm=underline
 hi CursorLineNr    ctermfg=White ctermbg=26
 
@@ -36,6 +36,7 @@ hi DiffAdd    term=standout ctermbg=159 ctermfg=232
 "------------ for Makefile -------------
 hi makeIdent  ctermfg=20
 hi makeTarget ctermfg=93 cterm=bold
+hi makeCommands ctermfg=52
 
 "------------ for javaScript -------------
 "syn keyword javaScriptIdentifier	arguments this var
@@ -60,6 +61,10 @@ hi PreProc         ctermfg=93
 
 hi cHoge           ctermfg=32
 hi Todo            ctermfg=Yellow ctermbg=Black cterm=bold
+"hi CommentDox        ctermfg=30
+"hi CommentDox        ctermfg=24
+"hi CommentDox        ctermfg=94
+hi CommentDox        ctermfg=58
 
 hi Visual          ctermfg=117 ctermbg=Black
 hi StatusLine      ctermbg=152 ctermfg=26 cterm=bold
@@ -88,6 +93,8 @@ hi vimVar        	 	ctermfg=Black
 hi PerlIdentifier  ctermfg=232
 hi PerlStatement   ctermfg=57
 hi PerlSubName ctermfg=26 cterm=bold
+
+hi dotIdentifier ctermfg=Black
 
 "
 "hi Visual          ctermfg=236 ctermbg=210 cterm=reverse
