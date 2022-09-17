@@ -501,7 +501,7 @@ endif
 ```
 
 set diffopt によって、Diffの設定を変えられる<br>
-上記の場合は削除領域を黒で埋める(filler)、空白の差分を無視する(iwhite)。
+削除領域を黒で埋める(filler)、空白の差分を無視する(iwhite)。
 
 ## etc
 
@@ -579,6 +579,27 @@ colorscheme 256_hoge
 `/usr/share/vim/XXX/syntax` の配下に、大量の `***.vim` ファイルがある。
 ここで各プログラム言語で使用されているSyntaxの設定がある。
 これを `.vim/` 配下のファイルでオーバーライドできる。パラメータの名前はこのファイルから探せばOK。
+
+★ コメント中の特定文字列だけ別の色にする方法<br>
+システム標準の設定ファイルを個人ディレクトリにコピーして、適宜編集する
+```
+$ cp /usr/share/vim/vim82/syntax/c.vim ~/.vim/syntax/c.vim
+$ vi c.vim
+```
+cCommentGroup に新たに定義したルールを追加する（TODO, FIXME などと同じ扱いで色だけ変える）。<br>
+以下の例では、doxygen の文字列を別の色 (CommentDox) にしている
+```vim
+syn match   cDox       contained "@[a-z]*"
+syn match   cDox2      contained "\!<"
+syn cluster    cCommentGroup   contains=cTodo,cBadContinuation,cDox,cDox2
+hi def link cDox               CommentDox
+hi def link cDox2              CommentDox
+```
+
+以下を、 [~/.vim/colors/256_hoge.vim](https://github.com/dogdio/fbt/blob/master/vim/colors/256_hoge.vim) に書いておく。
+```vim
+hi CommentDox        ctermfg=58
+```
 
 ★ 折りたたみ<br>
 巨大な関数があり全体を把握しにくいときは、折りたたみを使う<br>
