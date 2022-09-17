@@ -1,0 +1,27 @@
+# Mscgen
+msc {
+  A[label="TestFramework"], B[label="YourCode"];
+
+  |||;
+  A box A [label="Exec Test", textbgcolor="#ccffcc"];
+  A=>B [label="InitializeOnce()", url="@ref InitializeOnce"];
+  A<<B [label="return"];
+
+  |||;
+  --- [label=" repeat for number of tests ", textbgcolor="#ead9ff"];
+  A=>B [label="InitializePerTest()", url="@ref InitializePerTest"];
+  A<<B [label="return"];
+
+  A=>B [label="TEST_FUNC()", url="@ref TEST_FUNC"];
+  B note B [label="exec test code", textbgcolor="#ffffcc", url="@ref TestSample.cpp"];
+  A<<B [label="return"];
+
+  A=>B [label="FinalizePerTest()", url="@ref FinalizePerTest"];
+  A<<B [label="return"];
+  --- [label=" do next test / test finished", textbgcolor="#ead9ff"];
+
+  |||;
+  A=>B [label="FinalizeOnce()", url="@ref FinalizeOnce"];
+  A<<B [label="return"];
+}
+

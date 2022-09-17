@@ -1,0 +1,16 @@
+# Mscgen
+msc {
+  A[label="TestFramework"], B[label="YourCode"];
+
+  |||;
+  A box A [label="invoke ./ExecTest", textbgcolor="#ccffcc"];
+  A:>B [label="dlopen"];
+
+  B note B [label="invoke constructor()", textbgcolor="#ffffcc", url="@ref TestSample::TestSample"];
+  |||;
+  A<=B [label="AddBaseQueue()", url="@ref AddBaseQueue"];
+  A>>B [label="return"];
+
+  A<<B [label="return(dlopen)"];
+}
+

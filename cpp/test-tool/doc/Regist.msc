@@ -1,0 +1,12 @@
+# Mscgen
+msc {
+  A[label="TestFramework"], B[label="YourCode"];
+
+  |||;
+  A box A [label="Test registration", textbgcolor="#ccffcc"];
+  A=>B [label="RegisterTests()", url="@ref RegisterTests"];
+  A<=B [label="Register() x N", url="@ref Register"];
+  A>>B [label="return"];
+  A<<B [label="return"];
+}
+

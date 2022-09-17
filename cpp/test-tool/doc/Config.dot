@@ -1,0 +1,32 @@
+digraph g {
+  rankdir=TB;
+  graph [dpi="64"];
+  node [shape=box ];
+
+  n00 [label="Caller", color=black ];
+  n01 [label="config::GetInstance()", color=red ];
+  n02 [label="Instance1", color=red ];
+
+  a01 [label="ConfigIF::Set()", color=black ];
+  a02 [label="ConfigIF::GetString()", color=black ];
+  a03 [label="ConfigIF::GetInteger()", color=black ];
+
+  i01 [label="TestConfig::Set()", color=red ];
+  i02 [label="TestConfig::GetString()", color=red ];
+  i03 [label="TestConfig::GetInteger()", color=red ];
+
+  n00 -> n01 [label=" 1.Get instance", dir="both", fontcolor=orange, color=orange];
+  n01 -> n02 [style="dotted", dir="back"];
+  n00 -> a01;
+  n00 -> a02 [label=" 2.Abstract IF"];
+  n00 -> a03;
+
+  a01 -> i01 [penwidth="2", color=blue];
+  a02 -> i02 [penwidth="2", color=blue, label=" Inheritance", fontcolor=blue];
+  a03 -> i03 [penwidth="2", color=blue];
+
+  memo1 [label="TestConfig.cpp", fontcolor=red, shape="plaintext", style="" ];
+  a03 -> memo1 [style="invis"];
+}
+
+

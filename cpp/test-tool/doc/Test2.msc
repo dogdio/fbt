@@ -1,0 +1,14 @@
+# Mscgen
+msc {
+  A[label="TestFramework"], B[label="YourCode"];
+
+  |||;
+  A box A [label="Exec each Test", textbgcolor="#ccffcc"];
+
+  A=>B [label="TEST_FUNC()"];
+  B note B [label="exec test code", textbgcolor="#ffffcc"];
+  B<=B [label="VERIFY(), TEST_LOG(), GetTestID(),,,", linecolor="blue"];
+  A<<B [label="return"];
+
+}
+

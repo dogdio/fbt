@@ -1,0 +1,13 @@
+digraph g {
+  graph [dpi="64", rankdir="LR"];
+  node [fontsize="16", shape="ellipse"];
+
+  n00 [label="TestBase::priv", color=black, shape=box ];
+  n01 [label="TestSample", color=black ];
+  n02 [label="TestSample2", color=black ];
+  n03 [label="TestMain", color=black ];
+
+  n00-> n01 [dir=none, style=dotted ];
+  n00-> n02 [dir=none, style=dotted, label="can't access" ];
+  n03-> n00 [label="friend", color=blue];
+}

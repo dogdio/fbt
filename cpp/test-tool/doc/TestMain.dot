@@ -1,0 +1,62 @@
+
+digraph g {
+  rankdir=TB;
+  graph [dpi="64"];
+  node [shape=box ];
+  n00 [label="main()", color=black ];
+  n01 [label="help()", color=black ];
+  n02 [label="main::Init()", color=orange ];
+  n03 [label="main::SetConfig()", color=orange ];
+  n04 [label="main::Run()", color=orange ];
+
+  n10 [label="factory::LoadTarget()", color=black ];
+  n11 [label="factory::UnLoadTarget()", color=black ];
+
+  n20 [label="TestMain::RunTests()", color=orange ];
+  n21 [label="TestMain::DoTestEachInstance()", color=orange ];
+  n22 [label="base_priv::ForeachQueue()", color=black ];
+
+  n30 [label="RegisterTests()", color=blue ];
+  n31 [label="InitializeOnce()", color=blue ];
+  n32 [label="FinalizeOnce()", color=blue ];
+  n33 [label="InitializePerTest()", color=blue ];
+  n34 [label="FinalizePerTest()", color=blue ];
+  n35 [label="TEST_FUNC()", color=blue ];
+
+  n40 [label="TEST_LOG()", color=black ];
+  n41 [label="VERIFY()", color=black ];
+  n42 [label="Test Target API", color=blue ];
+
+  n50 [label="TestSample", color=blue ];
+  n51 [label="TestSample2", color=blue ];
+
+  n00 -> n01;
+  n00 -> n02;
+  n00 -> n03;
+  n00 -> n04;
+  n04 -> n10;
+  n04 -> n11;
+  n04 -> n20;
+
+  n20 -> n22;
+  n22 -> n31 [color=cyan, penwidth=2];
+  n22 -> n30 [color=cyan, penwidth=2];
+  n22 -> n32 [color=cyan, penwidth=2, label="Repeat number of instances", fontcolor=cyan];
+  n22 -> n21 [color=cyan, penwidth=2];
+
+  n21 -> n33 [color=red, penwidth=2];
+  n21 -> n34 [color=red, penwidth=2];
+  n21 -> n35 [color=red, penwidth=2, label=" Repeat number of tests", fontcolor=red];
+
+  n35 -> n40;
+  n35 -> n41;
+  n35 -> n42;
+
+  n10 -> n50 [dir=both, style=dotted, label=" dlopen()"];
+  n10 -> n51 [dir=both, style=dotted];
+
+  memo1 [label="User Code (TestSample.cpp)", fontcolor=blue, shape=plaintext, style="" ];
+  n30 -> memo1 [style=invis];
+  memo2 [label="This Module (TestMain.cpp)", fontcolor=orange, shape=plaintext, style="" ];
+  n00 -> memo2 [style=invis];
+}
