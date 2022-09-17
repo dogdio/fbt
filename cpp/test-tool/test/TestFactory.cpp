@@ -38,6 +38,7 @@ bool LoadSharedLibrary(std::string *str)
 		goto end;
 	}
 
+	//printf("dlopen OK: %s\n", str->c_str());
 	VecHandles.push_back(Handle);
 	ret = true;
 
