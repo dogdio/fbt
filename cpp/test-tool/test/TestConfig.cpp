@@ -1,3 +1,5 @@
+/** @file TestConfig.cpp
+    @brief Test configuration class */
 #include <stdio.h>
 #include <string>
 #include <unordered_map>
@@ -12,6 +14,7 @@ using CONFIG_STR = std::unordered_map<std::string, const char *>;
 using CONFIG_INT = std::unordered_map<std::string, uint32_t>;
 using CONFIG_MAP = std::unordered_map<std::string, config::ConfigIF *>;
 
+/** Implementation class of test::config::ConfigIF */
 class TestConfig : public config::ConfigIF {
 
 public:
@@ -24,8 +27,8 @@ public:
 	uint32_t GetInteger(const char *Name) override;
 	void Dump(void) override;
 
-	CONFIG_STR ConfigStr;
-	CONFIG_INT ConfigInt;
+	CONFIG_STR ConfigStr; /*!< map of string values */
+	CONFIG_INT ConfigInt; /*!< map of integer values */
 };
 
 // instantiation myself.
@@ -33,17 +36,21 @@ TestConfig Instance1(CONFIG_CATEGORY_GLOBAL);
 TestConfig Instance2(CONFIG_CATEGORY_FUNC1);
 TestConfig Instance3(CONFIG_CATEGORY_FUNC2);
 
+/** Generate instance when this function called
+    @return local static instance */
 CONFIG_MAP &GetConfigMap(void)
 {
-	// local static: generate instance when this function called.
 	static CONFIG_MAP ConfigMap;
 	return ConfigMap;
 }
 
-void SetConfigInstance(const char *Name, config::ConfigIF *arg)
+/** Set @b Arg to ConfigMap with @b Name as key
+    @param[in] Name key for map
+    @param[in] Arg value for map */
+void SetConfigInstance(const char *Name, config::ConfigIF *Arg)
 {
 	CONFIG_MAP &Map = GetConfigMap();
-	Map[Name] = arg;
+	Map[Name] = Arg;
 }
 
 } // anonymous
@@ -55,7 +62,7 @@ void SetConfigInstance(const char *Name, config::ConfigIF *arg)
 ///////////////////////////////////////////////////////////
 TestConfig::TestConfig(const char *Name)
 {
-	SetConfigInstance(Name, this); // push to Factory automatically
+	SetConfigInstance(Name, this); /** push to Factory automatically */
 }
 
 TestConfig::~TestConfig()

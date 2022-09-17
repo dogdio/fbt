@@ -1,3 +1,9 @@
+/** @file TestMain.cpp
+    @brief
+    ### Test framework main code
+      - Module overview
+
+    @dotfile TestMain.dot */
 #include <stdio.h>
 #include <stdint.h>
 #include <cstring>
@@ -10,13 +16,16 @@ using namespace test;
 #include "TestConfigName.h"
 #include "TestMain.h"
 
-
-class TestMain { // friend of TestBase
+/** friend of test::TestBase \n
+    this class can access TestBase private member
+    @see TestBasePrivate.h
+    @see TestMain.cpp */
+class TestMain {
 public:
 	TestMain() {}
 	~TestMain() {}
 
-	bool DoTest(TestBase *Base);
+	bool DoTestEachInstance(TestBase *Base);
 	bool RunTests(FILE *fp);
 };
 
@@ -26,7 +35,20 @@ namespace {
 
 }; // namespace
 
-bool TestMain::DoTest(TestBase *Base)
+/** Do the following for each test
+    -# test::TestBase::InitializePerTest()
+    -# test::TestBase::TEST_FUNC()
+    -# test::TestBase::FinalizePerTest()
+
+	Test execution depends on the any configs (Default: exec all tests once) \n
+	These are setting by command line parameter: see help()
+	@see TestConfigName.h
+    @see test::TestBase
+
+    @param[in] Base test target instance
+    @retval true test success
+    @retval false test failed */
+bool TestMain::DoTestEachInstance(TestBase *Base)
 {
 	bool test_ret = true;
 	bool ret = false;
@@ -77,6 +99,18 @@ bool TestMain::DoTest(TestBase *Base)
 	return test_ret;
 }
 
+/** Do the following for each instances by lambda
+    -# test::TestBase::RegisterTests()
+    -# test::TestBase::InitializeOnce()
+    -# DoTestEachInstance()
+    -# test::TestBase::FinalizeOnce()
+
+    @attention
+      Instance queue is implement at TestBase.cpp \n
+	  Traverse the queue with ForeachQueue()
+    @param[in] fp FILE pointer for log output (set to priv->LogFile)
+    @retval true all tests success
+    @retval false at least one test failed */
 bool TestMain::RunTests(FILE *fp)
 {
 	uint32_t fail = 0;
@@ -94,7 +128,7 @@ bool TestMain::RunTests(FILE *fp)
 				Base->priv->CurrentTestID = "InitializeOnce";
 				Base->InitializeOnce();
             
-				if(!DoTest(Base))
+				if(!DoTestEachInstance(Base))
 					fail++;
             
 				Base->priv->CurrentTestID = "FinalizeOnce";

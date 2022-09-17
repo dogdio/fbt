@@ -1,3 +1,5 @@
+/** @file TestSample.cpp
+    @brief Sample Test class */
 #include <stdio.h>
 #include <string.h>
 #include "TestBase.h"
@@ -13,13 +15,31 @@ public:
 	bool RegisterTests(void) override;
 	const char *OwnName(void) override;
 
+	/** TestSample Constructor \n
+        you must call @ref AddBaseQueue() to add your instance to internal queue @emoji :bulb:
+	    @mscfile Init.msc "init sequence" */
 	TestSample() { AddBaseQueue(this); }
 	~TestSample() {}
 };
 
 namespace {
+/** Instance of TestSample \n
+    when DLL is loaded, this variable is activated (invoke constructor)
+    @see TestSample::TestSample() */
 TestSample Inst;
 
+/** implement your test code(1.1.1) \n
+    This test will not run unless you call test::TestBase::Register(). \n
+	In this context, you can use following macro \n
+    - TEST_LOG()
+	- VERIFY()
+	- VERIFY_STR()
+
+	@param[in] This your instance
+	@retval true test success
+	@retval false test failed
+
+	@mscfile Test2.msc "each test sequence" */
 bool test_1_1_1(void *This)
 {
 	TestSample *Test = (TestSample *)This;
@@ -31,6 +51,7 @@ bool test_1_1_1(void *This)
 	return true;
 }
 
+/** same as 1.1.1 */
 bool test_1_1_2(void *This)
 {
 	TestSample *Test = (TestSample *)This;
@@ -42,6 +63,7 @@ bool test_1_1_2(void *This)
 	return true;
 }
 
+/** same as 1.1.1 */
 bool test_1_1_3(void *This)
 {
 	TestSample *Test = (TestSample *)This;

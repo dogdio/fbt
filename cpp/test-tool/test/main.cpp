@@ -1,3 +1,5 @@
+/** @file main.cpp
+    @brief test tool startup code */
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -6,6 +8,8 @@
 #include "TestConfigName.h"
 using namespace test;
 
+/** help menu (-h)
+    @see TestConfigName.h */
 void help(void)
 {
 	printf("ExecTest\n");
@@ -21,6 +25,8 @@ void help(void)
 	printf("\n");
 }
 
+/** parse command line parameters, show help() message \n
+    @see TestMain.cpp, main-logic is here */
 int main(int argc, char **argv)
 {
 	int opt = 0;

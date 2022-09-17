@@ -1,3 +1,5 @@
+/** @file TestBase.cpp
+    @brief Test framework base class */
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -6,8 +8,8 @@ using namespace test;
 #include "TestBasePrivate.h"
 
 namespace {
-	struct TestBasePrivate PrivateData;
-	std::vector<TestBase *> VecInstances;
+	struct TestBasePrivate PrivateData;    /*!< test::TestBass private data */
+	std::vector<TestBase *> VecInstances;  /*!< user Instance internal queue */
 };
 
 //
