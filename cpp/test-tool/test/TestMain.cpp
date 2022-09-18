@@ -30,7 +30,7 @@ namespace test {
 		bool RunTests(FILE *fp);
 
 		bool IsTestExecutable(TEST_LIST &tl, bool &from_ok);
-		bool IsTestComplete(TEST_LIST &tl);
+		bool IsTestComplete(TEST_LIST &tl, bool result);
 	};
 }
 
@@ -42,17 +42,23 @@ namespace {
 /** verify following test complete conditions
     - @ref CONFIG_TEST_PATTERN_UNTIL
 
-    @param tl test target(test-ID and test func)
+    @param[in] tl test target(test-ID and test func)
+    @param[in] result test result
     @retval true test is complete
     @retval false test is not complete (goto next test) */
-bool TestMain::IsTestComplete(TEST_LIST &tl)
+bool TestMain::IsTestComplete(TEST_LIST &tl, bool result)
 {
 	const char *Until = CIF->GetString(CONFIG_TEST_PATTERN_UNTIL);
 	bool ret = false;
 
 	if(strlen(Until) > 0) {
 		if(strstr(tl.TestID,  Until) != NULL) {
-			ret = true; // test finished
+			ret = true;
+		}
+	}
+	if(CIF->GetInteger(CONFIG_FAIL_AND_EXIT)) {
+		if(!result) {
+			ret = true;
 		}
 	}
 end:
@@ -63,8 +69,8 @@ end:
     - @ref CONFIG_TEST_PATTERN_RUN
     - @ref CONFIG_TEST_PATTERN_FROM
 
-    @param tl test target(test-ID and test func)
-    @param from_ok flag that satisfies CONFIG_TEST_PATTERN_FROM
+    @param[in] tl test target(test-ID and test func)
+    @param[in,out] from_ok flag that satisfies CONFIG_TEST_PATTERN_FROM
     @retval true test is executable
     @retval false test is not executable(skip this test) */
 bool TestMain::IsTestExecutable(TEST_LIST &tl, bool &from_ok)
@@ -129,7 +135,7 @@ bool TestMain::DoTestEachInstance(TestBase *Base)
 			fprintf(Base->priv->LogFile, "[%s] %s\n\n", Base->priv->CurrentTestID, ret == true ? "OK" : "NG");
 			if(!ret)
 				test_ret = false;
-			if(IsTestComplete(tl))
+			if(IsTestComplete(tl, ret))
 				break;
 		}
 	}
@@ -195,6 +201,7 @@ void Init(void)
 	CIF->Set(CONFIG_TEST_PATTERN_UNTIL, "");
 	CIF->Set(CONFIG_TEST_PATTERN_FROM, "");
 	CIF->Set(CONFIG_LOOPNUM, 1);
+	CIF->Set(CONFIG_FAIL_AND_EXIT, (uint32_t)0);
 }
 
 void SetConfig(const char *Key, uint32_t Value)

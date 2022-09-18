@@ -44,7 +44,7 @@ bool test_1_1_1(void *This)
 {
 	TestSample3 *Test = (TestSample3 *)This;
 
-	VERIFY(5 == 5);
+	VERIFY(5 == 4);
 	//VERIFY(5 == 6);
 	TEST_LOG("this is 1.1.1");
 
