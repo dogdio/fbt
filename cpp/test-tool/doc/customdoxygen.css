@@ -755,7 +755,7 @@ dl.reflist dd {
 }
 
 .paramname {
-	color: #000080;
+	color: #bb0055;
 	white-space: nowrap;
 }
 .paramname em {
@@ -1209,7 +1209,8 @@ dl.note {
   margin-left: -7px;
   padding-left: 3px;
   border-left: 4px solid;
-  border-color: #D0C000;
+  border-color: #00D000;
+  color: green;
 }
 
 dl.note.DocNodeRTL {
@@ -1227,6 +1228,7 @@ dl.warning, dl.attention {
   padding-left: 3px;
   border-left: 4px solid;
   border-color: #FF0000;
+  color: red;
 }
 
 dl.warning.DocNodeRTL, dl.attention.DocNodeRTL {
@@ -1244,6 +1246,7 @@ dl.pre, dl.post, dl.invariant {
   padding-left: 3px;
   border-left: 4px solid;
   border-color: #00D000;
+/*  color: green; */
 }
 
 dl.pre.DocNodeRTL, dl.post.DocNodeRTL, dl.invariant.DocNodeRTL {

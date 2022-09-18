@@ -66,8 +66,7 @@ namespace test {
 
 		/** Call once in your constructor() \n
 		    your instance is added to internal queue \n
-			@attention
-		      if you don't call this function, your test is not processed
+			@post Only instances registered by this function are tested
 		    @param[in] Base your instance
 
 	        @mscfile Init.msc "init sequence" */
@@ -82,7 +81,7 @@ namespace test {
 		using TEST_FUNC = bool (*)(void *This);
 
 		/** Registration your test code \n
-		    Tests registered by this function will be called by the test framework
+			@post Tests registered by this function will be called by the test framework
 		    @param[in] TestID Test Identifier
 		    @param[in] func function pointer to Test code
 		    @retval true registration success

@@ -23,7 +23,7 @@ namespace main {
 
     @retval true all tests success
     @retval false at least one test failed
-    @see TestMain::RunTests() */
+    @see test::TestMain::RunTests() */
 	bool Run(void);
 }
 }

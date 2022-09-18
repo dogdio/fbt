@@ -4,10 +4,10 @@
 #define TEST_FACTORY_H
 
 namespace test {
-/** @attention
-    - APIs that don't need to be instantiated don't need classes
-    - Enclose in namespace and avoid global scope
-    - no need for singletons */
+/** @note
+    APIs that don't need to be instantiated don't need classes \n
+    Enclose in namespace and avoid global scope \n
+    no need for singletons */
 namespace factory {
 
 	/** Load shared library from @b Directory
