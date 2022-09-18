@@ -28,6 +28,9 @@ namespace test {
 
 		bool DoTestEachInstance(TestBase *Base);
 		bool RunTests(FILE *fp);
+
+		bool IsTestExecutable(TEST_LIST &tl, bool &from_ok);
+		bool IsTestComplete(TEST_LIST &tl);
 	};
 }
 
@@ -36,14 +39,67 @@ namespace {
 	config::ConfigIF *CIF = config::GetInstance(CONFIG_CATEGORY_GLOBAL);
 }
 
+/** verify following test complete conditions
+    - @ref CONFIG_TEST_PATTERN_UNTIL
+
+    @param tl test target(test-ID and test func)
+    @retval true test is complete
+    @retval false test is not complete (goto next test) */
+bool TestMain::IsTestComplete(TEST_LIST &tl)
+{
+	const char *Until = CIF->GetString(CONFIG_TEST_PATTERN_UNTIL);
+	bool ret = false;
+
+	if(strlen(Until) > 0) {
+		if(strstr(tl.TestID,  Until) != NULL) {
+			ret = true; // test finished
+		}
+	}
+end:
+	return ret;
+}
+
+/** verify following test execution conditions
+    - @ref CONFIG_TEST_PATTERN_RUN
+    - @ref CONFIG_TEST_PATTERN_FROM
+
+    @param tl test target(test-ID and test func)
+    @param from_ok flag that satisfies CONFIG_TEST_PATTERN_FROM
+    @retval true test is executable
+    @retval false test is not executable(skip this test) */
+bool TestMain::IsTestExecutable(TEST_LIST &tl, bool &from_ok)
+{
+	const char *Pattern = CIF->GetString(CONFIG_TEST_PATTERN_RUN);
+	const char *From = CIF->GetString(CONFIG_TEST_PATTERN_FROM);
+	bool ret = false;
+
+	if(strlen(Pattern) > 0) {
+		if(strstr(tl.TestID,  Pattern) == NULL) {
+			goto end;
+		}
+	}
+	else if(strlen(From) > 0) {
+		if(!from_ok) {
+			if(strstr(tl.TestID,  From) == NULL)
+				goto end;
+			else
+				from_ok = true; // start from here
+		}
+	}
+	ret = true;
+
+end:
+	return ret;
+}
+
 /** Do the following for each test
     -# TestBase::InitializePerTest()
     -# TestBase::TEST_FUNC()
     -# TestBase::FinalizePerTest()
 
-	Test execution depends on the any configs (Default: exec all tests once) \n
-	These are setting by command line parameter: see help()
-	@see @ref TestConfigName.h
+    Test execution depends on the any configs (Default: exec all tests once) \n
+    These are setting by command line parameter: see help()
+    @see @ref TestConfigName.h
     @see TestBase
 
     @param[in] Base test target instance
@@ -52,49 +108,29 @@ namespace {
 bool TestMain::DoTestEachInstance(TestBase *Base)
 {
 	bool test_ret = true;
-	bool ret = false;
 	int loop = CIF->GetInteger(CONFIG_LOOPNUM);
-	const char *Pattern = CIF->GetString(CONFIG_TEST_PATTERN_RUN);
-	const char *Until = CIF->GetString(CONFIG_TEST_PATTERN_UNTIL);
-	const char *From = CIF->GetString(CONFIG_TEST_PATTERN_FROM);
-	bool from_ok = false;
 
 	for(int i = 0; i < loop; i++) {
-		from_ok = false;
+		bool from_ok = false;
 		printf("===== %s =====\n", Base->OwnName());
 		for(auto tl : Base->priv->TestList) {
 			if(tl.func == NULL)
 				continue;
+			if(!IsTestExecutable(tl, from_ok))
+				continue;
 
-			if(strlen(Pattern) > 0) {
-				if(strstr(tl.TestID,  Pattern) == NULL) {
-					continue;
-				}
-			}
-			else if(strlen(From) > 0) {
-				if(!from_ok) {
-					if(strstr(tl.TestID,  From) == NULL)
-						continue;
-					else
-						from_ok = true; // start from here
-				}
-			}
 			Base->priv->CurrentTestID = tl.TestID;
 
 			Base->InitializePerTest();
-			ret = tl.func(Base); // exec Test
+			bool ret = tl.func(Base); // exec Test
 			Base->FinalizePerTest();
-        
+
 			printf("[%s] %s\n", Base->priv->CurrentTestID, ret == true ? "OK" : "NG");
 			fprintf(Base->priv->LogFile, "[%s] %s\n\n", Base->priv->CurrentTestID, ret == true ? "OK" : "NG");
 			if(!ret)
 				test_ret = false;
-
-			if(strlen(Until) > 0) {
-				if(strstr(tl.TestID,  Until) != NULL) {
-					break; // test finished
-				}
-			}
+			if(IsTestComplete(tl))
+				break;
 		}
 	}
 	return test_ret;
@@ -106,9 +142,9 @@ bool TestMain::DoTestEachInstance(TestBase *Base)
     -# DoTestEachInstance()
     -# TestBase::FinalizeOnce()
 
-    @attention
+    @note
       Instance queue is implement at TestBase.cpp \n
-	  Traverse the queue with ForeachQueue()
+      Traverse the queue with ForeachQueue()
     @param[in] fp FILE pointer for log output (set to priv->LogFile)
     @retval true all tests success
     @retval false at least one test failed */
