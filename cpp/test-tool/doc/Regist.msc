@@ -4,8 +4,8 @@ msc {
 
   |||;
   A box A [label="Test registration", textbgcolor="#ccffcc"];
-  A=>B [label="RegisterTests()", url="@ref RegisterTests"];
-  A<=B [label="Register() x N", url="@ref Register"];
+  A=>B [label="RegisterTests()", url="@ref test::TestBase::RegisterTests"];
+  A<=B [label="Register() x N", url="@ref test::TestBase::Register"];
   A>>B [label="return"];
   A<<B [label="return"];
 }

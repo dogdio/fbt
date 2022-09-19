@@ -1,9 +1,9 @@
 /** @file TestSample4Ex.cpp
-    @brief
-    - External library for TestSample4
-    - Case of don't call test::TestBase::AddBaseQueue(), test framework only call dlopen
-      - This module works independently of the test framework
-    - LD_LIBRARY_PATH must be set if other libraries depend on this library
+    @brief External library for TestSample4
+    @attention
+    Case of don't call test::TestBase::AddBaseQueue(), test framework only call dlopen \n
+    This module works independently of the test framework \n
+    LD_LIBRARY_PATH must be set if other libraries depend on this library \n
 
 	@see TestSample4.cpp */
 #include <stdio.h>

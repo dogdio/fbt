@@ -219,6 +219,7 @@ a:hover {
 a.el {
 	font-weight: bold;
 	color: #191970;
+    font-size: 12pt;
 }
 
 a.elRef {
@@ -1210,7 +1211,7 @@ dl.note {
   padding-left: 3px;
   border-left: 4px solid;
   border-color: #00D000;
-  color: green;
+/*  color: green; */
 }
 
 dl.note.DocNodeRTL {
@@ -1228,7 +1229,7 @@ dl.warning, dl.attention {
   padding-left: 3px;
   border-left: 4px solid;
   border-color: #FF0000;
-  color: red;
+/*  color: red; */
 }
 
 dl.warning.DocNodeRTL, dl.attention.DocNodeRTL {

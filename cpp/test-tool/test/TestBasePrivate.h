@@ -1,19 +1,6 @@
 /** @file TestBasePrivate.h
-    @brief
-    ### Private data for Test interface class
-      - test::TestBase::priv is only accessible from our friend TestMain
-      - Can not accessible from client code
-      - Friend class is completely hidden in TestMain.cpp
-
-    @dotfile PrivData1.dot
-    ### Data structure
-	  - Base->priv is static area (common to each instances)
-	    - Each Instance does not work at the same time
-	  - @b TestList will be create and destroy each instances
-	  - @b VecInstances have user instance which added by test::TestBase::AddBaseQueue()
-
-    @dotfile PrivData2.dot
-    @see     test::TestMain::RunTests */
+    @brief Private data for Test interface class
+    @see   @ref page02 */
 #ifndef TEST_BASE_PRIVATE_H
 #define TEST_BASE_PRIVATE_H
 

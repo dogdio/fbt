@@ -1,13 +1,13 @@
 /** @file TestFactory.h
-    @brief Load/UnLoad shared library interface */
+    @brief Load/UnLoad shared library interface
+    @note
+    APIs that don't need to be instantiated don't need classes \n
+    Enclose in namespace and avoid global scope \n
+    no need for singletons */
 #ifndef TEST_FACTORY_H
 #define TEST_FACTORY_H
 
 namespace test {
-/** @note
-    APIs that don't need to be instantiated don't need classes \n
-    Enclose in namespace and avoid global scope \n
-    no need for singletons */
 namespace factory {
 
 	/** Load shared library from @b Directory

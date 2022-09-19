@@ -1,0 +1,29 @@
+# Mscgen
+msc {
+  A[label="TestMain\n(friend of TestBase)"],
+  B[label="VecInstances[]\n(TestBase)", textbgcolor="yellow"],
+  C[label="priv->TestList[]\n(TestBase)", textbgcolor="yellow"],
+  D[label="UserCode\n(Inherit TestBase)"];
+
+  |||;
+  B<-D [label="AddBaseQueue()", url="@ref test::TestBase::AddBaseQueue"];
+
+  |||;
+  A rbox A [label="RunTests()", url="@ref test::TestMain::RunTests", textbgcolor="green"];
+  A<-B [label="ForeachQueue()", url="@ref test::base_priv::ForeachQueue"];
+  A>>D [label="RegisterTests()", url="@ref test::TestBase::RegisterTests", linecolor="green"];
+  C<-D [label="Register() x N", url="@ref test::TestBase::Register"];
+  A>>D [label="InitializeOnce()", url="@ref test::TestBase::InitializeOnce", linecolor="green"];
+
+  |||;
+  A rbox A [label="DoTestEachInstance()", url="@ref test::TestMain::DoTestEachInstance", textbgcolor="orange"];
+  A<-C [label="for(priv->TestList)"];
+  A>>D [label="InitializePerTest()", url="@ref test::TestBase::InitializePerTest", linecolor="orange"];
+  A>>D [label="TEST_FUNC()", url="@ref test::TestBase::TEST_FUNC", linecolor="orange"];
+  A>>D [label="FinalizePerTest()", url="@ref test::TestBase::FinalizePerTest", linecolor="orange"];
+
+  |||;
+  A>>D [label="FinalizeOnce()", url="@ref test::TestBase::FinalizeOnce", linecolor="green"];
+  A->C [label="Clear"];
+}
+

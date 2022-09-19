@@ -9,24 +9,21 @@ namespace test {
 	class TestMain;
 
 	/** ### Test interface class
-	    - Test target class inherit this class
-	    - Framework and client code are independent of each
-		 - Depends on the interface
-	    - pure virtual functions are called by test framework (see following sequence)
-	      - you must implement pure virtual functions
-	      - you can't call pure virtual functions
-	    - restriction:
-	      - helper macro (TEST_LOG(), VERIFY(),,,) can only use in the test code context
-	    - sample implementation: @emoji :bulb:
-		  - TestSample.cpp
+	    @pre
+	    Test target class inherit this class \n
+	    Framework and client code are independent of each (Depends on the interface) \n
+	    pure virtual functions are called by test framework (see following sequence) \n
+	    - you must implement pure virtual functions
+	    - you can't call pure virtual functions
+
+	    @note
+	    sample implementation: @emoji :bulb: TestSample.cpp \n
+	    helper macro (TEST_LOG(), VERIFY(),,,) can only use in the test code context \n
 
 		### Sequence list
-	    - sequence 1:
-	      @mscfile Init.msc "init sequence"
-	    - sequence 2:
-	      @mscfile Regist.msc "regist sequence"
-	    - sequence 3:
-	      @mscfile Test.msc "test sequence"
+        -# @ref page11
+        -# @ref page12
+        -# @ref page13
 	 */
 	class TestBase {
 	public:
@@ -72,11 +69,10 @@ namespace test {
 	        @mscfile Init.msc "init sequence" */
 		void AddBaseQueue(TestBase *Base);
 
-		/** typedef: Function pointer to Test code
+		/** typedef: Function pointer to Test code (2nd arg for Register())
 		    @param[in] This your instance
 		    @retval true test success
 		    @retval false test failed
-		    @see Register()
 		    @see test_1_1_1() */
 		using TEST_FUNC = bool (*)(void *This);
 

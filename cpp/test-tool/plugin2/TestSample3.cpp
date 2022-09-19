@@ -1,5 +1,5 @@
 /** @file TestSample3.cpp
-    @brief Sample Test class */
+    @brief Sample Test class 3 */
 #include <stdio.h>
 #include <string.h>
 #include "TestBase.h"

@@ -8,7 +8,7 @@ msc {
 
   B note B [label="invoke constructor()", textbgcolor="#ffffcc", url="@ref TestSample::TestSample"];
   |||;
-  A<=B [label="AddBaseQueue()", url="@ref AddBaseQueue"];
+  A<=B [label="AddBaseQueue()", url="@ref test::TestBase::AddBaseQueue"];
   A>>B [label="return"];
 
   A<<B [label="return(dlopen)"];

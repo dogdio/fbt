@@ -1,9 +1,6 @@
 /** @file TestMain.cpp
-    @brief
-    ### Test framework main code
-      - Module overview
-
-    @dotfile TestMain.dot */
+    @brief Test framework main code
+    @see @ref page01 */
 #include <stdio.h>
 #include <stdint.h>
 #include <cstring>

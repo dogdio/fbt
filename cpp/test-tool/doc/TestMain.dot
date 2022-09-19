@@ -57,6 +57,6 @@ digraph g {
 
   memo1 [label="User Code (TestSample.cpp)", fontcolor=blue, shape=plaintext, style="" ];
   n30 -> memo1 [style=invis];
-  memo2 [label="This Module (TestMain.cpp)", fontcolor=orange, shape=plaintext, style="" ];
+  memo2 [label="Main Module (TestMain.cpp)", fontcolor=orange, shape=plaintext, style="" ];
   n00 -> memo2 [style=invis];
 }

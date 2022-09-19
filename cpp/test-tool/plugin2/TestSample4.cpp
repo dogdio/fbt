@@ -1,15 +1,13 @@
 /** @file TestSample4.cpp
     @brief Sample Test class 4
-    - If libSample4.so depend on libSample4Ex.so
-      - when build libSample4.so, you must specify the external depends library
-        (use -l option: -lSample4Ex)
-    - you must set Environment variable
-      - please do the following
+    @attention
+    If libSample4.so depend on libSample4Ex.so: \n
+    -# When build libSample4.so, you must specify the external depends library (use -l option: -lSample4Ex) \n
+    -# you must set Environment variable (please do the following) \n
     ```
     $ export LD_LIBRARY_PATH=./plugin2
     $ ./ExecTest -d ./plugin2
     ```
-
     @see TestSample4Ex.cpp */
 #include <stdio.h>
 #include <string.h>
