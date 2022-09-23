@@ -32,6 +32,7 @@ namespace base_priv {
 
 	/** Call back @b func for the number of instances stored in the internal queue \n
 	    This queue is setting by test::TestBase::AddBaseQueue() \n
+	    @see @ref page02
 	    @param[in] func function pointer (lambda is available)
 	    @return    number of instance */
 	int ForeachQueue(DO_TEST func);

@@ -38,6 +38,7 @@ namespace {
 
 /** verify following test complete conditions
     - @ref CONFIG_TEST_PATTERN_UNTIL
+    - @ref CONFIG_FAIL_AND_EXIT
 
     @param[in] tl test target(test-ID and test func)
     @param[in] result test result
@@ -96,6 +97,7 @@ end:
 }
 
 /** Do the following for each test
+    -# set CurrentTestID. (you can get this at TestBase::GetTestID())
     -# TestBase::InitializePerTest()
     -# TestBase::TEST_FUNC()
     -# TestBase::FinalizePerTest()

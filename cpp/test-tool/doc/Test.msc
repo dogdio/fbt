@@ -3,7 +3,7 @@ msc {
   A[label="TestFramework"], B[label="YourCode"];
 
   |||;
-  A box A [label="Exec Test", textbgcolor="#ccffcc"];
+  A box A [label="Test Execution", textbgcolor="#ccffcc"];
   A=>B [label="InitializeOnce()", url="@ref test::TestBase::InitializeOnce"];
   A<<B [label="return"];
 

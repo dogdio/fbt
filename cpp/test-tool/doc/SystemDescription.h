@@ -4,7 +4,7 @@
     ### introductions
     This is simple test framework \n
     Loads user-implemented tests and the framework calls them in turn \n
-    User code must implement the test framework's IF @emoji :bulb: \n
+    User code must implement the test framework's IF @emoji :bulb: (see test::TestBase) \n
 
     ### Operation Overview
     -# Test framework initialization
@@ -19,9 +19,12 @@
     -# UnLoad shared library
     -# exit
 
-    @note List of illustrations following (described manually).
+    @note
+      List of illustrations following (described manually). \n
+      Click on the sequence diagram to jump to the next diagram(functions) \n
 
     ### Sequence diagram
+    - @ref page10
       -# @ref page11
       -# @ref page12
       -# @ref page13
@@ -78,8 +81,12 @@
       @dotfile PrivData2.dot
 
       ### Sequence focused on internal data
-      @mscfile Queue.msc "Details of internal data access"
+      @mscfile Queue.msc ""
     @endcond */
+
+/** @page page10 All Sequence
+    @mscfile All.msc "All sequence"
+    @see test::TestBase */
 
 /** @page page11 Init Sequence
     @mscfile Init.msc "init sequence"

@@ -1,0 +1,24 @@
+# Mscgen
+msc {
+  A[label="TestFramework"], B[label="YourCode"];
+
+  |||;
+  A box A [label="invoke ./ExecTest", textbgcolor="#ccffcc"];
+
+  |||;
+  |||;
+  A:>B [label="Initialization", url="@ref page11"];
+  A<<B;
+
+  |||;
+  |||;
+  A:>B [label="Test Registration", url="@ref page12"];
+  A<<B;
+
+  |||;
+  |||;
+  A:>B [label="Test Execution", url="@ref page13"];
+  A<<B;
+
+}
+

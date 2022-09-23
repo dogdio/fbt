@@ -3,7 +3,7 @@ msc {
   A[label="TestFramework"], B[label="YourCode"];
 
   |||;
-  A box A [label="invoke ./ExecTest", textbgcolor="#ccffcc"];
+  A box A [label="Initialization", textbgcolor="#ccffcc"];
   A:>B [label="dlopen"];
 
   B note B [label="invoke constructor()", textbgcolor="#ffffcc", url="@ref TestSample::TestSample"];

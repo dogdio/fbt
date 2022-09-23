@@ -3,6 +3,7 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="no" title=""/>
+    <tab type="usergroup" visible="yes" title="Main" url="@ref SystemDescription.h"/>
 
     <tab type="files" visible="yes" title="">
       <tab type="filelist" visible="no" title="" intro=""/>

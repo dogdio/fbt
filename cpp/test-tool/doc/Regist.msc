@@ -3,10 +3,18 @@ msc {
   A[label="TestFramework"], B[label="YourCode"];
 
   |||;
-  A box A [label="Test registration", textbgcolor="#ccffcc"];
+  A box A [label="Test Registration", textbgcolor="#ccffcc"];
   A=>B [label="RegisterTests()", url="@ref test::TestBase::RegisterTests"];
-  A<=B [label="Register() x N", url="@ref test::TestBase::Register"];
+
+  |||;
+  A<=B [label="Register()", url="@ref test::TestBase::Register"];
   A>>B [label="return"];
+  A<=B [label="Register()", url="@ref test::TestBase::Register"];
+  A>>B [label="return"];
+
+  ...;
+
+  |||;
   A<<B [label="return"];
 }
 
