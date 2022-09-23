@@ -12,7 +12,8 @@
     -s    |""          |CONFIG_TEST_PATTERN_RUN  |Test pattern to run
     -u    |""          |CONFIG_TEST_PATTERN_UNTIL|Do test until specified pattern
     -f    |""          |CONFIG_TEST_PATTERN_FROM |Do test from specified pattern
-    -e    |0           |CONFIG_FAIL_AND_EXIT     |if test failed, exit test sequence
+    -e    |off         |CONFIG_FAIL_AND_EXIT     |if test failed, exit test sequence
+    -t    |off         |CONFIG_ADD_TIMESTAMP     |add timestamp to the log
  */
 #ifndef TEST_CONFIG_NAME_H
 #define TEST_CONFIG_NAME_H
@@ -24,5 +25,6 @@
 #define CONFIG_TEST_PATTERN_UNTIL "TestPatternUntil" /*!< Do test until specified pattern */
 #define CONFIG_TEST_PATTERN_FROM "TestPatternFrom"   /*!< Do test from specified pattern */
 #define CONFIG_FAIL_AND_EXIT "FailAndExit"           /*!< if test failed, exit test sequence */
+#define CONFIG_ADD_TIMESTAMP "AddTimeStamp"          /*!< add timestamp to the log */
 
 #endif

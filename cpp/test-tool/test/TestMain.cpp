@@ -28,12 +28,30 @@ namespace test {
 
 		bool IsTestExecutable(TEST_LIST &tl, bool &from_ok);
 		bool IsTestComplete(TEST_LIST &tl, bool result);
+		void OutputResult(TestBase *Base, bool ret);
 	};
 }
 
 namespace {
 	TestMain TM;
 	config::ConfigIF *CIF = config::GetInstance(CONFIG_CATEGORY_GLOBAL);
+}
+
+/** Output test result to log file and stdout \n
+    if enabled @ref CONFIG_ADD_TIMESTAMP, output with timestamp
+    @param[in] Base test target instance
+    @param[in] ret test result */
+void TestMain::OutputResult(TestBase *Base, bool ret)
+{
+	char buf[TIME_BUF_SIZE];
+
+	if(CIF->GetInteger(CONFIG_ADD_TIMESTAMP)) {
+		base_priv::GetTimeOfDay(buf);
+		printf("[%s]", buf);
+		fprintf(Base->priv->LogFile, "[%s]", buf);
+	}
+	printf("[%s] %s\n", Base->priv->CurrentTestID, ret == true ? "OK" : "NG");
+	fprintf(Base->priv->LogFile, "[%s] %s\n\n", Base->priv->CurrentTestID, ret == true ? "OK" : "NG");
 }
 
 /** verify following test complete conditions
@@ -130,8 +148,7 @@ bool TestMain::DoTestEachInstance(TestBase *Base)
 			bool ret = tl.func(Base); // exec Test
 			Base->FinalizePerTest();
 
-			printf("[%s] %s\n", Base->priv->CurrentTestID, ret == true ? "OK" : "NG");
-			fprintf(Base->priv->LogFile, "[%s] %s\n\n", Base->priv->CurrentTestID, ret == true ? "OK" : "NG");
+			OutputResult(Base, ret);
 			if(!ret)
 				test_ret = false;
 			if(IsTestComplete(tl, ret))
@@ -201,6 +218,7 @@ void Init(void)
 	CIF->Set(CONFIG_TEST_PATTERN_FROM, "");
 	CIF->Set(CONFIG_LOOPNUM, 1);
 	CIF->Set(CONFIG_FAIL_AND_EXIT, (uint32_t)0);
+	CIF->Set(CONFIG_ADD_TIMESTAMP, (uint32_t)0);
 }
 
 void SetConfig(const char *Key, uint32_t Value)

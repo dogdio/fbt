@@ -90,7 +90,8 @@ namespace test {
 		const char *GetTestID(void);
 
 		/** output log to file follownig format \n
-		    "[TestID] hoge.cpp:123 your parameter is outputed"
+		    "[mm/dd hh:mm:ss.sss][TestID] hoge.cpp:123 your parameter is outputed" \n
+		    to output to timestamp, see @ref help()
 		    @param[in] Format logging format(ex. same as printf)
 		    @param[in] va_args each parameter to output
 		    @see TEST_LOG() */

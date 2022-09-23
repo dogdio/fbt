@@ -20,7 +20,8 @@ void help(void)
 	printf("    -s <str>  .... test pattern to run(default: \"\")\n");
 	printf("    -u <str>  .... do test until specified pattern(default: \"\")\n");
 	printf("    -f <str>  .... do test from specified pattern(default: \"\")\n");
-	printf("    -e <0|1>  .... if test failed, exit test sequence(default: 0)\n");
+	printf("    -e        .... if test failed, exit test sequence(default: off)\n");
+	printf("    -t        .... add timestamp to the log(default: off)\n");
 	printf("\n");
 	printf("    -h        .... show this message\n");
 	printf("\n");
@@ -36,7 +37,7 @@ int main(int argc, char **argv)
 
 	main::Init();
 
-	while ((opt = getopt(argc, argv, "l:d:n:s:u:f:e:h")) != -1) {
+	while ((opt = getopt(argc, argv, "l:d:n:s:u:f:eth")) != -1) {
 		switch (opt) {
 			case 'n':
 				main::SetConfig(CONFIG_LOOPNUM, atoi(optarg));
@@ -60,7 +61,10 @@ int main(int argc, char **argv)
 				opt_suf++;
 				break;
 			case 'e':
-				main::SetConfig(CONFIG_FAIL_AND_EXIT, atoi(optarg) & 1);
+				main::SetConfig(CONFIG_FAIL_AND_EXIT, 1);
+				break;
+			case 't':
+				main::SetConfig(CONFIG_ADD_TIMESTAMP, 1);
 				break;
 			case 'h':
 			default:

@@ -27,6 +27,13 @@ namespace base_priv {
 	    @param[in] Base instance of User Code */
 	using DO_TEST = std::function<void(TestBase *Base)>;
 
+	#define TIME_BUF_SIZE 32 /*!< buffer size of GetTimeOfDay 1st arg */
+
+	/** Set 'time of day' to @b buf \n
+        (fixed format: "[01/23 09:12:34.567]" ) \n
+	    @param[in] buf setting buffer */
+	void GetTimeOfDay(char (&buf)[TIME_BUF_SIZE]);
+
 	/** Clear internal queue */
 	void ClearQueue(void);
 
