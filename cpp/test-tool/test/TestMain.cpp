@@ -2,8 +2,11 @@
     @brief Test framework main code
     @see @ref page01 */
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <cstring>
+#include <signal.h>
+#include <execinfo.h>
 
 #include "TestBase.h"
 using namespace test;
@@ -33,9 +36,38 @@ namespace test {
 }
 
 namespace {
-	TestMain TM;
-	config::ConfigIF *CIF = config::GetInstance(CONFIG_CATEGORY_GLOBAL);
+
+TestMain TM;
+config::ConfigIF *CIF = config::GetInstance(CONFIG_CATEGORY_GLOBAL);
+FILE *LogFP = NULL;
+
+/** Signal handler \n
+    output stack trace and close file pointer, exit program. \n
+    @param[in] signum signal number */
+void SignalHandler(int signum)
+{
+	void *trace[128];
+	int trace_num;
+	char **buf;
+
+	printf("\n<<<<<< detect signal: %s >>>>>>\n", strsignal(signum));
+	if(LogFP == NULL)
+		goto end;
+
+	fprintf(LogFP, "\n<<<<<< detect signal: %s >>>>>>\n", strsignal(signum));
+	trace_num = backtrace(trace, sizeof(trace)/ sizeof(trace[0]));
+	buf = backtrace_symbols(trace, trace_num);
+	if(buf != NULL) {
+		for (int i = 0; i < trace_num; i++)
+			fprintf(LogFP, "%s\n", buf[i]);
+	}
+	fclose(LogFP);
+
+end:
+	exit(1);
 }
+
+} // anonymous namespace
 
 /** Output test result to log file and stdout \n
     if enabled @ref CONFIG_ADD_TIMESTAMP, output with timestamp
@@ -219,6 +251,14 @@ void Init(void)
 	CIF->Set(CONFIG_LOOPNUM, 1);
 	CIF->Set(CONFIG_FAIL_AND_EXIT, (uint32_t)0);
 	CIF->Set(CONFIG_ADD_TIMESTAMP, (uint32_t)0);
+
+	signal(SIGKILL, SignalHandler);
+	signal(SIGTERM, SignalHandler);
+	signal(SIGINT, SignalHandler);
+	signal(SIGSEGV, SignalHandler);
+	signal(SIGILL, SignalHandler);
+	signal(SIGFPE, SignalHandler);
+	signal(SIGPIPE, SignalHandler);
 }
 
 void SetConfig(const char *Key, uint32_t Value)
@@ -243,6 +283,8 @@ bool Run(void)
 		fail++;
 		goto end;
 	}
+	LogFP = fp;
+
 	if(!factory::LoadTarget(CIF->GetString(CONFIG_DIRECTORY))) {
 		printf("### load error: %s\n", CIF->GetString(CONFIG_DIRECTORY));
 		fail++;
