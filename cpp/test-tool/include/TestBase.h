@@ -4,6 +4,8 @@
 #ifndef TEST_BASE_H
 #define TEST_BASE_H
 
+#include <sstream>
+
 namespace test {
 	struct TestBasePrivate;
 	class TestMain;
@@ -89,7 +91,7 @@ namespace test {
 		    @return pointer of Test-ID */
 		const char *GetTestID(void);
 
-		/** output log to file follownig format \n
+		/** output logging to file follownig format \n
 		    "[mm/dd hh:mm:ss.sss][TestID] hoge.cpp:123 your parameter is outputed" \n
 		    to output to timestamp, see @ref help()
 		    @param[in] Format logging format(ex. same as printf)
@@ -97,6 +99,9 @@ namespace test {
 		    @see TEST_LOG() */
 		void Logging(const char *Format, ...);
 	
+		/** If this member is true, VERIFY_EQ(), VERIFY_NE(),,, can output two values */
+		bool LoggingAtVerify = true;
+
 	private:
 		friend TestMain;
 		struct TestBasePrivate *priv; /*!< Private data for Test interface class @see TestMain */
@@ -122,7 +127,7 @@ namespace test {
 	((test::TestBase *)This)->Logging("%s:%d " F "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
 } while(0)
 
-/** helper macro: veirfy and output assert log \n
+/** helper macro: verify and output assert log \n
     if test failed return from test code \n
     @param[in] A comparison fomula
     @retval true to the next step
@@ -134,7 +139,7 @@ namespace test {
 	} \
 } while(0)
 
-/** helper macro: veirfy and output assert log \n
+/** helper macro: verify and output assert log \n
     if test failed return from test code \n
     @param[in] A pointer to string for compare
     @param[in] B pointer to string for compare
@@ -146,5 +151,62 @@ namespace test {
 		return false; \
 	} \
 } while(0)
+
+/** If LoggingAtVerify is true, output logging two values \n
+    ostringstream allows type independent output \n
+    This macro used by VERIFY_EQ(), VERIFY_NE(),,,
+    @param[in] A left side value
+    @param[in] B right side value */
+#define LOGGING_AT_VERIFY(A, B, STR) do { \
+	if(((test::TestBase *)This)->LoggingAtVerify) { \
+		std::ostringstream oss; \
+		oss << STR << A << ", " << B << std::flush; \
+		TEST_LOG("%s", oss.str().c_str()); \
+	} \
+} while(0)
+
+/** verify A == B, and output logging two values \n
+    if test failed return from test code \n
+    @param[in] A left side value
+    @param[in] B right side value
+    @retval true means A == B, to the next step
+    @retval false means A != B, return from test code  */
+#define VERIFY_EQ(A, B) do { \
+	LOGGING_AT_VERIFY(A, B, "VerifyEQ = "); \
+	VERIFY(A == B); \
+} while(0)
+
+/** verify A != B, and output logging two values. basically same as VERIFY_EQ() */
+#define VERIFY_NE(A, B) do { \
+	LOGGING_AT_VERIFY(A, B, "VerifyNE = "); \
+	VERIFY(A != B); \
+} while(0)
+
+/** verify A >= B, and output logging two values. basically same as VERIFY_EQ() */
+#define VERIFY_GE(A, B) do { \
+	LOGGING_AT_VERIFY(A, B, "VerifyGE = "); \
+	VERIFY(A >= B); \
+} while(0)
+
+/** verify A > B, and output logging two values. basically same as VERIFY_EQ() */
+#define VERIFY_GT(A, B) do { \
+	LOGGING_AT_VERIFY(A, B, "VerifyGT = "); \
+	VERIFY(A > B); \
+} while(0)
+
+/** verify A <= B, and output logging two values. basically same as VERIFY_EQ() */
+#define VERIFY_LE(A, B) do { \
+	LOGGING_AT_VERIFY(A, B, "VerifyLE = "); \
+	VERIFY(A <= B); \
+} while(0)
+
+/** verify A < B, and output logging two values. basically same as VERIFY_EQ() */
+#define VERIFY_LT(A, B) do { \
+	LOGGING_AT_VERIFY(A, B, "VerifyLT = "); \
+	VERIFY(A < B); \
+} while(0)
+
+/** (char *) convert to std::string */
+#define C2STR(A) std::string(A)
 
 #endif

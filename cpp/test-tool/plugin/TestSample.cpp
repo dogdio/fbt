@@ -43,22 +43,37 @@ TestSample Inst;
 bool test_1_1_1(void *This)
 {
 	TestSample *Test = (TestSample *)This;
+	std::string s = "hoge";
+	const char *c = "hoge";
 
-	VERIFY(5 == 5);
-	//VERIFY(5 == 6);
+	VERIFY_EQ(5, 5);
+	VERIFY_EQ(C2STR(c), s);
+	VERIFY_NE(4.67, 100);
+	VERIFY_GE(10.0, 10);
+	VERIFY_GT(10.1, 10);
+
 	TEST_LOG("this is 1.1.1");
 
 	return true;
 }
 
+typedef enum {
+	HOGE_1,
+	HOGE_2,
+	HOGE_3,
+} HOGE;
+
 /** same as 1.1.1 */
 bool test_1_1_2(void *This)
 {
 	TestSample *Test = (TestSample *)This;
+	HOGE h = HOGE_2;
 
 	TEST_LOG("this is 1.1.2");
 	VERIFY_STR("hoge", "hoge");
 	//VERIFY_STR("piyo", "hoge");
+
+	VERIFY_NE(h, HOGE_3);
 
 	return true;
 }
@@ -67,6 +82,21 @@ bool test_1_1_2(void *This)
 bool test_1_1_3(void *This)
 {
 	TestSample *Test = (TestSample *)This;
+	std::string s = "hoge";
+	const char *c = "hoge";
+
+	Test->LoggingAtVerify = false;
+	TEST_LOG("disable logging at verify");
+
+	VERIFY_EQ(5, 5);
+	VERIFY_EQ(std::string(c), s);
+	VERIFY_NE(4.67, 100);
+
+	TEST_LOG("enable logging at verify");
+	Test->LoggingAtVerify = true;
+
+	VERIFY_LE(10.0, 10);
+	VERIFY_LT(10.1, 10.2);
 
 	TEST_LOG("this is 1.1.3");
 
