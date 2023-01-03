@@ -47,6 +47,11 @@ void set_timefunc(void)
 	Log::SetTimeFunc(Func);
 }
 
+/////////////////////////////////////////////
+//
+// Log Test
+//
+/////////////////////////////////////////////
 #define LOG_NONE_PINK(A, ...)  Utils::Log::Logging(LOG_ATTR(Utils::Log::COLOR_PINK,  Utils::Log::LEVEL_NONE, MY_LOG_TYPE), "%s:%d " A "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 bool test_2_1_1(void *This)
 {
@@ -92,6 +97,11 @@ bool test_2_1_1(void *This)
 	return true;
 }
 
+/////////////////////////////////////////////
+//
+// Config(Dump) Test
+//
+/////////////////////////////////////////////
 bool test_2_1_2(void *This)
 {
 	TestSample *Test = (TestSample *)This;

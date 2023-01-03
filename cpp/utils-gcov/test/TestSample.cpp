@@ -98,6 +98,11 @@ bool ThreadVerify(void *This)
 	return ret;
 }
 
+/////////////////////////////////////////////
+//
+// Observer Test
+//
+/////////////////////////////////////////////
 bool test_1_1_1(void *This)
 {
 	TestSample *Test = (TestSample *)This;
@@ -145,6 +150,11 @@ bool test_1_1_1(void *This)
 	return true;
 }
 
+/////////////////////////////////////////////
+//
+// Thread Test
+//
+/////////////////////////////////////////////
 bool test_1_2_1(void *This)
 {
 	SCOPE_INOUT_DELTA(Log::LEVEL_WARN);
@@ -152,6 +162,8 @@ bool test_1_2_1(void *This)
 	Thread::ThreadIF *tif1 = NULL;
 
 	TEST_LOG("Thread Test1");
+	Counter = 0;
+	memset(Buffer, 0, sizeof(Buffer));
 
 	tif1 = Thread::GetInstance(Thread::MODEL);
 	VERIFY(tif1 != NULL);
@@ -207,6 +219,11 @@ bool test_1_2_2(void *This)
 	return true;
 }
 
+/////////////////////////////////////////////
+//
+// Timer Test
+//
+/////////////////////////////////////////////
 bool test_1_3_1(void *This)
 {
 	TestSample *Test = (TestSample *)This;
@@ -285,6 +302,11 @@ bool test_1_3_2(void *This)
 	return true;
 }
 
+/////////////////////////////////////////////
+//
+// Config Test
+//
+/////////////////////////////////////////////
 bool test_1_4_1(void *This)
 {
 	TestSample *Test = (TestSample *)This;
@@ -541,6 +563,11 @@ bool test_1_4_6(void *This)
 	return true;
 }
 
+/////////////////////////////////////////////
+//
+// String Test
+//
+/////////////////////////////////////////////
 bool test_1_5_1(void *This)
 {
 	TestSample *Test = (TestSample *)This;
