@@ -1,14 +1,12 @@
 #include <stdio.h>
 #include <sstream>
-#include <queue>
 #include <thread>
-#include <mutex>
-#include <condition_variable>
 
 #include "Thread.h"
 #define MY_LOG_TYPE Log::TYPE_UTILS
 #include "Log.h"
 #include "Factory.h"
+#include "Queue.h"
 
 using namespace Utils;
 
@@ -25,11 +23,9 @@ public:
 
 	bool Enqueue(Thread::FUNC_TYPE Func) override;
 
-	std::condition_variable Cond;
-	std::mutex CondMutex;
-	std::queue<QUEUE_DATA> Jobs;
 	std::thread *ThreadInstance;
 	const char *MyName;
+	Queue::QueueIF<QUEUE_DATA> Jobs;
 };
 Factory::FactoryIF<ThreadPriv, Thread::ThreadIF> Inst("Utils.Thread");
 
@@ -40,13 +36,7 @@ void MainFunc(ThreadPriv *This)
 	LOG_WARN("TID=%llx, %s START:", Thread::GetID(), This->MyName);
 	while(1)
 	{
-		{
-			std::unique_lock<std::mutex> lock(This->CondMutex);
-			This->Cond.wait(lock, [&] { return !This->Jobs.empty(); });
-            
-			qd = This->Jobs.front();
-			This->Jobs.pop();
-		}
+		qd = This->Jobs.WaitMsg();
 
 		if(qd.Func == NULL)
 			break;
@@ -64,12 +54,9 @@ bool ThreadPriv::Enqueue(Thread::FUNC_TYPE Func)
 	if(Func == NULL)
 		return false;
 
-	{
-		std::lock_guard<std::mutex> lock(CondMutex);
-		QUEUE_DATA qd = {Func};
-		Jobs.push(qd);
-		Cond.notify_one();
-	}
+	QUEUE_DATA qd = {Func};
+	Jobs.WakeMsg(qd);
+
 	return true;
 }
 
@@ -84,12 +71,8 @@ ThreadPriv::ThreadPriv(const char *Name)
 
 ThreadPriv::~ThreadPriv()
 {
-	{
-		std::lock_guard<std::mutex> lock(CondMutex);
-		QUEUE_DATA qd = {NULL};
-		Jobs.push(qd);
-		Cond.notify_one();
-	}
+	QUEUE_DATA qd = {NULL};
+	Jobs.WakeMsg(qd);
 
 	ThreadInstance->join();
 	LOG_DBG("%s END: %p", __func__, this->ThreadInstance);
