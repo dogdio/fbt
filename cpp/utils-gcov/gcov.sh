@@ -1,8 +1,8 @@
 #!/bin/sh
 
 #rm -f hoge.info
-rm -rf ./aaa/
 mkdir -p aaa
+rm -rf ./aaa/*
 
 #lcov -c -d ./target/.objs -o hoge.info
 #lcov -r hoge.info "/usr*" -o hoge.info

@@ -10,6 +10,7 @@
 #include "Event.h"
 #include "Observer.h"
 #include "String.h"
+#include "Library.h"
 #define MY_LOG_TYPE Log::TYPE_MAIN
 #include "Log.h"
 #define ENABLE_SCOPE_INOUT
@@ -591,6 +592,30 @@ bool test_1_5_1(void *This)
 	return true;
 }
 
+/////////////////////////////////////////////
+//
+// Library Test
+//
+/////////////////////////////////////////////
+bool test_1_6_1(void *This)
+{
+	TestSample *Test = (TestSample *)This;
+	std::string dir1 = getenv("UTILS_TEST_DIR");
+	std::string dir2;
+	dir2 = dir1 + "/test/.objs";
+
+	VERIFY(Library::Load(NULL) == false);
+	VERIFY(Library::Load("./not_exists") == false);
+	VERIFY(Library::Load(dir2.c_str()) == false);
+	Library::UnLoad(); // not load
+
+	dir2 = dir1 + "/tmp";
+	VERIFY(Library::Load(dir2.c_str()) == true);
+	Library::UnLoad(); // all clear
+
+	return true;
+}
+
 
 
 } // namespace
@@ -645,6 +670,7 @@ bool TestSample::RegisterTests(void)
 	Register("u1.4.6", test_1_4_6);
 
 	Register("u1.5.1", test_1_5_1);
+	Register("u1.6.1", test_1_6_1);
 
 	return true;
 }

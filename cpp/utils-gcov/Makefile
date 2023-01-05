@@ -6,7 +6,7 @@ LD         = $(CPU)g++
 
 export CXX AR LD
 
-SUBDIR_ALL = target test
+SUBDIR_ALL = target test tmp
 
 all:
 	for n in $(SUBDIR_ALL); do $(MAKE) -C $$n || exit 1; done

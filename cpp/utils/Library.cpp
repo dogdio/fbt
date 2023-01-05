@@ -8,6 +8,8 @@
 #include <errno.h>
 #include <string.h>
 
+#define MY_LOG_TYPE Log::TYPE_UTILS
+#include "Log.h"
 #include "Library.h"
 
 using namespace Utils;
@@ -32,7 +34,7 @@ bool LoadSharedLibrary(std::string *str)
 
 	Handle = dlopen(str->c_str(), RTLD_LAZY);
 	if(Handle == NULL) {
-		printf("dlopen error %s, ret=%s, %d\n", str->c_str(), dlerror(), errno);
+		LOG_WARN("dlopen error %s, ret=%s, %d\n", str->c_str(), dlerror(), errno);
 		goto end;
 	}
 
@@ -87,9 +89,6 @@ end:
 void UnLoad(void)
 {
 	for(void *Handle : VecHandles) {
-		if(Handle == NULL)
-			continue;
-
 		dlclose(Handle);
 	}
 	VecHandles = {};
