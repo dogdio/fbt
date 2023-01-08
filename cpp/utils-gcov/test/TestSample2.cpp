@@ -112,6 +112,8 @@ bool test_2_1_2(void *This)
 	VERIFY(cif1 != NULL);
 
 	VERIFY(cif1->Define("String1", "yes", "yes|no", 3) == true);
+	VERIFY(cif1->Define("Integer1", 100, 50, 500) == true);
+	VERIFY(cif1->Define("Float1", 10.0f, 5.0f, 50.0f) == true);
 	cif1->Dump();
 
 	VERIFY(Config::Destroy("DUMP") == true);

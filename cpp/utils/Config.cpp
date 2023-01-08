@@ -40,6 +40,7 @@ using CONFIG_STR = std::unordered_map<std::string, STRING_VALUE>;
 using CONFIG_INT = std::unordered_map<std::string, INT_VALUE>;
 using CONFIG_FLOAT = std::unordered_map<std::string, FLOAT_VALUE>;
 
+
 class ConfigPriv : public Config::ConfigIF {
 
 public:
@@ -97,12 +98,12 @@ bool SetInitValue(Map_t &Map, const char *Name)
 	}
 }
 
-bool SetCurrentValue(ConfigPriv *This, const char *Name, const char *Value)
+bool SetCurrentValue(CONFIG_STR &ConfigStr, const char *Name, const char *Value)
 {
-	if(!IsValidSyntax(Value, This->ConfigStr[Name].length, This->ConfigStr[Name].regex))
+	if(!IsValidSyntax(Value, ConfigStr[Name].length, ConfigStr[Name].regex))
 		return false;
 
-	This->ConfigStr[Name].curr = Value;
+	ConfigStr[Name].curr = Value;
 	return true;
 }
 
@@ -118,8 +119,29 @@ bool SetCurrentValue(Map_t &Map, const char *Name, Type_t Value)
 	return true;
 }
 
+bool CreateNewValue(CONFIG_STR &ConfigStr, const char *Name, const char *init, const char *regex, int32_t length)
+{
+	if(init == NULL)
+		return false;
+	if(regex == NULL)
+		return false;
+	if(!IsValidSyntax(init, length, regex))
+		return false;
+
+	try {
+		ConfigStr[Name].init = init;
+		ConfigStr[Name].curr = init;
+		ConfigStr[Name].regex = regex;
+		ConfigStr[Name].length = length;
+		return true;
+	}
+	catch (const std::exception & e) {
+		return false;
+	}
+}
+
 template <typename Map_t, typename Type_t>
-bool CreateNew(Map_t &Map, const char *Name, Type_t init, Type_t min, Type_t max)
+bool CreateNewValue(Map_t &Map, const char *Name, Type_t init, Type_t min, Type_t max)
 {
 	if(min > max)
 		return false;
@@ -188,36 +210,19 @@ ConfigPriv::~ConfigPriv()
 bool ConfigPriv::Define(const char *Name, int32_t init, int32_t min, int32_t max)
 {
 	Lock::LockIF lock(Mutex);
-	return CreateNew(ConfigInt, Name, init, min, max);
+	return CreateNewValue(ConfigInt, Name, init, min, max);
 }
 
 bool ConfigPriv::Define(const char *Name, float init, float min, float max)
 {
 	Lock::LockIF lock(Mutex);
-	return CreateNew(ConfigFloat, Name, init, min, max);
+	return CreateNewValue(ConfigFloat, Name, init, min, max);
 }
 
 bool ConfigPriv::Define(const char *Name, const char *init, const char *regex, int32_t length)
 {
 	Lock::LockIF lock(Mutex);
-
-	if(init == NULL)
-		return false;
-	if(regex == NULL)
-		return false;
-	if(!IsValidSyntax(init, length, regex))
-		return false;
-
-	try {
-		ConfigStr[Name].init = init;
-		ConfigStr[Name].curr = init;
-		ConfigStr[Name].regex = regex;
-		ConfigStr[Name].length = length;
-		return true;
-	}
-	catch (const std::exception & e) {
-		return false;
-	}
+	return CreateNewValue(ConfigStr, Name, init, regex, length);
 }
 
 bool ConfigPriv::Set(const char *Name, const char *Value)
@@ -226,7 +231,7 @@ bool ConfigPriv::Set(const char *Name, const char *Value)
 
 	if(!IsValidName(ConfigStr, Name))
 		return false;
-	return SetCurrentValue(this, Name, Value);
+	return SetCurrentValue(ConfigStr, Name, Value);
 }
 
 bool ConfigPriv::Set(const char *Name, int32_t Value)
@@ -324,7 +329,7 @@ bool ConfigPriv::Load(const char *FileName)
 			String::Replace(value, "^ +| +$", "");
 
 			if(IsValidName(ConfigStr, name.c_str())) // String
-				ret = SetCurrentValue(this, name.c_str(), value.c_str());
+				ret = SetCurrentValue(ConfigStr, name.c_str(), value.c_str());
 			else if(IsValidName(ConfigInt, name.c_str())) // Integer
 				ret = SetCurrentValue(ConfigInt, name.c_str(), atoi(value.c_str()));
 			else if(IsValidName(ConfigFloat, name.c_str())) // Float

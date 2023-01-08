@@ -553,6 +553,7 @@ bool test_1_4_6(void *This)
 	fprintf(fp, " String1   =  no  # Comment\n");
 	fprintf(fp, "Integer=77#Comment\n");
 	fprintf(fp, "# Integer=1234\n"); // ignore
+	fprintf(fp, "NotDefined = NULL\n"); // ignore
 	fclose(fp);
 
 	// Load
@@ -561,6 +562,47 @@ bool test_1_4_6(void *This)
 	VERIFY(cif1->GetInteger("Integer") == 77);
 
 	VERIFY(Config::Destroy("SYNTAX") == true);
+	return true;
+}
+
+typedef enum {
+	ENUM_TEST_A,
+	ENUM_TEST_B,
+	ENUM_TEST_C,
+	ENUM_TEST_MAX,
+} ENUM_TEST;
+
+bool test_1_4_7(void *This)
+{
+	TestSample *Test = (TestSample *)This;
+	Config::ConfigIF *cif1 = NULL;
+	ENUM_TEST ev;
+	TEST_LOG("Config Test(Enum)");
+
+	cif1 = Config::Create("ENUM"); // new Config
+	VERIFY(cif1 != NULL);
+
+	// define
+	VERIFY(cif1->Define("Value1", ENUM_TEST_B, ENUM_TEST_A, ENUM_TEST_C) == true);
+	// get init value
+	VERIFY(cif1->GetInteger("Value1") == ENUM_TEST_B);
+
+	// set min value(error)
+	VERIFY(cif1->Set("Value1", -1) == false);
+	// set max value(error)
+	VERIFY(cif1->Set("Value1", ENUM_TEST_MAX) == false);
+
+	// set min value
+	VERIFY(cif1->Set("Value1", ENUM_TEST_A) == true);
+	ev = (ENUM_TEST)cif1->GetInteger("Value1");
+	VERIFY(ev == ENUM_TEST_A);
+
+	// set max value
+	VERIFY(cif1->Set("Value1", ENUM_TEST_C) == true);
+	ev = (ENUM_TEST)cif1->GetInteger("Value1");
+	VERIFY(ev == ENUM_TEST_C);
+
+	VERIFY(Config::Destroy("ENUM") == true);
 	return true;
 }
 
@@ -668,6 +710,7 @@ bool TestSample::RegisterTests(void)
 	Register("u1.4.4", test_1_4_4);
 	Register("u1.4.5", test_1_4_5);
 	Register("u1.4.6", test_1_4_6);
+	Register("u1.4.7", test_1_4_7);
 
 	Register("u1.5.1", test_1_5_1);
 	Register("u1.6.1", test_1_6_1);
