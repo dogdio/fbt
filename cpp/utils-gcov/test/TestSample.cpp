@@ -606,6 +606,190 @@ bool test_1_4_7(void *This)
 	return true;
 }
 
+bool test_1_4_8(void *This)
+{
+	Config::ConfigIF *cif1 = NULL;
+	int32_t iv1 = 0;
+	int32_t iv2 = 0;
+	TEST_LOG("Config Test(Int-Subscribe)");
+
+	cif1 = Config::Create("Int-Subscribe"); // new Config
+	VERIFY(cif1 != NULL);
+
+	// define
+	VERIFY(cif1->Define("Value1", 20, 10, 30) == true);
+
+	// subscribe
+	auto func1 = [&](Config::ConfigIF *CIF) {
+		iv1 = CIF->GetInteger("Value1");
+	};
+	auto func2 = [&](Config::ConfigIF *CIF) {
+		iv2 = CIF->GetInteger("Value1");
+	};
+	VERIFY(cif1->Subscribe("Value1", "Reader1", func1) == true);
+	VERIFY(cif1->Subscribe("Value1", "Reader2", func2) == true);
+
+	VERIFY(cif1->Subscribe("Value1", NULL, func1) == false);
+	VERIFY(cif1->Subscribe("Value1", "Reader3", NULL) == false);
+	VERIFY(cif1->Subscribe(NULL, "Reader1", func1) == false);
+
+	// set new value (with subscribe +2)
+	VERIFY(cif1->Set("Value1", 15) == true);
+	VERIFY_EQ(iv1, 15); // modfified
+	VERIFY_EQ(iv2, 15); // modfified
+
+	iv1 = 1000;
+	iv2 = 2000;
+
+	// set same value (with subscribe +2)
+	VERIFY(cif1->Set("Value1", 15) == true);
+	VERIFY_EQ(iv1, 1000); // keep
+	VERIFY_EQ(iv2, 2000); // keep
+
+	VERIFY(cif1->UnSubscribe("Value1", "Reader1") == true);
+
+	// set new value (with subscribe +1)
+	VERIFY(cif1->Set("Value1", 25) == true);
+	VERIFY_EQ(iv1, 1000); // keep
+	VERIFY_EQ(iv2, 25);   // modfified
+
+	VERIFY(cif1->UnSubscribe("Value1", "NotFound") == false);
+	VERIFY(cif1->UnSubscribe("Value1", NULL) == false);
+	VERIFY(cif1->UnSubscribe(NULL, "Reader2") == false);
+	VERIFY(cif1->UnSubscribe("Value1", "Reader2") == true);
+
+	// set new value(no subscribe)
+	VERIFY(cif1->Set("Value1", 30) == true);
+	VERIFY_EQ(iv1, 1000); // keep
+	VERIFY_EQ(iv2, 25);   // keep
+	VERIFY_EQ(cif1->GetInteger("Value1"), 30);
+
+	VERIFY(Config::Destroy("Int-Subscribe") == true);
+	return true;
+}
+
+bool test_1_4_9(void *This)
+{
+	Config::ConfigIF *cif1 = NULL;
+	float fv1 = 0;
+	float fv2 = 0;
+	TEST_LOG("Config Test(Float-Subscribe)");
+
+	cif1 = Config::Create("Float-Subscribe"); // new Config
+	VERIFY(cif1 != NULL);
+
+	// define
+	VERIFY(cif1->Define("Value1", 20.0f, 10.0f, 30.0f) == true);
+
+	// subscribe
+	auto func1 = [&](Config::ConfigIF *CIF) {
+		fv1 = CIF->GetFloat("Value1");
+	};
+	auto func2 = [&](Config::ConfigIF *CIF) {
+		fv2 = CIF->GetFloat("Value1");
+	};
+	VERIFY(cif1->Subscribe("Value1", "Reader1", func1) == true);
+	VERIFY(cif1->Subscribe("Value1", "Reader2", func2) == true);
+
+	// set new value (with subscribe +2)
+	VERIFY(cif1->Set("Value1", 15.1f) == true);
+	VERIFY_EQ(fv1, 15.1f); // modfified
+	VERIFY_EQ(fv2, 15.1f); // modfified
+
+	fv1 = 1000.0f;
+	fv2 = 2000.0f;
+
+	// set same value (with subscribe +2)
+	VERIFY(cif1->Set("Value1", 15.1f) == true);
+	VERIFY_EQ(fv1, 1000.0f); // keep
+	VERIFY_EQ(fv2, 2000.0f); // keep
+
+	VERIFY(cif1->UnSubscribe("Value1", "Reader1") == true);
+
+	// set new value (with subscribe +1)
+	VERIFY(cif1->Set("Value1", 25.2f) == true);
+	VERIFY_EQ(fv1, 1000.0f); // keep
+	VERIFY_EQ(fv2, 25.2f);   // modfified
+
+	VERIFY(cif1->UnSubscribe("Value1", "Reader2") == true);
+
+	// set new value(no subscribe)
+	VERIFY(cif1->Set("Value1", 27.3f) == true);
+	VERIFY_EQ(fv1, 1000.0f); // keep
+	VERIFY_EQ(fv2, 25.2f);   // keep
+	VERIFY_EQ(cif1->GetFloat("Value1"), 27.3f);
+
+	VERIFY(Config::Destroy("Float-Subscribe") == true);
+	return true;
+}
+
+bool test_1_4_10(void *This)
+{
+	Config::ConfigIF *cif1 = NULL;
+	std::string sv1 = "hoge";
+	std::string sv2 = "hoge";
+	std::string tmp;
+	TEST_LOG("Config Test(String-Subscribe)");
+
+	cif1 = Config::Create("String-Subscribe"); // new Config
+	VERIFY(cif1 != NULL);
+
+	// define
+	VERIFY(cif1->Define("String1", "yes", "yes|no", 3) == true);
+	VERIFY(cif1->Define("String2", "On", "On|Off", 3) == true);
+
+	// subscribe
+	auto func1 = [&](Config::ConfigIF *CIF) {
+		sv1 = CIF->GetString("String1");
+	};
+	auto func2 = [&](Config::ConfigIF *CIF) {
+		sv2 = CIF->GetString("String2");
+	};
+	VERIFY(cif1->Subscribe("String1", "Reader1", func1) == true);
+	VERIFY(cif1->Subscribe("String2", "Reader2", func2) == true);
+
+	// set new value (with subscribe +2)
+	VERIFY(cif1->Set("String1", "no") == true);
+	VERIFY_EQ(sv1, "no");   // modfified
+	VERIFY_EQ(sv2, "hoge"); // keep
+
+	// set new value (with subscribe +2)
+	VERIFY(cif1->Set("String2", "Off") == true);
+	VERIFY_EQ(sv1, "no");  // keep
+	VERIFY_EQ(sv2, "Off"); // modified
+
+	sv1 = "123";
+	sv2 = "456";
+
+	// set same value (with subscribe +2)
+	VERIFY(cif1->Set("String1", "no") == true);
+	VERIFY(cif1->Set("String2", "Off") == true);
+	VERIFY_EQ(sv1, "123"); // keep
+	VERIFY_EQ(sv2, "456"); // keep
+
+	VERIFY(cif1->UnSubscribe("String1", "Reader1") == true);
+
+	// set new value (with subscribe +1)
+	VERIFY(cif1->Set("String1", "yes") == true);
+	VERIFY(cif1->Set("String2", "On") == true);
+	VERIFY_EQ(sv1, "123"); // keep
+	VERIFY_EQ(sv2, "On");  // modified
+	tmp = cif1->GetString("String1"); VERIFY_EQ(tmp, "yes");
+
+	VERIFY(cif1->UnSubscribe("String2", "Reader2") == true);
+
+	// set new value(no subscribe)
+	VERIFY(cif1->Set("String1", "no") == true);
+	VERIFY(cif1->Set("String2", "Off") == true);
+	VERIFY_EQ(sv1, "123"); // keep
+	VERIFY_EQ(sv2, "On");  // keep
+	tmp = cif1->GetString("String1"); VERIFY_EQ(tmp, "no");
+	tmp = cif1->GetString("String2"); VERIFY_EQ(tmp, "Off");
+
+	VERIFY(Config::Destroy("String-Subscribe") == true);
+	return true;
+}
+
 /////////////////////////////////////////////
 //
 // String Test
@@ -711,6 +895,9 @@ bool TestSample::RegisterTests(void)
 	Register("u1.4.5", test_1_4_5);
 	Register("u1.4.6", test_1_4_6);
 	Register("u1.4.7", test_1_4_7);
+	Register("u1.4.8", test_1_4_8);
+	Register("u1.4.9", test_1_4_9);
+	Register("u1.4.10", test_1_4_10);
 
 	Register("u1.5.1", test_1_5_1);
 	Register("u1.6.1", test_1_6_1);

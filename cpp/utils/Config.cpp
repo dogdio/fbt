@@ -3,6 +3,7 @@
 #include <string>
 #include <cstring>
 #include <unordered_map>
+#include <vector>
 
 #include "Config.h"
 #include "Lock.h"
@@ -36,6 +37,11 @@ typedef struct {
 	std::string curr;
 } STRING_VALUE;
 
+typedef struct {
+	const char *Receiver;
+	Config::ConfigIF::FUNC_TYPE Func;
+} SUBSCRIBE_INFO;
+
 using CONFIG_STR = std::unordered_map<std::string, STRING_VALUE>;
 using CONFIG_INT = std::unordered_map<std::string, INT_VALUE>;
 using CONFIG_FLOAT = std::unordered_map<std::string, FLOAT_VALUE>;
@@ -61,13 +67,25 @@ public:
 
 	bool Reset(const char *Name) override;
 
+	using SUBSCRIBE_VEC = std::vector<SUBSCRIBE_INFO>;
+	using SUBSCRIBE_MAP = std::unordered_map<std::string, SUBSCRIBE_VEC>;
+	bool Subscribe(const char *Name, const char *Receiver, FUNC_TYPE Func) override;
+	bool UnSubscribe(const char *Name, const char *Receiver) override;
+
 	bool Load(const char *FileName) override;
 	bool Save(const char *FileName) override;
 	void Dump(void) override;
 
+	// Internal APIs
+	template <typename Map_t, typename Value_t>
+	bool SetAllType(Map_t &Map, const char *Name, Value_t Value);
+	void Notify(const char *Name);
+	void WriteToFile(FILE *fp, bool verbose);
+
 	CONFIG_STR ConfigStr;
 	CONFIG_INT ConfigInt;
 	CONFIG_FLOAT ConfigFloat;
+	SUBSCRIBE_MAP SubscribeMap;
 	const char *MyName;
 	std::mutex Mutex;
 };
@@ -98,23 +116,27 @@ bool SetInitValue(Map_t &Map, const char *Name)
 	}
 }
 
-bool SetCurrentValue(CONFIG_STR &ConfigStr, const char *Name, const char *Value)
+bool SetCurrentValue(CONFIG_STR &ConfigStr, const char *Name, const char *Value, bool &Modified)
 {
 	if(!IsValidSyntax(Value, ConfigStr[Name].length, ConfigStr[Name].regex))
 		return false;
 
+	if(ConfigStr[Name].curr != Value)
+		Modified = true;
 	ConfigStr[Name].curr = Value;
 	return true;
 }
 
 template <typename Map_t, typename Type_t>
-bool SetCurrentValue(Map_t &Map, const char *Name, Type_t Value)
+bool SetCurrentValue(Map_t &Map, const char *Name, Type_t Value, bool &Modified)
 {
 	if(Value < Map[Name].min)
 		return false;
 	if(Value > Map[Name].max)
 		return false;
 
+	if(Map[Name].curr != Value)
+		Modified = true;
 	Map[Name].curr = Value;
 	return true;
 }
@@ -173,28 +195,13 @@ bool IsValidName(Map_t &Map, const char *Name)
 	}
 }
 
-void WriteToFile(ConfigPriv *This, FILE *fp, bool verbose)
-{
-	fprintf(fp, "# [%s]\n", This->MyName);
-	for(auto it : This->ConfigStr) {
-		if(verbose)
-			fprintf(fp, "\n# %s: Init=%s, Len=%d, Pattern=%s\n", it.first.c_str(), it.second.init, it.second.length, it.second.regex);
-		fprintf(fp, "%s = %s\n", it.first.c_str(), it.second.curr.c_str());
-	}
-	for(auto it : This->ConfigInt) {
-		if(verbose)
-			fprintf(fp, "\n# %s: Init=%d, Min=%d, Max=%d\n", it.first.c_str(), it.second.init, it.second.min, it.second.max);
-		fprintf(fp, "%s = %d\n", it.first.c_str(), it.second.curr);
-	}
-	for(auto it : This->ConfigFloat) {
-		if(verbose)
-			fprintf(fp, "\n# %s: Init=%f, Min=%f, Max=%f\n", it.first.c_str(), it.second.init, it.second.min, it.second.max);
-		fprintf(fp, "%s = %f\n", it.first.c_str(), it.second.curr);
-	}
-}
-
 } // anonymous
 
+///////////////////////////////////////////////////////
+//
+// ConfigPriv impl
+//
+///////////////////////////////////////////////////////
 ConfigPriv::ConfigPriv(const char *Name)
 {
 	if(Name == NULL)
@@ -205,6 +212,26 @@ ConfigPriv::ConfigPriv(const char *Name)
 ConfigPriv::~ConfigPriv()
 {
 
+}
+
+void ConfigPriv::WriteToFile(FILE *fp, bool verbose)
+{
+	fprintf(fp, "# [%s]\n", MyName);
+	for(auto it : ConfigStr) {
+		if(verbose)
+			fprintf(fp, "\n# %s: Init=%s, Len=%d, Pattern=%s\n", it.first.c_str(), it.second.init, it.second.length, it.second.regex);
+		fprintf(fp, "%s = %s\n", it.first.c_str(), it.second.curr.c_str());
+	}
+	for(auto it : ConfigInt) {
+		if(verbose)
+			fprintf(fp, "\n# %s: Init=%d, Min=%d, Max=%d\n", it.first.c_str(), it.second.init, it.second.min, it.second.max);
+		fprintf(fp, "%s = %d\n", it.first.c_str(), it.second.curr);
+	}
+	for(auto it : ConfigFloat) {
+		if(verbose)
+			fprintf(fp, "\n# %s: Init=%f, Min=%f, Max=%f\n", it.first.c_str(), it.second.init, it.second.min, it.second.max);
+		fprintf(fp, "%s = %f\n", it.first.c_str(), it.second.curr);
+	}
 }
 
 bool ConfigPriv::Define(const char *Name, int32_t init, int32_t min, int32_t max)
@@ -225,31 +252,53 @@ bool ConfigPriv::Define(const char *Name, const char *init, const char *regex, i
 	return CreateNewValue(ConfigStr, Name, init, regex, length);
 }
 
+void ConfigPriv::Notify(const char *Name)
+{
+	ConfigPriv::SUBSCRIBE_VEC Vec;
+
+	try {
+		Vec = SubscribeMap.at(Name);
+	}
+	catch (const std::exception & e) {
+		return;
+	}
+
+	for(auto it = Vec.begin(); it != Vec.end(); it++) {
+		it->Func(this);
+	}
+}
+
+template <typename Map_t, typename Value_t>
+bool ConfigPriv::SetAllType(Map_t &Map, const char *Name, Value_t Value)
+{
+	bool Modified = false;
+	{
+		Lock::LockIF lock(Mutex);
+
+		if(!IsValidName(Map, Name))
+			return false;
+		if(!SetCurrentValue(Map, Name, Value, Modified))
+			return false;
+	}
+	if(Modified)
+		Notify(Name);
+
+	return true;
+}
+
 bool ConfigPriv::Set(const char *Name, const char *Value)
 {
-	Lock::LockIF lock(Mutex);
-
-	if(!IsValidName(ConfigStr, Name))
-		return false;
-	return SetCurrentValue(ConfigStr, Name, Value);
+	return SetAllType(ConfigStr, Name, Value);
 }
 
 bool ConfigPriv::Set(const char *Name, int32_t Value)
 {
-	Lock::LockIF lock(Mutex);
-
-	if(!IsValidName(ConfigInt, Name))
-		return false;
-	return SetCurrentValue(ConfigInt, Name, Value);
+	return SetAllType(ConfigInt, Name, Value);
 }
 
 bool ConfigPriv::Set(const char *Name, float Value)
 {
-	Lock::LockIF lock(Mutex);
-
-	if(!IsValidName(ConfigFloat, Name))
-		return false;
-	return SetCurrentValue(ConfigFloat, Name, Value);
+	return SetAllType(ConfigFloat, Name, Value);
 }
 
 const char *ConfigPriv::GetString(const char *Name)
@@ -307,12 +356,55 @@ bool ConfigPriv::Reset(const char *Name)
 	}
 }
 
+bool ConfigPriv::Subscribe(const char *Name, const char *Receiver, FUNC_TYPE Func)
+{
+	Lock::LockIF lock(Mutex);
+
+	if(Receiver == NULL)
+		return false;
+	if(Func == NULL)
+		return false;
+
+	SUBSCRIBE_INFO Info = { Receiver, Func };
+	try {
+		SubscribeMap[Name].push_back(Info);
+		return true;
+	}
+	catch (const std::exception & e) {
+		return false;
+	}
+}
+
+bool ConfigPriv::UnSubscribe(const char *Name, const char *Receiver)
+{
+	Lock::LockIF lock(Mutex);
+
+	if(Receiver == NULL)
+		return false;
+
+	try {
+		SUBSCRIBE_VEC &Vec = SubscribeMap[Name];
+
+		for(auto it = Vec.begin(); it != Vec.end(); it++) {
+			if(strcmp(it->Receiver, Receiver) == 0) {
+				Vec.erase(it);
+				return true;
+			}
+		}
+	}
+	catch (const std::exception & e) {
+		return false;
+	}
+	return false;
+}
+
 bool ConfigPriv::Load(const char *FileName)
 {
 	Lock::LockIF lock(Mutex);
 	std::ifstream ifs(FileName);
 	std::string str;
 	std::smatch sm;
+	bool Modified;
 
 	if(ifs.fail())
 		return false;
@@ -329,11 +421,11 @@ bool ConfigPriv::Load(const char *FileName)
 			String::Replace(value, "^ +| +$", "");
 
 			if(IsValidName(ConfigStr, name.c_str())) // String
-				ret = SetCurrentValue(ConfigStr, name.c_str(), value.c_str());
+				ret = SetCurrentValue(ConfigStr, name.c_str(), value.c_str(), Modified);
 			else if(IsValidName(ConfigInt, name.c_str())) // Integer
-				ret = SetCurrentValue(ConfigInt, name.c_str(), atoi(value.c_str()));
+				ret = SetCurrentValue(ConfigInt, name.c_str(), atoi(value.c_str()), Modified);
 			else if(IsValidName(ConfigFloat, name.c_str())) // Float
-				ret = SetCurrentValue(ConfigFloat, name.c_str(), (float)atof(value.c_str()));
+				ret = SetCurrentValue(ConfigFloat, name.c_str(), (float)atof(value.c_str()), Modified);
 
 			LOG_DBG("Load ret=%d, [%s] => %s", ret, name.c_str(), value.c_str());
 		}
@@ -348,7 +440,7 @@ bool ConfigPriv::Save(const char *FileName)
 	if(fp == NULL)
 		return false;
 
-	WriteToFile(this, fp, true);
+	WriteToFile(fp, true);
 	fclose(fp);
 
 	return true;
@@ -357,7 +449,7 @@ bool ConfigPriv::Save(const char *FileName)
 void ConfigPriv::Dump(void)
 {
 	Lock::LockIF lock(Mutex);
-	WriteToFile(this, stdout, false);
+	WriteToFile(stdout, false);
 }
 
 namespace Utils {

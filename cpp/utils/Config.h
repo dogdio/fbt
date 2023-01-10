@@ -2,6 +2,7 @@
 #define UTILS_CONFIG_H
 
 #include <stdint.h>
+#include <functional>
 
 namespace Utils {
 namespace Config {
@@ -24,6 +25,11 @@ namespace Config {
 
 		// Name==NULL: all values reset(set initial value)
 		virtual bool Reset(const char *Name=NULL) = 0;
+
+		// if setting value is modified, notify by 'Func'
+		using FUNC_TYPE = std::function<void(ConfigIF *)>;
+		virtual bool Subscribe(const char *Name, const char *Receiver, FUNC_TYPE Func) = 0;
+		virtual bool UnSubscribe(const char *Name, const char *Receiver) = 0;
 
 		// simple setting file:
 		//   Name1 = 100
