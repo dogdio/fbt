@@ -4,7 +4,7 @@
 #include <thread>
 
 #include "JobIF.h"
-#define MY_LOG_TYPE Log::TYPE_ANY1
+#define MY_LOG_TYPE 0x2000
 #include "Log.h"
 
 using namespace Job;

@@ -7,7 +7,7 @@
 #include "Job.h"
 #include "JobIF.h"
 #include "Library.h"
-#define MY_LOG_TYPE Log::TYPE_ANY1
+#define MY_LOG_TYPE 0x2000
 #include "Log.h"
 
 using namespace test;
@@ -445,7 +445,11 @@ bool test_1_1_1(void *This)
 void TestSample::InitializeOnce(void)
 {
 	_TEST_LOG("START Once");
-	Log::SetLevel(Log::TYPE_ANY1, Log::LEVEL_INFO);
+	Job::Init();
+
+	Log::SetLevel(Log::TYPE_UTILS, Log::LEVEL_DBG);
+	Log::SetLevel(MY_LOG_TYPE, Log::LEVEL_INFO);
+	Log::SetString(MY_LOG_TYPE, "TEST");
 	Log::SetToStdOut(false);
 	Log::OpenFile("job-test.log");
 

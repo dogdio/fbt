@@ -27,14 +27,17 @@ namespace Log {
 		TYPE_MAIN,
 		TYPE_CONFIG,
 		TYPE_UTILS,
-		TYPE_ANY1,
-		TYPE_ANY2,
-		TYPE_MAX, // can be increased 0xffff
+		// XXX: subsequent values can be added
+
+		TYPE_MAX = 0xFFFF,
 	};
 
 	// attr 4byte: XXYYZZZZ (XX=COLOR, YY=LEVEL, ZZZZ=TYPE)
 	void Logging(uint32_t attr, const char *format, ...);
-	void SetLevel(TYPE type, LEVEL level); // default: all NONE
+	bool SetLevel(uint16_t type, LEVEL level); // default: all NONE
+	bool SetString(uint16_t type, const char *str);
+	bool UnSet(uint16_t type);
+
 	void SetKeepOpen(bool on_off); // default: on
 	void SetFileName(const char *Name); // default: sample.log
 
@@ -48,6 +51,7 @@ namespace Log {
 
 	using TIME_FUNC = std::function<void(char *buf, int size)>;
 	void SetTimeFunc(TIME_FUNC func); // default: NULL
+
 }
 }
 

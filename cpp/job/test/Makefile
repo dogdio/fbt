@@ -12,8 +12,8 @@ TMPDIR     = .objs
 
 OBJ_DIR    = ../core
 OBJS1      = $(shell find $(OBJ_DIR) -name "*.o")
-OBJS2      = $(addprefix $(TMPDIR)/, $(FILES2:.cpp=.o))
-LIBS       = -lgcov ../../utils/libUtils.a
+OBJS2      = $(addprefix $(TMPDIR)/, $(FILES2:.cpp=.o)) ../../utils/libUtils.a
+LIBS       = -lgcov
 
 DEPENDS1   = $(addprefix $(TMPDIR)/, $(FILES_ALL:.cpp=.d))
 

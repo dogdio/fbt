@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <mutex>
+#include <map>
 #include "Log.h"
 #include "Lock.h"
 
@@ -9,10 +10,17 @@ using namespace Utils;
 
 namespace {
 
-Log::LEVEL LogLevel[Log::TYPE_MAX];
-const char *LogStr[Log::TYPE_MAX] = {
-	"MAIN", "CFG ", "UTIL", "ANY1", "ANY2"
+std::map<uint16_t, uint8_t> LevelMap = {
+	{ Log::TYPE_MAIN,   Log::LEVEL_NONE},
+	{ Log::TYPE_CONFIG, Log::LEVEL_NONE},
+	{ Log::TYPE_UTILS,  Log::LEVEL_NONE},
 };
+std::map<uint16_t, const char *> StrMap = {
+	{ Log::TYPE_MAIN,   "MAIN" },
+	{ Log::TYPE_CONFIG, "CONF" },
+	{ Log::TYPE_UTILS,  "UTIL" },
+};
+
 bool IsWriteStdOut = true;
 bool IsWriteFile = true;
 std::mutex Mutex;
@@ -50,6 +58,26 @@ void ColorStart(int fg, int bg)
 				s1[0], s1[1], s1[2], s1[3], s1[4], s1[5], s1[6], s1[7]);
 }
 
+uint8_t GetLogLevel(uint16_t type)
+{
+	try {
+		return LevelMap.at(type);
+	}
+	catch (const std::exception & e) {
+		return Log::LEVEL_NONE;
+	}
+}
+
+const char *GetLogStr(uint16_t type)
+{
+	try {
+		return StrMap.at(type);
+	}
+	catch (const std::exception & e) {
+		return "";
+	}
+}
+
 bool WritePrefix(uint32_t attr, FILE *fp, bool color)
 {
 	bool color_end = false;
@@ -76,10 +104,10 @@ bool WritePrefix(uint32_t attr, FILE *fp, bool color)
 	}
 
 	switch(level) {
-		case Log::LEVEL_ERR:  fprintf(fp, "[%s] ERR:", LogStr[type]); break;
-		case Log::LEVEL_WARN: fprintf(fp, "[%s] WARN:", LogStr[type]); break;
-		case Log::LEVEL_INFO: fprintf(fp, "[%s] INFO:", LogStr[type]); break;
-		case Log::LEVEL_DBG:  fprintf(fp, "[%s] DBG:", LogStr[type]); break;
+		case Log::LEVEL_ERR:  fprintf(fp, "[%s] ERR:", GetLogStr(type)); break;
+		case Log::LEVEL_WARN: fprintf(fp, "[%s] WARN:", GetLogStr(type)); break;
+		case Log::LEVEL_INFO: fprintf(fp, "[%s] INFO:", GetLogStr(type)); break;
+		case Log::LEVEL_DBG:  fprintf(fp, "[%s] DBG:", GetLogStr(type)); break;
 		default: break;
 	}
 
@@ -123,7 +151,7 @@ void Logging(uint32_t attr, const char *format, ...)
 	Lock::LockIF lock(Mutex);
 	va_list args;
 
-	if(LogLevel[GET_TYPE(attr)] < GET_LEVEL(attr))
+	if(GetLogLevel(GET_TYPE(attr)) < GET_LEVEL(attr))
 		return;
 
 	if(IsWriteStdOut) {
@@ -150,11 +178,50 @@ void SetFileName(const char *Name)
 	FileName = Name;
 }
 
-void SetLevel(TYPE type, LEVEL level)
+bool SetLevel(uint16_t type, LEVEL level)
 {
 	Lock::LockIF lock(Mutex);
-	if(level < Log::LEVEL_MAX)
-		LogLevel[type] = level;
+
+	if(level < Log::LEVEL_MAX) {
+		try {
+			LevelMap[type] = level;
+			return true;
+		}
+		catch (const std::exception & e) {
+
+		}
+	}
+	return false;
+}
+
+bool SetString(uint16_t type, const char *str)
+{
+	Lock::LockIF lock(Mutex);
+
+	if(str == NULL)
+		return false;
+
+	try {
+		StrMap[type] = str;
+		return true;
+	}
+	catch (const std::exception & e) {
+		return false;
+	}
+}
+
+bool UnSet(uint16_t type)
+{
+	Lock::LockIF lock(Mutex);
+	bool ret = false;
+
+	if(StrMap.erase(type) == 1)
+		ret = true;
+
+	if(LevelMap.erase(type) == 1)
+		ret = true;
+
+	return ret;
 }
 
 bool GetToStdOut(void)

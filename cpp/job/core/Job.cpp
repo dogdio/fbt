@@ -3,18 +3,19 @@
 #include <map>
 #include <string>
 
-#include "Thread.h"
-#include "Lock.h"
-#define MY_LOG_TYPE Log::TYPE_ANY1
-#include "Log.h"
-#include "Factory.h"
-
 #include "Job.h"
 #include "JobIF.h"
 
+#include "Thread.h"
+#include "Lock.h"
+#define MY_LOG_TYPE Job::LOG_TYPE
+#include "Log.h"
+#include "Factory.h"
+
+
 using namespace Job;
 using namespace Utils;
-#define CLASS_ID "Job.Private"
+#define CLASS_ID "Job.Private."
 #define ENUM_TO_STR(E) case E: return #E
 
 typedef struct {
@@ -340,6 +341,12 @@ PublicIF *Create(const char *name)
 bool Destroy(const char *name)
 {
 	return Inst.Destroy(name);
+}
+
+void Init(void)
+{
+	Log::SetLevel(MY_LOG_TYPE, Log::LEVEL_INFO);
+	Log::SetString(MY_LOG_TYPE, "JOB ");
 }
 
 } // Job

@@ -97,12 +97,38 @@ bool test_2_1_1(void *This)
 	return true;
 }
 
+#define LOG_T212(A, ...) Utils::Log::Logging(LOG_ATTR(Utils::Log::COLOR_NONE, Utils::Log::LEVEL_DBG, LogID), "%s:%d " A "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+bool test_2_1_2(void *This)
+{
+	TestSample *Test = (TestSample *)This;
+	uint16_t LogID = 0x1234;
+	const char *LogStr = "T212";
+
+	LOG_T212("%s", "LevelNone");
+	VERIFY(Log::SetString(LogID, NULL) == false);
+	VERIFY(Log::SetLevel(LogID, Log::LEVEL_DBG) == true);
+
+	LOG_T212("%s", "String Not Set");
+	VERIFY(Log::SetString(LogID, LogStr) == true);
+
+	LOG_T212("Test LogID(%s) will be output", LogStr);
+
+	VERIFY(Log::UnSet(LogID) == true); // Unset
+
+	VERIFY(Log::SetLevel(LogID, Log::LEVEL_DBG) == true);
+	VERIFY(Log::UnSet(LogID) == true); // fail StrMap
+
+	VERIFY(Log::SetString(LogID, "T212") == true);
+	VERIFY(Log::UnSet(LogID) == true); // fail LevelMap
+
+	return true;
+}
 /////////////////////////////////////////////
 //
 // Config(Dump) Test
 //
 /////////////////////////////////////////////
-bool test_2_1_2(void *This)
+bool test_2_2_1(void *This)
 {
 	TestSample *Test = (TestSample *)This;
 	Config::ConfigIF *cif1 = NULL;
@@ -158,6 +184,7 @@ bool TestSample::RegisterTests(void)
 {
 	Register("u2.1.1", test_2_1_1);
 	Register("u2.1.2", test_2_1_2);
+	Register("u2.2.1", test_2_2_1);
 	return true;
 }
 

@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <string>
-#define MY_LOG_TYPE Log::TYPE_ANY1
-#include "Log.h"
 #include "Job.h"
+#include <string>
+#define MY_LOG_TYPE Job::LOG_TYPE
+#include "Log.h"
 #include "Library.h"
 
 using namespace Utils;
@@ -46,10 +46,11 @@ int main(int argc, char **argv)
 {
 	Job::PublicIF *job;
 
+	Job::Init();
+
 	// Command instances are generated(JobSample.cpp, JobSample2.cpp)
 	Library::Load("./plugin");
 
-	Log::SetLevel(Log::TYPE_ANY1, Log::LEVEL_INFO);
 	Job::Create("SampleJob1");
 	Job::Create("SampleJob2");
 

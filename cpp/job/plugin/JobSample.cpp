@@ -2,7 +2,7 @@
 #include <string>
 #include "JobIF.h"
 
-#define MY_LOG_TYPE Log::TYPE_ANY1
+#define MY_LOG_TYPE 0x2000
 #include "Log.h"
 
 using namespace Job;
@@ -12,7 +12,10 @@ class JobSample1a : public JobIF {
 public:
 	JobIF::JOB_STATE Exec(JOBIF_ARGS &args, JOBIF_CALLBACK func) override;
 
-	JobSample1a(const char *job_id, const char *cmd_id) : JobIF(job_id, cmd_id) {}
+	JobSample1a(const char *job_id, const char *cmd_id) : JobIF(job_id, cmd_id) {
+		Log::SetLevel(MY_LOG_TYPE, Log::LEVEL_INFO);
+		Log::SetString(MY_LOG_TYPE, "JIF ");
+	}
 	~JobSample1a() {}
 };
 

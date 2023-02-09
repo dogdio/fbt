@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <vector>
+#include <cstdint>
 
 namespace Job {
 
@@ -18,6 +19,7 @@ namespace Job {
 		JOB_RET_PROCESSING,     // job is now processing
 		JOB_RET_ABORT,          // job is aborted
 	} JOB_RET;
+	const static uint16_t LOG_TYPE = 0x1000;
 
 	using EXEC_ARGS = std::vector<const char *>;
 
@@ -41,6 +43,7 @@ namespace Job {
 	PublicIF *GetInstance(const char *name);
 	PublicIF *Create(const char *name);
 	bool Destroy(const char *name);
+	void Init(void);
 }
 
 #endif
