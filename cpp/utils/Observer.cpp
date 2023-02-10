@@ -76,17 +76,36 @@ bool ObserverPriv::Notify(Observer::Msg_t &Msg)
 namespace Utils { // static functions
 namespace Observer {
 
+class ObserverNull : public Observer::ObserverIF {
+public:
+	~ObserverNull() { }
+	ObserverNull() { }
+	bool Subscribe(const char *Reader, Observer::FUNC_TYPE Func) { return true; }
+	bool UnSubscribe(const char *Reader) { return true; }
+	bool Notify(Observer::Msg_t &Msg) { return true; }
+};
+
+ObserverNull ObserverNullInst;
+
 ObserverIF::ObserverIF() {}
 ObserverIF::~ObserverIF() {}
 
 ObserverIF *GetInstance(const char *Name)
 {
-	return Inst.GetInstance(Name);
+	ObserverIF *oif = Inst.GetInstance(Name);
+	if(oif == NULL)
+		return &ObserverNullInst;
+	else
+		return oif;
 }
 
 ObserverIF *Create(const char *Name)
 {
-	return Inst.Create(Name);
+	ObserverIF *oif = Inst.Create(Name);
+	if(oif == NULL)
+		return &ObserverNullInst;
+	else
+		return oif;
 }
 
 bool Destroy(const char *Name)

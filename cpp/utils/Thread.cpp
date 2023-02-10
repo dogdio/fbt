@@ -82,17 +82,34 @@ ThreadPriv::~ThreadPriv()
 namespace Utils { // static functions
 namespace Thread {
 
+class ThreadNull : public Thread::ThreadIF {
+public:
+	~ThreadNull() { }
+	ThreadNull() { }
+	bool Enqueue(Thread::FUNC_TYPE Func) { return true; }
+};
+
+ThreadNull ThreadNullInst;
+
 ThreadIF::ThreadIF() {}
 ThreadIF::~ThreadIF() {}
 
 ThreadIF *GetInstance(const char *Name)
 {
-	return Inst.GetInstance(Name);
+	ThreadIF *tif = Inst.GetInstance(Name);
+	if(tif == NULL)
+		return &ThreadNullInst;
+	else
+		return tif;
 }
 
 ThreadIF *Create(const char *Name)
 {
-	return Inst.Create(Name);
+	ThreadIF *tif = Inst.Create(Name);
+	if(tif == NULL)
+		return &ThreadNullInst;
+	else
+		return tif;
 }
 
 bool Destroy(const char *Name)

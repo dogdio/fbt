@@ -207,17 +207,38 @@ TimerPriv::~TimerPriv()
 namespace Utils {
 namespace Timer {
 
+class TimerNull : public Timer::TimerIF {
+public:
+	~TimerNull() { }
+	TimerNull() { }
+	bool SetTick(uint32_t Tick) { return true; }
+	bool Add(const char *Name, FUNC_TYPE Func, uint32_t Timeout, uint32_t Repeat=0) { return true; }
+	bool Remove(const char *Name) { return true; }
+	bool Start(void) { return true; }
+	bool Stop(void) { return true; }
+};
+
+TimerNull TimerNullInst;
+
 TimerIF::TimerIF() {}
 TimerIF::~TimerIF() {}
 
 TimerIF *GetInstance(const char *Name)
 {
-	return Inst.GetInstance(Name);
+	TimerIF *tif = Inst.GetInstance(Name);
+	if(tif == NULL)
+		return &TimerNullInst;
+	else
+		return tif;
 }
 
 TimerIF *Create(const char *Name)
 {
-	return Inst.Create(Name);
+	TimerIF *tif = Inst.Create(Name);
+	if(tif == NULL)
+		return &TimerNullInst;
+	else
+		return tif;
 }
 
 bool Destroy(const char *Name)

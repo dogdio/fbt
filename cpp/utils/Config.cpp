@@ -455,17 +455,48 @@ void ConfigPriv::Dump(void)
 namespace Utils {
 namespace Config {
 
+class ConfigNull : public Config::ConfigIF {
+public:
+	~ConfigNull() { }
+	ConfigNull() { }
+	bool Define(const char *Name, int32_t init, int32_t min, int32_t max) { return true; }
+	bool Define(const char *Name, float init, float min, float max) { return true; }
+	bool Define(const char *Name, const char *init, const char *regex, int32_t length) { return true; }
+	bool Set(const char *Name, const char *Value) { return true; }
+	bool Set(const char *Name, int32_t Value) { return true; }
+	bool Set(const char *Name, float Value) { return true; }
+	const char *GetString(const char *Name) { return ""; }
+	int32_t GetInteger(const char *Name) { return 0; }
+	float GetFloat(const char *Name) { return 0.0f; }
+	bool Reset(const char *Name) { return true; }
+	bool Subscribe(const char *Name, const char *Receiver, FUNC_TYPE Func) { return true; }
+	bool UnSubscribe(const char *Name, const char *Receiver) { return true; }
+	bool Load(const char *FileName) { return true; }
+	bool Save(const char *FileName) { return true; }
+	void Dump(void) { }
+};
+
+ConfigNull ConfigNullInst;
+
 ConfigIF::ConfigIF() {}
 ConfigIF::~ConfigIF() {}
 
 ConfigIF *GetInstance(const char *Name)
 {
-	return Inst.GetInstance(Name);
+	ConfigIF *cif = Inst.GetInstance(Name);
+	if(cif == NULL)
+		return &ConfigNullInst;
+	else
+		return cif;
 }
 
 ConfigIF *Create(const char *Name)
 {
-	return Inst.Create(Name);
+	ConfigIF *cif = Inst.Create(Name);
+	if(cif == NULL)
+		return &ConfigNullInst;
+	else
+		return cif;
 }
 
 bool Destroy(const char *Name)

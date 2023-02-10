@@ -111,13 +111,18 @@ bool test_1_1_1(void *This)
 	bool ret = false;
 	Observer::Msg_t m = { "Hoge" };
 	Observer::ObserverIF *oif1 = NULL;
+	Observer::ObserverIF *oif2 = NULL;
 
 	TEST_LOG("Observer Test");
 
 	oif1 = Observer::Create("Inst");
 	VERIFY(oif1 != NULL);
-	VERIFY(Observer::Create("Inst") == NULL); // same name
-	VERIFY(Observer::Create(NULL) == NULL); // invalid name
+	VERIFY(Observer::Create("Inst") != NULL); // same name
+	oif2 = Observer::Create(NULL); // get null object
+	VERIFY(oif2 != NULL);
+	VERIFY(oif2->Subscribe(NULL,NULL) == true);
+	VERIFY(oif2->UnSubscribe(NULL) == true);
+	VERIFY(oif2->Notify(m) == true);
 
 	ret = oif1->Subscribe("recv1",[&](Observer::Msg_t Msg){ if(Msg.Str == "Hoge") received++; } );
 	VERIFY(ret == true);
@@ -127,7 +132,7 @@ bool test_1_1_1(void *This)
 	VERIFY(ret == true);
 
 	oif1 = Observer::GetInstance("ZZZ");
-	VERIFY(oif1 == NULL);
+	VERIFY(oif1 == oif2);
 	oif1 = Observer::GetInstance("Inst");
 	VERIFY(oif1 != NULL);
 
@@ -192,14 +197,17 @@ bool test_1_2_2(void *This)
 	SCOPE_INOUT(Log::LEVEL_WARN);
 	TestSample *Test = (TestSample *)This;
 	Thread::ThreadIF *tif1 = NULL;
+	Thread::ThreadIF *tif2 = NULL;
 	int hoge = 0;
 	uint64_t ID = 0;
 
 	TEST_LOG("Thread Test2");
 
-	VERIFY(Thread::GetInstance("ZZZ") == NULL); // not found
+	tif2 = Thread::GetInstance("ZZZ");// get null object
+	VERIFY(tif2 != NULL);
+	VERIFY(tif2->Enqueue(NULL) == true);
 
-	VERIFY(Thread::Create(NULL) == NULL); // invalid name
+	VERIFY(Thread::Create(NULL) == tif2); // invalid name
 	tif1 = Thread::Create("YYY"); // new thread
 	VERIFY(tif1 != NULL);
 
@@ -229,14 +237,22 @@ bool test_1_3_1(void *This)
 {
 	TestSample *Test = (TestSample *)This;
 	Timer::TimerIF *tif1 = NULL;
+	Timer::TimerIF *tif2 = NULL;
 
 	TEST_LOG("Timer Test");
 
-	VERIFY(Timer::GetInstance("ZZZ") == NULL); // not found
+	tif2 = Timer::GetInstance("ZZZ"); // get null object
+	VERIFY(tif2 != NULL);
+	VERIFY(tif2->SetTick(0) == true);
+	VERIFY(tif2->Add(NULL, NULL, 0) == true);
+	VERIFY(tif2->Remove(0) == true);
+	VERIFY(tif2->Start() == true);
+	VERIFY(tif2->Stop() == true);
 
-	VERIFY(Timer::Create(NULL) == NULL); // invalid name
+	VERIFY(Timer::Create(NULL) == tif2); // invalid name
 	tif1 = Timer::Create("YYY"); // new timer
 	VERIFY(tif1 != NULL);
+	VERIFY(Timer::GetInstance("YYY") == tif1);
 
 	VERIFY(tif1->SetTick(1000 * 200) == true);
 	auto func = []() {
@@ -308,16 +324,44 @@ bool test_1_3_2(void *This)
 // Config Test
 //
 /////////////////////////////////////////////
+bool VerifyNullObj(Config::ConfigIF *cif2, void *This)
+{
+	VERIFY(cif2->Define(NULL, 0, 0, 0) == true);
+	VERIFY(cif2->Define(NULL,0.0f, 0.0f, 0.0f) == true);
+	VERIFY(cif2->Define(NULL, "a", "b", 1) == true);
+
+	VERIFY(cif2->Set(NULL, 0) == true);
+	VERIFY(cif2->Set(NULL, 0.0f) == true);
+	VERIFY(cif2->Set(NULL, "a") == true);
+	VERIFY_STR(cif2->GetString(NULL), "");
+	VERIFY(cif2->GetInteger(NULL) == 0);
+	VERIFY(cif2->GetFloat(NULL) == 0.0f);
+
+	VERIFY(cif2->Reset(NULL) == true);
+	VERIFY(cif2->Subscribe(NULL, NULL, NULL) == true);
+	VERIFY(cif2->UnSubscribe(NULL, NULL) == true);
+
+	VERIFY(cif2->Load(NULL) == true);
+	VERIFY(cif2->Save(NULL) == true);
+	cif2->Dump();
+
+	return true;
+}
+
 bool test_1_4_1(void *This)
 {
 	TestSample *Test = (TestSample *)This;
 	Config::ConfigIF *cif1 = NULL;
+	Config::ConfigIF *cif2 = NULL;
 	TEST_LOG("Config Test(INT)");
 
 	cif1 = Config::Create("INTEGER"); // new Config
 	VERIFY(cif1 != NULL);
 	VERIFY(cif1 == Config::GetInstance("INTEGER"));
-	VERIFY(Config::Create(NULL) == NULL); // null po
+	VERIFY((cif2 = Config::GetInstance(NULL)) != NULL); // get null obj
+	VERIFY(Config::Create(NULL) == cif2);
+
+	VERIFY(VerifyNullObj(cif2, This) == true);
 
 	// define
 	VERIFY(cif1->Define("Value1", 100, 50, 500) == true);
