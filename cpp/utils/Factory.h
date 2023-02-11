@@ -31,9 +31,10 @@ namespace Factory {
 		{
 			Lock::LockIF lock(Mutex);
 			Child_t *c = NULL;
+			Parent_t *p = NULL;
 
-			if(GetInstancePriv(Name) != NULL)
-				return NULL; // already exists
+			if((p = GetInstancePriv(Name)) != NULL)
+				return p; // already exists
 
 			try {
 				c = new Child_t(Name);

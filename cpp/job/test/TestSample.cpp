@@ -422,7 +422,7 @@ bool test_1_1_1(void *This)
 	VERIFY(Job::GetInstance("TestJob") == job);
 	TEST_LOG("job=%p", job);
 
-	VERIFY(Job::Create("TestJob") == null); // already created
+	VERIFY(Job::Create("TestJob") == job); // already created
 	VERIFY(Job::Destroy("TestJob") == true);
 
 	// error case

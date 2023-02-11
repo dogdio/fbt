@@ -117,7 +117,7 @@ bool test_1_1_1(void *This)
 
 	oif1 = Observer::Create("Inst");
 	VERIFY(oif1 != NULL);
-	VERIFY(Observer::Create("Inst") != NULL); // same name
+	VERIFY(Observer::Create("Inst") == oif1); // same name
 	oif2 = Observer::Create(NULL); // get null object
 	VERIFY(oif2 != NULL);
 	VERIFY(oif2->Subscribe(NULL,NULL) == true);
