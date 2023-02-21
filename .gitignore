@@ -38,6 +38,8 @@
 
 # etc
 *.swp
+*.log
+*.diff
 all.txt
 tags
 
