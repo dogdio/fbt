@@ -43,7 +43,11 @@ namespace Factory {
 				LOG_ERR("new() fail: %s", e.what());
 				return NULL;
 			}
-			SetInstance(Name, c);
+
+			if(!SetInstance(Name, c)) {
+				delete c;
+				return NULL;
+			}
 			return c;
 		}
 
@@ -79,10 +83,17 @@ namespace Factory {
 			LOG_DBG("[%s] UnSet: %s", MyName, Name);
 		}
 
-		void SetInstance(const char *Name, Parent_t *arg)
+		bool SetInstance(const char *Name, Parent_t *arg)
 		{
-			InstanceMap[Name] = arg;
+			try {
+				InstanceMap[Name] = arg;
+			}
+			catch (const std::exception & e) {
+				LOG_ERR("Insert fail: %s", e.what());
+				return false;
+			}
 			LOG_DBG("[%s] Set: %s => %p", MyName, Name, arg);
+			return true;
 		}
 
 		using INST_MAP = std::map<std::string, Parent_t *>;
