@@ -4,7 +4,7 @@ WARNING    = -Wall -Wno-unused-value -Wno-unused
 OPTIMIZE   = # -O3
 CXXFLAGS   = $(WARNING) $(OPTIMIZE) -std=c++11 -fPIC -g
 LDFLAGS    = -shared
-INCLUDES   = -I../../test-tool/include -I../export -I../interface -I../../utils
+INCLUDES   = -I../../test-tool/include -I../export -I../interface -I../../utils/core
 
 FILES2     = TestSample.cpp
 FILES_ALL  = $(FILES2)
@@ -12,7 +12,7 @@ TMPDIR     = .objs
 
 OBJ_DIR    = ../core
 OBJS1      = $(shell find $(OBJ_DIR) -name "*.o")
-OBJS2      = $(addprefix $(TMPDIR)/, $(FILES2:.cpp=.o)) ../../utils/libUtils.a
+OBJS2      = $(addprefix $(TMPDIR)/, $(FILES2:.cpp=.o)) ../../utils/core/libUtils.a
 LIBS       = -lgcov
 
 DEPENDS1   = $(addprefix $(TMPDIR)/, $(FILES_ALL:.cpp=.d))

@@ -13,7 +13,7 @@ endif
 CFLAGS    ?= $(WARNING) -O3
 CXXFLAGS  ?= $(WARNING) -O3 -std=c++11 $(COVERAGE) -fPIC
 LDFLAGS1  ?= -shared
-INCLUDES  ?= -I../interface -I../export -I. -I../../utils
+INCLUDES  ?= -I../interface -I../export -I. -I../../utils/core
 
 FILES1    = $(wildcard *.cpp)
 TMPDIR    = .objs

@@ -8,7 +8,7 @@ WARNING    = -Wall -Wno-unused-value -Wno-unused
 CFLAGS    ?= $(WARNING) -O3
 CXXFLAGS  ?= $(WARNING) -O3 -fPIC -std=c++11
 LDFLAGS   ?= -shared
-INCLUDES  ?= -I../interface -I../../utils
+INCLUDES  ?= -I../interface -I../../utils/core
 
 FILES1    = JobSample.cpp
 FILES2    = JobSample2.cpp

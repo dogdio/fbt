@@ -10,7 +10,7 @@ WARNING    = -Wall -Wno-unused-value -Wno-unused
 CFLAGS    ?= $(WARNING) -O3
 CXXFLAGS  ?= $(WARNING) -O3 -std=c++11 $(COVERAGE)
 LDFLAGS   ?= -rdynamic
-PATH1      = ../../utils
+PATH1      = ../../utils/core
 INCLUDES  ?= -I../interface -I. -I$(PATH1)
 
 FILES1    = $(wildcard *.cpp)

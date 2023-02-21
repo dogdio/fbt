@@ -11,14 +11,14 @@ CFLAGS    ?= $(WARNING) -O3
 CXXFLAGS  ?= $(WARNING) -O3 -std=c++11 $(COVERAGE)
 LDFLAGS1  ?= -rdynamic
 LDFLAGS2  ?= -shared
-INCLUDES  ?= -I../export -I../../utils
+INCLUDES  ?= -I../export -I../../utils/core
 
 FILES1    = $(wildcard *.cpp)
 TMPDIR    = .objs
 #OBJS1    := $(FILES1:.cpp=.o)
 OBJS1    := $(addprefix $(TMPDIR)/, $(FILES1:.cpp=.o))
 DEPENDS1  = $(addprefix $(TMPDIR)/, $(FILES1:.cpp=.d))
-LIB1      =  ../core/libJob.a ../../utils/libUtils.a
+LIB1      =  ../core/libJob.a ../../utils/core/libUtils.a
 LIB2      =  -ldl -lpthread
 ifeq ($(WITH_GCOV), 1)
  LIB2     +=  -lgcov
