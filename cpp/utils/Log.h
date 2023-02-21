@@ -52,6 +52,16 @@ namespace Log {
 	using TIME_FUNC = std::function<void(char *buf, int size)>;
 	void SetTimeFunc(TIME_FUNC func); // default: NULL
 
+	// for test
+	class TestIF {
+	public:
+		TestIF() {}
+		virtual ~TestIF() {}
+
+		virtual void InsertLevelMap(uint16_t type, LEVEL level) = 0;
+		virtual void InsertStrMap(uint16_t type, const char *str) = 0;
+	};
+	void SetTestIF(TestIF *obj);
 }
 }
 

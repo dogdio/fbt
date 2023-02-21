@@ -123,6 +123,36 @@ bool test_2_1_2(void *This)
 
 	return true;
 }
+
+class LogTest : public Log::TestIF {
+public:
+	void InsertLevelMap(uint16_t type, Log::LEVEL level) {
+		throw std::invalid_argument("Insert Fail");
+	}
+	void InsertStrMap(uint16_t type, const char *str) {
+		throw std::invalid_argument("Insert Fail");
+	}
+};
+
+bool test_2_1_3(void *This)
+{
+	TestSample *Test = (TestSample *)This;
+	uint16_t LogID = 0x0213;
+	const char *LogStr = "T213";
+	LogTest LT;
+
+	Log::SetTestIF(&LT); // switch TestIF
+	VERIFY(Log::SetLevel(LogID, Log::LEVEL_DBG) == false);
+	VERIFY(Log::SetString(LogID, LogStr) == false);
+
+	Log::SetTestIF(NULL); // recovery TestIF
+	VERIFY(Log::SetLevel(LogID, Log::LEVEL_DBG) == true);
+	VERIFY(Log::SetString(LogID, LogStr) == true);
+	VERIFY(Log::UnSet(LogID) == true);
+
+	return true;
+}
+
 /////////////////////////////////////////////
 //
 // Config(Dump) Test
@@ -184,6 +214,7 @@ bool TestSample::RegisterTests(void)
 {
 	Register("u2.1.1", test_2_1_1);
 	Register("u2.1.2", test_2_1_2);
+	Register("u2.1.3", test_2_1_3);
 	Register("u2.2.1", test_2_2_1);
 	return true;
 }

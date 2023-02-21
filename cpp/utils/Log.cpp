@@ -29,6 +29,18 @@ FILE *Fp = NULL;
 bool KeepOpen = true;
 Log::TIME_FUNC TimeFunc = NULL;
 
+class TestSeam : public Log::TestIF {
+public:
+	void InsertLevelMap(uint16_t type, Log::LEVEL level) {
+		LevelMap[type] = level;
+	}
+	void InsertStrMap(uint16_t type, const char *str) {
+		StrMap[type] = str;
+	}
+};
+TestSeam TS_Inst;
+Log::TestIF *TIF = &TS_Inst;
+
 #define GET_COLOR(A) (Log::COLOR)((A & 0xff000000) >> 24)
 #define GET_LEVEL(A) (Log::LEVEL)((A & 0x00ff0000) >> 16)
 #define GET_TYPE(A)  (Log::TYPE)(A & 0x0000ffff)
@@ -184,7 +196,7 @@ bool SetLevel(uint16_t type, LEVEL level)
 
 	if(level < Log::LEVEL_MAX) {
 		try {
-			LevelMap[type] = level;
+			TIF->InsertLevelMap(type, level);
 			return true;
 		}
 		catch (const std::exception & e) {
@@ -202,7 +214,7 @@ bool SetString(uint16_t type, const char *str)
 		return false;
 
 	try {
-		StrMap[type] = str;
+		TIF->InsertStrMap(type, str);
 		return true;
 	}
 	catch (const std::exception & e) {
@@ -284,6 +296,15 @@ void SetTimeFunc(Log::TIME_FUNC func)
 {
 	Lock::LockIF lock(Mutex);
 	TimeFunc = func;
+}
+
+void SetTestIF(TestIF *obj)
+{
+	Lock::LockIF lock(Mutex);
+	if(obj == NULL)
+		TIF = &TS_Inst;
+	else
+		TIF = obj;
 }
 
 } // Log

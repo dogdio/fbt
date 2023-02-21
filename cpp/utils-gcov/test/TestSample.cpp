@@ -15,6 +15,7 @@
 #include "Log.h"
 #define ENABLE_SCOPE_INOUT
 #include "ScopeInOut.h"
+#include "Factory.h"
 
 using namespace test;
 using namespace Utils;
@@ -886,6 +887,34 @@ bool test_1_6_1(void *This)
 	return true;
 }
 
+/////////////////////////////////////////////
+//
+// Factory Test
+//
+/////////////////////////////////////////////
+class Test171_IF {
+public:
+	Test171_IF() {}
+	virtual ~Test171_IF() {}
+	virtual bool func(void) = 0;
+};
+
+class Test171_Priv : public Test171_IF {
+public:
+	~Test171_Priv() {}
+	Test171_Priv(const char *Name) {}
+	bool func(void) { return true; }
+};
+
+bool test_1_7_1(void *This)
+{
+	TestSample *Test = (TestSample *)This;
+	Factory::FactoryIF<Test171_Priv, Test171_IF> Inst171("Test.1.7.1");
+
+	VERIFY(Inst171.Create(NULL) == NULL);
+
+	return true;
+}
 
 
 } // namespace
@@ -926,13 +955,13 @@ void TestSample::FinalizePerTest(void)
 
 bool TestSample::RegisterTests(void)
 {
-	Register("u1.1.1", test_1_1_1);
-	Register("u1.2.1", test_1_2_1);
+	Register("u1.1.1", test_1_1_1); // Observer
+	Register("u1.2.1", test_1_2_1); // Thread
 	Register("u1.2.2", test_1_2_2);
-	Register("u1.3.1", test_1_3_1);
+	Register("u1.3.1", test_1_3_1); // Timer
 	Register("u1.3.2", test_1_3_2);
 
-	Register("u1.4.1", test_1_4_1);
+	Register("u1.4.1", test_1_4_1); // Config
 	Register("u1.4.2", test_1_4_2);
 	Register("u1.4.3", test_1_4_3);
 	Register("u1.4.4", test_1_4_4);
@@ -943,8 +972,9 @@ bool TestSample::RegisterTests(void)
 	Register("u1.4.9", test_1_4_9);
 	Register("u1.4.10", test_1_4_10);
 
-	Register("u1.5.1", test_1_5_1);
-	Register("u1.6.1", test_1_6_1);
+	Register("u1.5.1", test_1_5_1); // String
+	Register("u1.6.1", test_1_6_1); // Library
+	Register("u1.7.1", test_1_7_1); // Factory
 
 	return true;
 }
