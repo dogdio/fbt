@@ -4,7 +4,7 @@ COVERAGE   = -fprofile-arcs -ftest-coverage -fno-inline #-fno-exceptions
 OPTIMIZE   = # -O3
 CXXFLAGS   = $(WARNING) $(OPTIMIZE) -std=c++11 -fPIC -g
 LDFLAGS    = -shared
-INCLUDES   = -I../../test-tool/include -I../target
+INCLUDES   = -I../../test-tool/include -I../core
 LIBS       = -lgcov
 
 FILES2     = TestSample.cpp
@@ -12,8 +12,8 @@ FILES3     = TestSample2.cpp
 FILES_ALL  = $(FILES2) $(FILES3)
 TMPDIR     = .objs
 
-SYM_DIR    = ../target
-OBJS1      = $(shell find $(SYM_DIR) -name "*.o")
+OBJ_DIR    = ../core
+OBJS1      = $(shell find $(OBJ_DIR) -name "*.o" )
 
 OBJS2      = $(addprefix $(TMPDIR)/, $(FILES2:.cpp=.o))
 OBJS3      = $(addprefix $(TMPDIR)/, $(FILES3:.cpp=.o))

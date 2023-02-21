@@ -9,4 +9,6 @@ rm -rf ./aaa/*
 #genhtml -o aaa hoge.info
 
 gcovr --exclude-throw-branches --exclude-unreachable-branches \
-      --html-details -o ./aaa/coverage.html -s
+      --html-details -o ./aaa/coverage.html -s -r core
+
+
