@@ -15,7 +15,7 @@
 #include "Log.h"
 #define ENABLE_SCOPE_INOUT
 #include "ScopeInOut.h"
-#include "Factory.h"
+#include "FactoryTest.h"
 
 using namespace test;
 using namespace Utils;
@@ -892,26 +892,24 @@ bool test_1_6_1(void *This)
 // Factory Test
 //
 /////////////////////////////////////////////
-class Test171_IF {
-public:
-	Test171_IF() {}
-	virtual ~Test171_IF() {}
-	virtual bool func(void) = 0;
-};
-
-class Test171_Priv : public Test171_IF {
-public:
-	~Test171_Priv() {}
-	Test171_Priv(const char *Name) {}
-	bool func(void) { return true; }
-};
-
 bool test_1_7_1(void *This)
 {
 	TestSample *Test = (TestSample *)This;
-	Factory::FactoryIF<Test171_Priv, Test171_IF> Inst171("Test.1.7.1");
+	{
+		FactoryTest::Result ret = FactoryTest::CreateFail();
+		VERIFY(ret.Fail1 == NULL);
+		VERIFY(ret.Fail2 == NULL);
+		VERIFY(ret.GetInstance == NULL);
+		VERIFY(ret.Destroy == false);
+	}
 
-	VERIFY(Inst171.Create(NULL) == NULL);
+	{
+		FactoryTest::Result ret = FactoryTest::CreateSuccess();
+		VERIFY(ret.Create != NULL);
+		VERIFY(ret.GetInstance == ret.Create);
+		VERIFY(ret.Fail1 == ret.Create);
+		VERIFY(ret.Destroy == true);
+	}
 
 	return true;
 }

@@ -14,7 +14,7 @@ CXXFLAGS  ?= $(WARNING) -O3 -std=c++11 $(COVERAGE) -fPIC
 LDFLAGS1   ?= -shared
 INCLUDES  ?= -I.
 
-FILES1    = $(wildcard *.cpp)
+FILES1    = $(wildcard *.cpp | grep -v Test)
 
 TMPDIR    = .objs
 OBJS1    := $(addprefix $(TMPDIR)/, $(FILES1:.cpp=.o))
