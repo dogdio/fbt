@@ -16,6 +16,7 @@
 #define ENABLE_SCOPE_INOUT
 #include "ScopeInOut.h"
 #include "FactoryTest.h"
+#include "TLV.h"
 
 using namespace test;
 using namespace Utils;
@@ -914,6 +915,189 @@ bool test_1_7_1(void *This)
 	return true;
 }
 
+/////////////////////////////////////////////
+//
+// TLV Test
+//
+/////////////////////////////////////////////
+bool test_1_8_1(void *This)
+{
+	TestSample *Test = (TestSample *)This;
+	Tlv::TlvIF *tlv = Tlv::Create("test.1.8.1");
+
+	VERIFY(tlv != NULL);
+	VERIFY(tlv == Tlv::GetInstance("test.1.8.1"));
+
+	// normal case: tlv x 2
+	Tlv::VECTOR v = {
+		0xff, 0x00, 0x10, 0x01,
+		0x00, 0x00, 0x00, 0x03,
+		0xaa, 0xbb, 0xcc,
+
+		0xff, 0x00, 0x20, 0x01,
+		0x00, 0x00, 0x00, 0x06,
+		0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+	};
+	VERIFY(tlv->Parse(v) == true);
+//	tlv->Dump();
+
+	const Tlv::TLV_VEC &Vec = tlv->GetTlvVec();
+	VERIFY(Vec.size() == 2);
+	VERIFY(Vec[0].tag == 0xff001001);
+	VERIFY(Vec[1].tag == 0xff002001);
+	VERIFY(Vec[0].value.size() == 3);
+	VERIFY(Vec[1].value.size() == 6);
+
+	uint8_t a[] = { 0xaa, 0xbb, 0xcc };
+	uint8_t b[] = { 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+	VERIFY(memcmp(Vec[0].value.data(), a, 3) == 0);
+	VERIFY(memcmp(Vec[1].value.data(), b, 6) == 0);
+
+	tlv->ResetBinary();
+	for(auto it : Vec)
+		tlv->Compose(it);
+
+	const Tlv::VECTOR &v2 = tlv->GetBinary();
+//	tlv->Dump();
+	VERIFY(v == v2);
+
+	tlv->ResetBinary();
+	for(auto it : Vec)
+		tlv->Compose(it.tag, it.value);
+	VERIFY(v == tlv->GetBinary());
+
+	VERIFY(Tlv::Destroy("test.1.8.1") == true);
+	return true;
+}
+
+bool test_1_8_2(void *This)
+{
+	TestSample *Test = (TestSample *)This;
+	Tlv::TlvIF *tlv = Tlv::Create(NULL); // null obj
+	Tlv::VECTOR v = {};
+	Tlv::TlvData td = {};
+
+	VERIFY(tlv->Parse(v) == true);
+	tlv->GetTlvVec();
+	tlv->GetTlvMap();
+	tlv->ResetBinary();
+	VERIFY(tlv->Compose(td) == true);
+	VERIFY(tlv->Compose(0, v) == true);
+	tlv->GetBinary();
+	tlv->Dump();
+
+	VERIFY(Tlv::GetInstance(NULL) == tlv);
+
+	return true;
+}
+
+bool test_1_8_3(void *This)
+{
+	TestSample *Test = (TestSample *)This;
+	Tlv::TlvIF *tlv = Tlv::Create("test.1.8.3");
+
+	VERIFY(tlv != NULL);
+
+	// error case: less than min size
+	Tlv::VECTOR v1 = {
+		0xff, 0x00, 0x10, 0x01,
+		0x00, 0x00, 0x03, 
+	};
+	VERIFY(tlv->Parse(v1) == false);
+
+	// error case: lack of length
+	Tlv::VECTOR v2 = {
+		0xff, 0x00, 0x10, 0x01,
+		0x00, 0x00, 0x00, 0xff,
+		0x01, 0x02,
+	};
+	VERIFY(tlv->Parse(v2) == false);
+
+	// error case: zero length
+	Tlv::VECTOR v3 = {
+		0x01, 0x83, 0x00, 0x01,
+		0x00, 0x00, 0x00, 0x00, // len=0
+
+		0x01, 0x83, 0x00, 0x02,
+		0x00, 0x00, 0x00, 0x05,
+		0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+
+		0x01, 0x83, 0x00, 0x03,
+		0x00, 0x00, 0x00, 0x00, // len=0
+	};
+	VERIFY(tlv->Parse(v3) == true);
+
+	const Tlv::TLV_VEC &Vec = tlv->GetTlvVec();
+	VERIFY(Vec.size() == 3);
+	VERIFY(Vec[0].tag == 0x01830001);
+	VERIFY(Vec[1].tag == 0x01830002);
+	VERIFY(Vec[2].tag == 0x01830003);
+	VERIFY(Vec[0].value.size() == 0);
+	VERIFY(Vec[1].value.size() == 5);
+	VERIFY(Vec[2].value.size() == 0);
+
+	uint8_t b[] = { 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, };
+	VERIFY(memcmp(Vec[1].value.data(), b, 5) == 0);
+
+	VERIFY(Tlv::Destroy("test.1.8.3") == true);
+	return true;
+}
+
+bool test_1_8_4(void *This)
+{
+	TestSample *Test = (TestSample *)This;
+	Tlv::TlvIF *tlv = Tlv::Create("test.1.8.4");
+
+	VERIFY(tlv != NULL);
+
+	// normal case: tlv x 3
+	Tlv::VECTOR v = {
+		0x01, 0x84, 0x00, 0x01,
+		0x00, 0x00, 0x00, 0x03,
+		0xaa, 0xbb, 0xcc,
+
+		0x01, 0x84, 0x00, 0x02,
+		0x00, 0x00, 0x00, 0x06,
+		0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+
+		0x01, 0x84, 0x00, 0x03,
+		0x00, 0x00, 0x00, 0x04,
+		0x11, 0x22, 0x33, 0x44,
+	};
+	VERIFY(tlv->Parse(v) == true);
+
+	Tlv::TLV_MAP Map = tlv->GetTlvMap(); // Get Map (not refs for [])
+	VERIFY(Map.size() == 3);
+	VERIFY(Map[0x01840001].size() == 3);
+	VERIFY(Map[0x01840002].size() == 6);
+	VERIFY(Map[0x01840003].size() == 4);
+
+	uint8_t a[] = { 0xaa, 0xbb, 0xcc };
+	uint8_t b[] = { 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+	uint8_t c[] = { 0x11, 0x22, 0x33, 0x44, };
+	VERIFY(memcmp(Map[0x01840001].data(), a, 3) == 0);
+	VERIFY(memcmp(Map[0x01840002].data(), b, 6) == 0);
+	VERIFY(memcmp(Map[0x01840003].data(), c, 4) == 0);
+
+	tlv->Dump();
+
+	// compare Vec, Map
+	const Tlv::TLV_VEC &Vec = tlv->GetTlvVec();
+	const Tlv::TLV_MAP &Map2 = tlv->GetTlvMap();
+	VERIFY(Vec.size() == Map2.size());
+	VERIFY(Vec[0].tag == 0x01840001);
+	VERIFY(Vec[1].tag == 0x01840002);
+	VERIFY(Vec[2].tag == 0x01840003);
+	VERIFY(Vec[0].value == Map[0x01840001]);
+	VERIFY(Vec[1].value == Map[0x01840002]);
+	VERIFY(Vec[2].value == Map[0x01840003]);
+
+	VERIFY(Tlv::Destroy("test.1.8.4") == true);
+	return true;
+}
+
+
+
 
 } // namespace
 
@@ -973,6 +1157,11 @@ bool TestSample::RegisterTests(void)
 	Register("u1.5.1", test_1_5_1); // String
 	Register("u1.6.1", test_1_6_1); // Library
 	Register("u1.7.1", test_1_7_1); // Factory
+
+	Register("u1.8.1", test_1_8_1); // TLV
+	Register("u1.8.2", test_1_8_2);
+	Register("u1.8.3", test_1_8_3);
+	Register("u1.8.4", test_1_8_4);
 
 	return true;
 }

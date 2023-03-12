@@ -1,5 +1,5 @@
 
-WARNING    = -Wall -Wno-unused-value -Wno-unused
+WARNING    = -Wall -Wno-unused-value -Wno-unused -fpermissive
 COVERAGE   = -fprofile-arcs -ftest-coverage -fno-inline #-fno-exceptions
 OPTIMIZE   = # -O3
 CXXFLAGS   = $(WARNING) $(OPTIMIZE) -std=c++11 -fPIC -g

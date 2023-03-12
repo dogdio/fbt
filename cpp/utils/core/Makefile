@@ -9,7 +9,7 @@ WARNING    = -Wall -Wno-unused-value -Wno-unused
 ifeq ($(WITH_GCOV), 1)
  COVERAGE  = -fprofile-arcs -ftest-coverage -fno-inline
 endif
-CXXFLAGS  ?= $(WARNING) -O3 -std=c++11 $(COVERAGE) -fPIC
+CXXFLAGS  ?= $(WARNING) -O3 -std=c++11 $(COVERAGE) -fPIC -DWITH_GCOV=$(WITH_GCOV)
 #CXXFLAGS  ?= $(WARNING) -g -std=c++11
 LDFLAGS1   ?= -shared
 INCLUDES  ?= -I.
