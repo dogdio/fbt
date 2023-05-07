@@ -223,8 +223,6 @@ public:
 		ThreadName += name;
 
 		Shm.Tif = Thread::Create(ThreadName.c_str());
-		if(Shm.Tif == NULL)
-			throw std::length_error("tif is null");
 	}
 
 	~JobPriv() {
