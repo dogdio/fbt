@@ -4,13 +4,25 @@ import java.lang.reflect.*;
 // この状態でSampleパッケージの各インスタンスのメソッドを呼ぶ
 
 class Main {
+	static public void LoadClass(String PackageName, String ClassName) {
+		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+		Class<?> cl = null;
+		try {
+			cl = classLoader.loadClass(PackageName + "." + ClassName);
+			System.out.println(ClassName + " OK");
+		}
+		catch (ClassNotFoundException e) { e.printStackTrace(); return; }
+	}
+
 	static public void CallStatic(String PackageName, String ClassName, String MethodName) {
+		//long start = System.currentTimeMillis();
 		Class<?> cl = null;
 		Method method = null;
 		try {
 			cl = Class.forName(PackageName + "." + ClassName);
 		}
 		catch (ClassNotFoundException e) { e.printStackTrace(); return; }
+		//long end = System.currentTimeMillis();
 
 		try {
 			method = cl.getDeclaredMethod(MethodName);
@@ -22,13 +34,21 @@ class Main {
 		}
 		catch (IllegalAccessException e) { e.printStackTrace(); return; }
 		catch (InvocationTargetException e) { e.printStackTrace(); return; }
+
+		//long elapsed = end - start;
+		//System.out.println(" ** time=" + elapsed);
 	}
+
 	public static void main(String[] args) {
 		// Hoge,Hoge2との依存関係なしに、これらのインスタンスを生成するために
-		// refrectionを使ってstatic メソッドにアクセスする
+		// reflection を使ってstatic メソッドにアクセスする
+		//String ClassNames[] = {"Hoge", "Hoge2", "NotFound"};
 		String ClassNames[] = {"Hoge", "Hoge2"};
 		for(String s: ClassNames)
 			CallStatic("Sample", s, "Touch");
+			//LoadClass("Sample", s); // Loadだけだと上手くいかない、、
+
+		System.out.println("################");
 
 		// Factoryから、interfaceクラスのインスタンスを取得
 		HogeIF h1 = Factory.GetInstance("x1");

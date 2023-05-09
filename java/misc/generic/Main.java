@@ -1,6 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Function; // for lambda
 
 class Hoge {
 	Hoge(String Name) {
@@ -48,6 +48,8 @@ class Main {
 		});
 
 		System.out.println("## " + f.GetInstance("Hoge3").GetName());
+
+		//System.out.println("## " + f.GetInstance("NotFound").GetName()); // SEGV
 	}
 }
 

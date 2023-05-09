@@ -43,7 +43,7 @@ class HogeMain {
 		});
 		System.out.println("ret: " + ret + "\n");
 
-		// lambda: 引数=HogeIF Obj, 戻り値=なし
+		// lambda: 引数=Integer Num, 戻り値=なし
 		//f.Lambda3((int Num) -> {// compile error
 		f.Lambda3((Integer Num) -> {
 			System.out.println("Lambda3: Num is " + Num++); // 引数は編集可能

@@ -19,7 +19,8 @@ class ParentWithArg {
 }
 class Child2 extends ParentWithArg {
 	Child2(String s) {
-		super(s); // 親クラスが引数ありの場合は明示的にsuper()を書く
+		// 親クラスが引数ありの場合は明示的にsuper()を書く
+		super(s); // 書かない場合は compile error
 		System.out.println("Child2 constructor:" + s);
 	}
 }

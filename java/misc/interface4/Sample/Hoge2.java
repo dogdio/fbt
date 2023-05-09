@@ -14,6 +14,6 @@ public class Hoge2 implements HogeIF {
 	static public void Touch() {
 		System.out.println("Hoge2 Touch");
 	}
-	static private Hoge2 Inst = new Hoge2();
+	static private final Hoge2 Inst = new Hoge2();
 }
 

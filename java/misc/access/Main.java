@@ -39,6 +39,9 @@ public class Main {
 	private static void ExternalPackage_ParentInstance() {
 		Parent cp = new Child();
 		System.out.println("EX:cp.PubNum=" + cp.PubNum);
+		//System.out.println("EX:cp.PriNum=" + cp.PriNum); // compile error
+		//System.out.println("EX:cp.ProNum=" + cp.ProNum); // compile error
+		//System.out.println("EX:cp.DefNum=" + cp.DefNum); // compile error
 
 		System.out.println("");
 		cp.CallPriv();
