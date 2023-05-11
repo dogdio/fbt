@@ -1,0 +1,27 @@
+
+table, th, td {
+  border: 1px solid; 
+  border-collapse: collapse; 
+  padding: 3px; 
+}
+
+th {
+  background-color: #ccddcc; 
+}
+
+header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 4;
+  padding: 2px;
+  
+  height: 100%;
+  width: 150px;
+  background: #f4f5f4;
+  color: #010101;
+}
+
+input {
+  width: 90px;
+}

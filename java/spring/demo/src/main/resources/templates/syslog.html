@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+  <title th:text="${title}"></title>
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+  <header>
+  <p th:utext="${message}"></p>
+  <form action="syslog" method="get">
+    <p>
+      <label for="num">件数　</label><br>
+      <input type="text" name="num" id="num"><br>
+      <label for="str">文字列</label><br>
+      <input type="text" name="str" id="str"><br>
+      <label for="rev">出力順序</label><br>
+      <select name="rev">
+        <option value="on">新しい順　</option>
+        <option value="off">古い順　</option>
+      </select>
+      <input type="submit" value="Update">
+    </p>
+  </form>
+  </header>
+
+  <p th:utext="${message1}"></p>
+</body>
+</html>
+
