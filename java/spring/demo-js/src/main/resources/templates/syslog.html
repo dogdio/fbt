@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+  <title th:text="${title}"></title>
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+  <header>
+  <p th:utext="${message}">top</p>
+  <form method="get" name="syslogFormName" id="syslogForm">
+    <p id="input_help" class="input_help"></p>
+    <p>
+      <label for="num">件数　</label><br>
+      <input type="text" name="num" id="num" maxlength="3" pattern="\d*"><br>
+
+      <label for="str">文字列</label><br>
+      <input type="text" name="str" id="str" maxlength="32" pattern="[\w\d\s]*"><br>
+
+      <label for="rev">出力順序</label><br>
+      <select name="rev" id="rev">
+        <option value="on">新しい順　</option>
+        <option value="off">古い順　</option>
+      </select><br>
+    </p>
+
+    <p> <input type="button" value="Update" id="update"> </p>
+    <p> <input type="button" value="Clear" id="clear"> </p>
+
+    <input type="checkbox" value="help_on" id="help_flag" checked>
+    <label for="help_flag">Help</label><br>
+    <input type="checkbox" value="num_check_on" id="num_check_flag" checked>
+    <label for="num_check_flag">Num Check</label>
+
+  </form>
+  </header>
+
+  <table id="syslogTable">
+    <caption><b th:text="${message1}"></b></caption>
+    <thead><tr>
+    <th onclick="sortTable(0)">Date   <span id="sortIcon0">&#x25b2;</span></th>
+    <th onclick="sortTable(1)">Host   <span id="sortIcon1">&#x25b2;</span></th>
+    <th onclick="sortTable(2)">Process   <span id="sortIcon2">&#x25b2;</span></th>
+    <th>Info</th>
+    </thead></tr>
+    <tbody id="syslogTbody"></tbody> <!-- tbodyはjsで読み込む -->
+  </table>
+
+  <script src="sample.js"></script>
+</body>
+</html>
+
