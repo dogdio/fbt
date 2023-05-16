@@ -108,6 +108,7 @@ public class DemoApplication
 	}
 
 	static class SyslogData {
+		// { "date": ***, "host": ***, "proc": ***, "info": *** }
 		public SyslogData(String date, String host, String proc, String info)
 		{
 			this.date = date;
@@ -115,15 +116,10 @@ public class DemoApplication
 			this.proc = proc;
 			this.info = info;
 		}
-		private final String date; // メンバの名前がJSONのKEYとなる(fetchSyslog 参照)
-		private final String host;
-		private final String proc;
-		private final String info;
-		// シリアライズのためにgetterが必要
-		public String getDate() { return date; }
-		public String getHost() { return host; }
-		public String getProc() { return proc; }
-		public String getInfo() { return info; }
+		public final String date; // メンバの名前がJSONのKEYとなる(fetchSyslog 参照)
+		public final String host; // メンバをpublic にすればgetterは不要
+		public final String proc;
+		public final String info;
 	}
 }
 
