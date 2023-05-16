@@ -17,6 +17,12 @@ class HogeMain {
 		num += n;
 		System.out.println("## num is " + num + "\n");
 	}
+	public static void MethodRef(Integer num) {
+		System.out.println("## num is " + num);
+	}
+	public void MethodRef2(Integer num) {
+		System.out.println("## num is " + num);
+	}
 
 	public void Main() {
 		// ローカル変数はfinal宣言しなくてもラムダ内で参照できる
@@ -46,10 +52,16 @@ class HogeMain {
 		// lambda: 引数=Integer Num, 戻り値=なし
 		//f.Lambda3((int Num) -> {// compile error
 		f.Lambda3((Integer Num) -> {
-			System.out.println("Lambda3: Num is " + Num++); // 引数は編集可能
-			System.out.println("Lambda3: Num is " + Num++);
+			System.out.println("Lambda3: Num is " + ++Num); // 引数は編集可能
+			System.out.println("Lambda3: Num is " + ++Num);
 		}, num);
-		System.out.println("num: " + num); // keep 200
+		System.out.println("keep num: " + num + "\n"); // keep 200
+
+		num = 1234;
+		// static メソッド参照
+		f.Lambda3(HogeMain::MethodRef, num);
+		// メソッド参照
+		f.Lambda3(this::MethodRef2, num);
 	}
 }
 
