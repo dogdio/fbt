@@ -79,7 +79,7 @@ public class DemoApplication
 
 		String filePath = "/var/log/syslog";
 		model.addAttribute("title", "syslog search");
-		model.addAttribute("message", "<a href=\"/\">top</a>");
+		model.addAttribute("message", "<a href=\"/home\">top</a>");
 		model.addAttribute("message1", filePath);
 
 		return "syslog";
