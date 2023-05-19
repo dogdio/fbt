@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+  <title>[[${title}]]</title>
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+  <header>
+    <p th:utext="${message}"></p>
+    
+    <form action="syslog" method="get" name="syslogFormName" id="syslogForm" 
+     th:object="${formData}">
+      <p id="input_help" class="input_help"></p>
+      <p>
+        <label for="num">件数　</label><br>
+        <input type="text" th:field="*{num}" maxlength="3" pattern="\d*"><br>
+    
+        <label for="str">文字列</label><br>
+        <input type="text" th:field="*{str}" maxlength="32" pattern="[\w\d\s]*"><br>
+    
+        <label for="seq">出力順序</label><br>
+        <select th:field="*{seq}">
+          <option value="new" th:selected="${formData.seq == 'new'}">新しい順　</option>
+          <option value="old" th:selected="${formData.seq == 'old'}">古い順　</option>
+        </select><br>
+      </p>
+    
+      <p> <input type="submit" value="Update" id="update"> </p>
+      <p> <input type="button" value="Clear" id="clear"> </p>
+
+      <!-- 受け取ったチェックボックスの値をそのまま表示（default=off)
+		   checkboxの th:field はなんかうまくいかない...
+      -->
+      <input type="checkbox" name="helpFlag" id="helpFlag" th:checked="${formData.helpFlag}">
+      <label for="helpFlag">Help</label><br>
+      <input type="checkbox" name="numCheckFlag" id="numCheckFlag" th:checked="${formData.numCheckFlag}">
+      <label for="numCheckFlag">Num Check</label>
+
+    </form>
+  </header>
+
+  <table id="syslogTable">
+    <caption><b>[[${message1}]]</b></caption>
+    <thead><tr>
+      <th onclick="sortTable(0)">Date   <span id="sortIcon0">&#x25b2;</span></th>
+      <th onclick="sortTable(1)">Host   <span id="sortIcon1">&#x25b2;</span></th>
+      <th onclick="sortTable(2)">Process   <span id="sortIcon2">&#x25b2;</span></th>
+      <th>Info</th>
+    </thead></tr>
+    <tbody id="syslogTbody">
+      <tr class="syslogTr" th:each="list : ${lists}">
+      <td>[[${list.date}]]</td>
+      <td>[[${list.host}]]</td>
+      <td>[[${list.proc}]]</td>
+      <td>[[${list.info}]]</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <script src="sample.js"></script>
+</body>
+</html>
+

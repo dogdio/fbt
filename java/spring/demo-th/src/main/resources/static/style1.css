@@ -1,0 +1,58 @@
+
+header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 4;
+  padding: 2px;
+  
+  height: 100%;
+  width: 150px;
+  background: #f4f5f4;
+  color: #010101;
+}
+
+span {
+  font-size: 6px;
+}
+
+table, th, td {
+  border: 1px solid; 
+  border-collapse: collapse; 
+  padding: 3px; 
+}
+
+th {
+  background-color: #ccddcc; 
+}
+
+.syslogTr:hover {
+  background-color: #afeeee; 
+}
+
+#sortIcon0 { cursor: pointer; }
+#sortIcon1 { cursor: pointer; }
+#sortIcon2 { cursor: pointer; }
+
+.input_help {
+  display: none;
+  position: absolute;
+  padding: 9px;
+  background-color: #edffed;
+  border: 1px solid #ccc;
+  top: -10px;
+  left: -10px;
+
+  border-radius: 4px;
+  box-shadow: rgba(0,0,0,0.5) 4px 4px 8px;
+  z-index: 10;
+}
+
+input {
+  width: 90px;
+}
+input#helpFlag { width: 15px; }
+input#numCheckFlag { width: 15px; }
+input:valid { background-color: #ffffff; }
+input:invalid { background-color: #ffb6c1; }
+
