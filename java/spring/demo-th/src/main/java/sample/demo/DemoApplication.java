@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
+import lombok.AllArgsConstructor;
 import sample.demo.form.*;
 
 import java.io.*;
@@ -112,14 +113,8 @@ public class DemoApplication
 		return "syslog";
 	}
 
+	@AllArgsConstructor // 全てのメンバを設定するコンストラクタを生成
 	class SyslogData {
-		public SyslogData(String date, String host, String proc, String info)
-		{
-			this.date = date;
-			this.host = host;
-			this.proc = proc;
-			this.info = info;
-		}
 		public final String date;
 		public final String host;
 		public final String proc;
