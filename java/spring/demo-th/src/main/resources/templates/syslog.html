@@ -14,13 +14,13 @@
       <p id="input_help" class="input_help"></p>
       <p>
         <label for="num">件数　</label><br>
-        <input type="text" th:field="*{num}" maxlength="3" pattern="\d*"><br>
+        <input type="text" name="num" id="num" th:value="*{num}" maxlength="3" pattern="\d*"><br>
     
         <label for="str">文字列</label><br>
-        <input type="text" th:field="*{str}" maxlength="32" pattern="[\w\d\s]*"><br>
+        <input type="text" name="str" id="str" th:value="*{str}" maxlength="32" pattern="[\w\d\s]*"><br>
     
         <label for="seq">出力順序</label><br>
-        <select th:field="*{seq}">
+        <select name="seq" id="seq">
           <option value="new" th:selected="${formData.seq == 'new'}">新しい順　</option>
           <option value="old" th:selected="${formData.seq == 'old'}">古い順　</option>
         </select><br>
