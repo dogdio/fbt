@@ -51,20 +51,13 @@ th {
 #syslogMenuId {
   display: none;
   position: absolute;
-  padding: 4px;
+  padding: 3px;
   background-color: #eeeeee;
   border: 1px solid #ccc;
 
   box-shadow: rgba(0,0,0,0.5) 4px 4px 8px;
   z-index: 10;
   width: 200px;
-}
-
-/* 背景色だけがtransition対象となり、文字色は即座に反映される */
-.syslogMenuTr:hover {
-  color: #f0f8ff;
-  background-color: #4682b4;
-  transition: background-color 0.6s ease-in-out 0s;
 }
 
 .syslogMenuTr {

@@ -272,17 +272,38 @@ document.getElementById("clear").addEventListener("mouseout", (event) => {
 // Right Click
 //
 ////////////////////////////////////////////////////////
+var SyslogMenuIndex = -1;
+var SyslogRows = ['sort_date', 'sort_host', 'sort_proc'];
 
-window.addEventListener("click", (event) => {
-	console.log(event);
+function setRowIndex(id) {
+	for(let i = 0; i < SyslogRows.length; i++) {
+		if(id == SyslogRows[i]) {
+			SyslogMenuIndex = i;
+			break;
+		}
+	}
+}
 
-	// 別のエリアをクリックしたとき、メニューの選択肢を選んだときに元に戻す
-	// 右クリックが連続で続いた場合は、以前表示されていたメニューの配置が変わるだけ
-	// (削除されているわけではない)
-	let e = document.getElementById('syslogMenuId');
-	if(e.style.display == 'block')
-		e.style.display = 'none';
-});
+function unsetStyle() {
+	if(0 <= SyslogMenuIndex && SyslogMenuIndex <= 2) {
+		let e = document.getElementById(SyslogRows[SyslogMenuIndex]);
+		e.style.color = '#000000';
+		e.style.backgroundColor = '#eeeeee';
+	}
+}
+
+// 背景色だけがtransition対象となり、文字色は即座に反映される
+function setStyle(id) {
+	let e = document.getElementById(id);
+	e.style.color = '#f0f8ff';
+	e.style.backgroundColor = '#4682b4';
+	e.style.transition = 'background-color 0.6s ease-in-out 0s';
+}
+
+function doSort(idx) {
+	sortTable(idx);
+	disableSyslogMenu();
+}
 
 function getColumnValue(tr, col) {
 	let find = 0;
@@ -306,7 +327,7 @@ function getColumnValue(tr, col) {
 	return ret;
 }
 
-function contextmenuForSyslog(event) {
+function enableSyslogMenu(event) {
 	event.preventDefault();
 
 //	console.log("X=" + event.clientX + ", Y=" + event.clientY);
@@ -326,23 +347,93 @@ function contextmenuForSyslog(event) {
 	console.log(getColumnValue(tr, 0));
 }
 
+function disableSyslogMenu() {
+
+	unsetStyle();
+
+	let e = document.getElementById('syslogMenuId');
+	e.style.display = 'none';
+	SyslogMenuIndex = -1;
+}
+
+// 上下キーを押したとき
+function keyDownSyslogMenu(index) {
+
+	unsetStyle();
+
+	SyslogMenuIndex += index;
+	if(SyslogMenuIndex < 0)
+		SyslogMenuIndex = 2;
+	else if(SyslogMenuIndex >= SyslogRows.length)
+		SyslogMenuIndex = 0;
+
+	setStyle(SyslogRows[SyslogMenuIndex]);
+
+	console.log("idx=" + SyslogMenuIndex);
+}
+
+// フォーカスが合ったとき
+function mouseMoveSyslogMenu(event) {
+
+	if(event.target.id != SyslogRows[SyslogMenuIndex])
+		unsetStyle();
+
+	setStyle(event.target.id);
+	setRowIndex(event.target.id);
+}
+
+// フォーカスが外れたとき
+function mouseOutSyslogMenu(event) {
+	unsetStyle();
+}
+
+
 // 特定のクラス名を持つすべての要素を取得し、イベントリスナーを設定
 // classの場合は.をつける(CSSと同じ)
 document.querySelectorAll(".syslogTr").forEach(function(element) {
-	element.addEventListener("contextmenu", contextmenuForSyslog);
+	element.addEventListener("contextmenu", enableSyslogMenu);
+});
+
+document.querySelectorAll(".syslogMenuTr").forEach(function(element) {
+	element.addEventListener("mousemove", mouseMoveSyslogMenu);
+});
+
+document.querySelectorAll(".syslogMenuTr").forEach(function(element) {
+	element.addEventListener("mouseout", mouseOutSyslogMenu);
 });
 
 window.addEventListener("keydown", (event) => {
+//	console.log(event);
 
 	let e = document.getElementById('syslogMenuId');
 	if(e.style.display == 'block') {
 		if(event.key == 'd')
-			sortTable(0);
+			doSort(0);
 		else if(event.key == 'h')
-			sortTable(1);
+			doSort(1);
 		else if(event.key == 'p')
-			sortTable(2);
+			doSort(2);
+		else if(event.key == 'ArrowDown')
+			keyDownSyslogMenu(1);
+		else if(event.key == 'ArrowUp')
+			keyDownSyslogMenu(-1);
+		else if(event.key == 'Enter')
+			doSort(SyslogMenuIndex);
 		else if(event.key == 'Escape')
-			e.style.display = 'none';
+			disableSyslogMenu();
 	}
 });
+
+window.addEventListener("click", (event) => {
+//	console.log(event);
+
+	// 別のエリアをクリックしたとき、メニューの選択肢を選んだときに元に戻す
+	// 右クリックが連続で続いた場合は、以前表示されていたメニューの配置が変わるだけ
+	// (削除されているわけではない)
+	let e = document.getElementById('syslogMenuId');
+	if(e.style.display == 'block')
+		disableSyslogMenu();
+
+});
+
+
