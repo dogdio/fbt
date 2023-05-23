@@ -266,3 +266,83 @@ document.getElementById("clear").addEventListener("mouseout", (event) => {
 	let input_help = document.getElementById('input_help');
 	input_help.style.display = 'none';
 });
+
+////////////////////////////////////////////////////////
+//
+// Right Click
+//
+////////////////////////////////////////////////////////
+
+window.addEventListener("click", (event) => {
+	console.log(event);
+
+	// 別のエリアをクリックしたとき、メニューの選択肢を選んだときに元に戻す
+	// 右クリックが連続で続いた場合は、以前表示されていたメニューの配置が変わるだけ
+	// (削除されているわけではない)
+	let e = document.getElementById('syslogMenuId');
+	if(e.style.display == 'block')
+		e.style.display = 'none';
+});
+
+function getColumnValue(tr, col) {
+	let find = 0;
+	let ret = "";
+
+	for(let i = 0; i < tr.childNodes.length; i++) {
+//		console.log(tr.childNodes[i]);
+		if(tr.childNodes[i].nodeType != Node.TEXT_NODE)
+			continue;
+
+		let td = tr.childNodes[i].nextSibling;
+		if(td == null)
+			continue;
+
+		if(col == find) {
+			ret = td.innerText;
+			break;
+		}
+		find++;
+	}
+	return ret;
+}
+
+function contextmenuForSyslog(event) {
+	event.preventDefault();
+
+//	console.log("X=" + event.clientX + ", Y=" + event.clientY);
+	// クリックした位置を起点にメニューを表示
+	let e = document.getElementById('syslogMenuId');
+	e.style.display = 'block';
+	e.style.top  = event.clientY + 'px'; // 'px' つけないとダメ!
+	e.style.left = event.clientX + 'px';
+
+	let cell = event.target;
+	let tr = cell.parentNode;
+
+	console.log(tr.rowIndex);    // clicked Row   : 1 base
+	console.log(cell.cellIndex); // clicked Column: 0 base
+	console.log(cell.innerText); // clicked text
+
+	console.log(getColumnValue(tr, 0));
+}
+
+// 特定のクラス名を持つすべての要素を取得し、イベントリスナーを設定
+// classの場合は.をつける(CSSと同じ)
+document.querySelectorAll(".syslogTr").forEach(function(element) {
+	element.addEventListener("contextmenu", contextmenuForSyslog);
+});
+
+window.addEventListener("keydown", (event) => {
+
+	let e = document.getElementById('syslogMenuId');
+	if(e.style.display == 'block') {
+		if(event.key == 'd')
+			sortTable(0);
+		else if(event.key == 'h')
+			sortTable(1);
+		else if(event.key == 'p')
+			sortTable(2);
+		else if(event.key == 'Escape')
+			e.style.display = 'none';
+	}
+});

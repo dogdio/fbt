@@ -49,6 +49,7 @@
       <th>Info</th>
     </thead></tr>
     <tbody id="syslogTbody">
+
       <tr class="syslogTr" th:each="list : ${lists}">
       <td>[[${list.date}]]</td>
       <td>[[${list.host}]]</td>
@@ -58,6 +59,14 @@
     </tbody>
   </table>
 
+
+  <table id="syslogMenuId">
+  <tbody>
+    <tr><td onclick="sortTable(0)" id="sort_date" class="syslogMenuTr">　　Sort Date    (d)</td><tr>
+    <tr><td onclick="sortTable(1)" id="sort_host" class="syslogMenuTr">　　Sort Host    (h)</td><tr>
+    <tr><td onclick="sortTable(2)" id="sort_proc" class="syslogMenuTr">　　Sort Process (p)</td><tr>
+  </tbody>
+  </table>
 
   <script src="sample.js"></script>
 </body>

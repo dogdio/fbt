@@ -43,9 +43,35 @@ th {
   top: -10px;
   left: -10px;
 
-  border-radius: 4px;
+  border-radius: 15px;
   box-shadow: rgba(0,0,0,0.5) 4px 4px 8px;
   z-index: 10;
+}
+
+#syslogMenuId {
+  display: none;
+  position: absolute;
+  padding: 4px;
+  background-color: #eeeeee;
+  border: 1px solid #ccc;
+
+  box-shadow: rgba(0,0,0,0.5) 4px 4px 8px;
+  z-index: 10;
+  width: 200px;
+}
+
+/* 背景色だけがtransition対象となり、文字色は即座に反映される */
+.syslogMenuTr:hover {
+  color: #f0f8ff;
+  background-color: #4682b4;
+  transition: background-color 0.6s ease-in-out 0s;
+}
+
+.syslogMenuTr {
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  width: 200px;
 }
 
 input {
