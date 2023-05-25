@@ -333,9 +333,13 @@ function enableSyslogMenu(event) {
 //	console.log("X=" + event.clientX + ", Y=" + event.clientY);
 	// クリックした位置を起点にメニューを表示
 	let e = document.getElementById('syslogMenuId');
-	e.style.display = 'block';
+	if(e.classList.contains('show')) // 右クリック → 右クリックは無効
+		return;
+
+	e.classList.toggle('show');
 	e.style.top  = event.clientY + 'px'; // 'px' つけないとダメ!
 	e.style.left = event.clientX + 'px';
+	e.style.visibility = 'visible';
 
 	let cell = event.target;
 	let tr = cell.parentNode;
@@ -352,7 +356,10 @@ function disableSyslogMenu() {
 	unsetStyle();
 
 	let e = document.getElementById('syslogMenuId');
-	e.style.display = 'none';
+	// transitionが完了するまではhiddenにしない
+	if(e.classList.contains('show'))
+		e.classList.toggle('show');
+
 	SyslogMenuIndex = -1;
 }
 
@@ -402,11 +409,25 @@ document.querySelectorAll(".syslogMenuTr").forEach(function(element) {
 	element.addEventListener("mouseout", mouseOutSyslogMenu);
 });
 
+// transition 完了ハンドラ
+document.getElementById('syslogMenuId').addEventListener("transitionend", (event) => {
+//	console.log(event);
+
+	// 子要素の<tr>で遷移した後もこのイベントが発生する
+	if(event.target.id == 'syslogMenuId') {
+		let e = event.target;
+		if(!e.classList.contains('show'))
+			e.style.visibility = 'hidden';
+		// hiddenにしないと、画面には映らないがクリック可能な領域が残る
+	}
+
+});
+
 window.addEventListener("keydown", (event) => {
 //	console.log(event);
 
 	let e = document.getElementById('syslogMenuId');
-	if(e.style.display == 'block') {
+	if(e.classList.contains('show')) {
 		if(event.key == 'd')
 			doSort(0);
 		else if(event.key == 'h')
@@ -428,10 +449,8 @@ window.addEventListener("click", (event) => {
 //	console.log(event);
 
 	// 別のエリアをクリックしたとき、メニューの選択肢を選んだときに元に戻す
-	// 右クリックが連続で続いた場合は、以前表示されていたメニューの配置が変わるだけ
-	// (削除されているわけではない)
 	let e = document.getElementById('syslogMenuId');
-	if(e.style.display == 'block')
+	if(e.classList.contains('show'))
 		disableSyslogMenu();
 
 });
