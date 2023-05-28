@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+  <title th:object="${wordList}">[[${wordList.titleSummary}]]</title>
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+  <h1 th:object="${wordList}">[[${wordList.titleSummary}]]</h1>
+  <hr>
+
+  <table id="itemTable" th:object="${wordList}">
+    <thead>
+      <tr class="itemTableHead">
+      <th class="itemTableHead" onclick="sortTable(0)">[[${wordList.tableWord[0]}]]<span id="sortIcon0">&#x25b2;</span></th>
+      <th class="itemTableHead" onclick="sortTable(1)">[[${wordList.tableWord[1]}]]<span id="sortIcon1">&#x25b2;</span></th>
+      <th class="itemTableHead" onclick="sortTable(2)">[[${wordList.tableWord[2]}]]<span id="sortIcon2">&#x25b2;</span></th>
+      <th class="itemTableHead" onclick="sortTable(3)">[[${wordList.tableWord[3]}]]<span id="sortIcon3">&#x25b2;</span></th>
+      <th class="itemTableHead" onclick="sortTable(4)">[[${wordList.tableWord[4]}]]<span id="sortIcon4">&#x25b2;</span></th>
+      <th class="itemTableHead" onclick="sortTable(5)">[[${wordList.tableWord[5]}]]<span id="sortIcon5">&#x25b2;</span></th>
+      <th class="itemTableHead" onclick="sortTable(6)">[[${wordList.tableWord[6]}]]<span id="sortIcon6">&#x25b2;</span></th>
+      </tr>
+    </thead>
+
+    <tbody id="itemTbody">
+      <tr class="itemTableBody" th:each="list : ${lists}">
+      <td class="itemTableBody">[[${list.id}]]</td>
+      <td class="itemTableBody">[[${list.title}]]</td>
+      <td class="itemTableBody">[[${list.priority}]]</td>
+      <td class="itemTableBody" th:with="index=${list.status}">[[${wordList.statusWord[index]}]]</td>
+      <td class="itemTableBody" th:with="index=${list.category}">[[${wordList.categoryWord[index]}]]</td>
+      <td class="itemTableBody">[[${list.worker}]]</td>
+      <td class="itemTableBody">[[${list.deadline}]]</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+  <div th:insert="~{footer :: links}"></div>
+
+  <script src="sample.js"></script>
+</body>
+</html>
+

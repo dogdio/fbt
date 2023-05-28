@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+  <title th:object="${wordList}">[[${wordList.titleRegist}]]</title>
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+  <h1 th:object="${wordList}">[[${wordList.titleRegist}]]</h1>
+  <hr>
+
+  <table id="registTable" th:object="${wordList}">
+  <tbody>
+    <tr>
+      <td>[[${wordList.tableWord[0]}]]</td>
+      <td><b>[[${regist_number}]]</b></td>
+    <tr>
+
+    <tr>
+      <td>[[${wordList.tableWord[1]}]]</td>
+      <td><b>[[${registForm.title}]]</b></td>
+    <tr>
+
+    <tr>
+      <td>[[${wordList.tableWord[2]}]]</td>
+      <td><b>[[${registForm.priority}]]</b></td>
+    <tr>
+
+    <tr>
+      <td>[[${wordList.tableWord[3]}]]</td>
+      <td th:with="index=${registForm.status}"><b>[[${wordList.statusWord[index]}]]</b></td>
+    <tr>
+
+    <tr>
+      <td>[[${wordList.tableWord[4]}]]</td>
+      <td th:with="index=${registForm.category}"><b>[[${wordList.categoryWord[index]}]]</b></td>
+    <tr>
+
+    <tr>
+      <td>[[${wordList.tableWord[5]}]]</td>
+      <td><b>[[${registForm.worker}]]</b></td>
+    <tr>
+
+    <tr>
+      <td>[[${wordList.tableWord[6]}]]</td>
+      <td><b>[[${registForm.deadline}]]</b></td>
+    <tr>
+
+  </tbody>
+  </table>
+
+  <hr>
+  <div th:insert="~{footer :: links}"></div>
+
+  <!--script src="sample.js"></script-->
+</body>
+</html>
+

@@ -1,0 +1,54 @@
+
+span {
+  font-size: 6px;
+}
+
+table {
+  border-collapse: collapse; 
+}
+
+td {
+  padding: 3px; 
+}
+
+.itemTableHead {
+  background-color: #ccddcc; 
+  border: 1px solid; 
+  padding: 3px; 
+}
+
+.itemTableBody {
+  border: 1px solid; 
+  padding: 3px; 
+}
+
+.itemTableBody:hover {
+  background-color: #afeeee; 
+}
+
+/* 横一列に等間隔で並べて、縦線で区切る */
+.links {
+  padding: 4px 10px;
+}
+
+.links p {
+  border-right: solid 1px #aaaaaa;
+  padding: 4px 10px;
+  display: inline;
+}
+
+.links p:last-child {
+  border-right: none;
+  padding: 4px 10px;
+  display: inline;
+}
+
+
+#sortIcon0 { cursor: pointer; }
+#sortIcon1 { cursor: pointer; }
+#sortIcon2 { cursor: pointer; }
+#sortIcon3 { cursor: pointer; }
+#sortIcon4 { cursor: pointer; }
+#sortIcon5 { cursor: pointer; }
+#sortIcon6 { cursor: pointer; }
+
