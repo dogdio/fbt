@@ -5,3 +5,12 @@
   <p><a href="/config">[[${wordList.linkWord[2]}]]</a></p>
 </div>
 
+<div th:fragment="deleteDialog" th:object="${wordList}">
+  <div id="modal" class="modal">
+    <div class="modalDialog">
+      <b>[[${wordList.dialogWord[0]}]]</b><br>
+      <button onclick="deleteConfirmAction(true)">Yes</button>
+      <button onclick="deleteConfirmAction(false)">No</button>
+    </div>
+  </div>
+</div>

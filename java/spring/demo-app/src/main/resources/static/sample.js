@@ -72,13 +72,25 @@ function compareNumRev(a, b)
 	return b.cmpValue - a.cmpValue;
 }
 
-
+let deleteId;
 function deleteConfirm(id)
 {
-	if(confirm("#" + id + "を削除しますか？")) {
-		location.href="/delete/" + id
+	var m = document.getElementById("modal");
+	m.style.display = "block";
+	deleteId = id;
+}
+
+function deleteConfirmAction(answer)
+{
+	var m = document.getElementById("modal");
+	m.style.display = "none";
+
+	if (answer) {
+		console.log("####### delete" + deleteId);
+		location.href = "/delete/" + deleteId;
 	}
 }
+
 
 let toggleTitle = 0;
 function toggleTitleEdit()
@@ -88,7 +100,7 @@ function toggleTitleEdit()
 	let e = document.getElementById("titleTr");
 	let b = document.getElementById("toggleTitleButton");
 
-	// visibilityだと枠が確保されしまい空白が丸見えになる
+	// visibilityだと枠が確保されて空白が丸見えになる
 	if(toggleTitle) {
 		e.style.display = 'table-row';
 		b.innerHTML = "-";
@@ -98,3 +110,13 @@ function toggleTitleEdit()
 		b.innerHTML = "+";
 	}
 }
+
+window.addEventListener("keydown", (event) => {
+//	console.log(event);
+
+	var m = document.getElementById("modal");
+	if(m.style.display == 'block') {
+		if(event.key == 'Escape')
+			deleteConfirmAction(false);
+	}
+});

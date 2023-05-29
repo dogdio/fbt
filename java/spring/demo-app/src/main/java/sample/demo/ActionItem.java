@@ -159,7 +159,8 @@ public class ActionItem {
 		model.addAttribute("titleShow", "#" + del.getId() + ", " + del.getTitle());
 		model.addAttribute("wordList", wordList);
 
-		itemList.remove(itemId - 1);
+		if(itemList.get(itemId - 1) != null)
+			itemList.remove(itemId - 1);
 
 		return "delete";
 	}

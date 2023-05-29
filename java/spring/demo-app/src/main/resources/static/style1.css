@@ -65,3 +65,45 @@ td {
   margin-left: 10px;
 }
 
+
+/* modal型 yes/no ダイアログ  */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modalDialog{
+  text-align: center;
+  width: 300px;
+  height: 80px;
+  margin: 15% auto;
+  padding-top: 25px;
+  padding-bottom: 15px;
+  border: 1px solid #888;
+  border-radius: 15px;
+  background-color: #f0f0f0;
+  box-shadow: rgba(0,0,0,0.6) 4px 4px 8px;
+}
+
+.modal button {
+  margin: 10px;
+  margin-top: 25px;
+  padding-top: 5px;
+  padding-bottom: 7px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border: 1px solid #888;
+  border-radius: 12px;
+  background-color: #e9e9e9;
+}
+.modal button:hover {
+  background-color: #eee8aa;
+  cursor: pointer;
+}
+
