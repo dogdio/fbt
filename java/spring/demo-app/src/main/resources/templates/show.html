@@ -6,7 +6,7 @@
 </head>
 
 <body>
-  <h1>[[${titleShow}]]</h1>
+  <h1>[[${titleShow}]]<span id="toggleTitleButton" onclick="toggleTitleEdit()">+</span></h1>
   <hr>
 
   <table id="editTable" th:object="${wordList}">
@@ -15,7 +15,7 @@
   <form th:action="@{/edit/{Id}(Id=${itemId})}" method="post" name="editFormName" id="editForm"
    th:object="${registData}">
 
-    <tr>
+    <tr id="titleTr">
       <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
       <td><textarea name="title" id="title" maxlength="200" rows="4" cols="50"
            th:text="${registData.title}"></textarea></td>

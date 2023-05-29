@@ -79,3 +79,22 @@ function deleteConfirm(id)
 		location.href="/delete/" + id
 	}
 }
+
+let toggleTitle = 0;
+function toggleTitleEdit()
+{
+	toggleTitle ^= 1;
+
+	let e = document.getElementById("titleTr");
+	let b = document.getElementById("toggleTitleButton");
+
+	// visibilityだと枠が確保されしまい空白が丸見えになる
+	if(toggleTitle) {
+		e.style.display = 'table-row';
+		b.innerHTML = "-";
+	}
+	else {
+		e.style.display = 'none';
+		b.innerHTML = "+";
+	}
+}

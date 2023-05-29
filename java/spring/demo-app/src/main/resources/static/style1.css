@@ -52,3 +52,16 @@ td {
 #sortIcon5 { cursor: pointer; }
 #sortIcon6 { cursor: pointer; }
 
+/* タイトルの横に並べた小さなトグルボタン(+/-) */
+#titleTr {
+  display: none;
+}
+#toggleTitleButton {
+  border: none;
+  background-color: #dddddd;
+  color: #0000ee;
+  font-size: small;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
