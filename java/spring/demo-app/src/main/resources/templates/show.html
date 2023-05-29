@@ -19,13 +19,13 @@
       <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
       <td><textarea name="title" id="title" maxlength="200" rows="4" cols="50"
            th:text="${registData.title}"></textarea></td>
-    <tr>
+    </tr>
 
     <tr>
       <td><label for="priority">[[${wordList.tableWord[2]}]]</label></td>
       <td><input type="number" name="priority" id="priority" min="1" max="9"
            th:value="${registData.priority}"></td>
-    <tr>
+    </tr>
 
     <tr>
       <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
@@ -36,7 +36,7 @@
           <option value="2" th:selected="${registData.status == 2}">[[${wordList.statusWord[2]}]]</option>
         </select>
       </td>
-    <tr>
+    </tr>
 
     <tr>
       <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
@@ -50,27 +50,27 @@
           <option value="5" th:selected="${registData.category == 5}">[[${wordList.categoryWord[5]}]]</option>
         </select>
       </td>
-    <tr>
+    </tr>
 
     <tr>
       <td><label for="worker">[[${wordList.tableWord[5]}]]</label></td>
       <td><input name="worker" id="worker" maxlength="30" th:value="${registData.worker}"></td>
-    <tr>
+    </tr>
 
     <tr>
       <td><label for="deadline">[[${wordList.tableWord[6]}]]</label></td>
       <td><input type="date" name="deadline" id="deadline" th:value="${registData.deadline}"></td>
-    <tr>
+    </tr>
 
     <tr>
       <td></td>
       <td><input type="submit" value="Edit" id="do_edit"></td>
-    <tr>
+    </tr>
 
     <tr>
       <td></td>
       <td><input type="button" value="Delete" th:onclick="'deleteConfirm(\'' + ${itemId} + '\')'"></td>
-    <tr>
+    </tr>
   </form>
 
   </tbody>
