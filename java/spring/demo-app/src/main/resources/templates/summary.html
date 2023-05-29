@@ -25,7 +25,7 @@
     <tbody id="itemTbody">
       <tr class="itemTableBody" th:each="list : ${lists}">
       <td class="itemTableBody">[[${list.id}]]</td>
-      <td class="itemTableBody">[[${list.title}]]</td>
+      <td class="itemTableBody"><a th:href="@{/show/{Id}(Id=${list.id})}">[[${list.title}]]</a></td>
       <td class="itemTableBody">[[${list.priority}]]</td>
       <td class="itemTableBody" th:with="index=${list.status}">[[${wordList.statusWord[index]}]]</td>
       <td class="itemTableBody" th:with="index=${list.category}">[[${wordList.categoryWord[index]}]]</td>

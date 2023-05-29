@@ -10,5 +10,6 @@ public interface WordListIF {
 	public final String titleConfig = "";
 	public final String titleRegist = "";
 	public final String titleNewItem = "";
+	public final String titleDelete = "";
 }
 

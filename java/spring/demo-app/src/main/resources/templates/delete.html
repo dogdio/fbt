@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+  <title th:object="${wordList}">[[${wordList.titleDelete}]]</title>
+  <link rel="stylesheet" href="/style1.css">
+</head>
+
+<body>
+  <h1 th:object="${wordList}">[[${wordList.titleDelete}]]</h1>
+  <hr>
+
+  <br>
+  <h4>[[${titleShow}]]</h4>
+  <br>
+
+  <hr>
+  <div th:insert="~{footer :: links}"></div>
+
+  <!--script src="sample.js"></script-->
+</body>
+</html>
+

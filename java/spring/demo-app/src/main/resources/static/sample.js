@@ -72,3 +72,10 @@ function compareNumRev(a, b)
 	return b.cmpValue - a.cmpValue;
 }
 
+
+function deleteConfirm(id)
+{
+	if(confirm("#" + id + "を削除しますか？")) {
+		location.href="/delete/" + id
+	}
+}

@@ -10,4 +10,5 @@ public class WordListEn implements WordListIF {
 	public final String titleConfig = "Config";
 	public final String titleRegist = "Registration Complete !";
 	public final String titleNewItem = "New Action Item: Registration";
+	public final String titleDelete = "Following item was deleted";
 }

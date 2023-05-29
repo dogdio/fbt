@@ -10,4 +10,5 @@ public class WordListJp implements WordListIF {
 	public final String titleConfig = "設定";
 	public final String titleRegist = "登録完了！";
 	public final String titleNewItem = "新規アクションアイテム 登録";
+	public final String titleDelete = "以下のアイテムは削除されました";
 }
