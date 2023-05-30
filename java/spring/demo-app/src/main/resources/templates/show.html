@@ -9,72 +9,106 @@
   <h1>[[${titleShow}]]<span id="toggleTitleButton" onclick="toggleTitleEdit()">+</span></h1>
   <hr>
 
-  <table id="editTable" th:object="${wordList}">
-  <tbody>
-
   <form th:action="@{/edit/{Id}(Id=${itemId})}" method="post" name="editFormName" id="editForm"
-   th:object="${registData}">
+        th:object="${registData}">
+      
+  <div style="display: flex;">
+    <div class="flexItem" >
+      <table id="editTable" th:object="${wordList}">
+      <tbody>
+      
+        <tr id="titleTr">
+          <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
+          <td><textarea name="title" id="title" maxlength="200" rows="4" cols="50"
+               th:text="${registData.title}"></textarea></td>
+        </tr>
+      
+        <tr>
+          <td><label for="priority">[[${wordList.tableWord[2]}]]</label></td>
+          <td><input type="number" name="priority" id="priority" min="1" max="9"
+               th:value="${registData.priority}"></td>
+        </tr>
+      
+        <tr>
+          <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
+          <td>
+            <select name="status" id="status">
+              <option value="0" th:selected="${registData.status == 0}">[[${wordList.statusWord[0]}]]</option>
+              <option value="1" th:selected="${registData.status == 1}">[[${wordList.statusWord[1]}]]</option>
+              <option value="2" th:selected="${registData.status == 2}">[[${wordList.statusWord[2]}]]</option>
+            </select>
+          </td>
+        </tr>
+      
+        <tr>
+          <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
+          <td>
+            <select name="category" id="category">
+              <option value="0" th:selected="${registData.category == 0}">[[${wordList.categoryWord[0]}]]</option>
+              <option value="1" th:selected="${registData.category == 1}">[[${wordList.categoryWord[1]}]]</option>
+              <option value="2" th:selected="${registData.category == 2}">[[${wordList.categoryWord[2]}]]</option>
+              <option value="3" th:selected="${registData.category == 3}">[[${wordList.categoryWord[3]}]]</option>
+              <option value="4" th:selected="${registData.category == 4}">[[${wordList.categoryWord[4]}]]</option>
+              <option value="5" th:selected="${registData.category == 5}">[[${wordList.categoryWord[5]}]]</option>
+            </select>
+          </td>
+        </tr>
+      
+      
+      
+      </tbody>
+      </table>
+    </div>
 
-    <tr id="titleTr">
-      <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
-      <td><textarea name="title" id="title" maxlength="200" rows="4" cols="50"
-           th:text="${registData.title}"></textarea></td>
-    </tr>
+    <div class="flexItem" >
+      <tbody>
+      <table>
+        <tr>
+          <td><label for="worker">[[${wordList.tableWord[5]}]]</label></td>
+          <td><input name="worker" id="worker" maxlength="30" th:value="${registData.worker}"></td>
+        </tr>
+      
+        <tr>
+          <td><label for="deadline">[[${wordList.tableWord[6]}]]</label></td>
+          <td><input type="date" name="deadline" id="deadline" th:value="${registData.deadline}"></td>
+        </tr>
 
-    <tr>
-      <td><label for="priority">[[${wordList.tableWord[2]}]]</label></td>
-      <td><input type="number" name="priority" id="priority" min="1" max="9"
-           th:value="${registData.priority}"></td>
-    </tr>
+        <tr style="visibility: hidden;"><td>hidden</td></tr>
 
-    <tr>
-      <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
-      <td>
-        <select name="status" id="status">
-          <option value="0" th:selected="${registData.status == 0}">[[${wordList.statusWord[0]}]]</option>
-          <option value="1" th:selected="${registData.status == 1}">[[${wordList.statusWord[1]}]]</option>
-          <option value="2" th:selected="${registData.status == 2}">[[${wordList.statusWord[2]}]]</option>
-        </select>
-      </td>
-    </tr>
+        <tr>
+          <td>
+          </td>
+          <td>
+          <input class="flexButton" type="submit" value="Edit">
+          <input class="flexButton" type="button" value="Delete" th:onclick="'deleteConfirm(\'' + ${itemId} + '\')'">
+          </td>
+        </tr>
 
-    <tr>
-      <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
-      <td>
-        <select name="category" id="category">
-          <option value="0" th:selected="${registData.category == 0}">[[${wordList.categoryWord[0]}]]</option>
-          <option value="1" th:selected="${registData.category == 1}">[[${wordList.categoryWord[1]}]]</option>
-          <option value="2" th:selected="${registData.category == 2}">[[${wordList.categoryWord[2]}]]</option>
-          <option value="3" th:selected="${registData.category == 3}">[[${wordList.categoryWord[3]}]]</option>
-          <option value="4" th:selected="${registData.category == 4}">[[${wordList.categoryWord[4]}]]</option>
-          <option value="5" th:selected="${registData.category == 5}">[[${wordList.categoryWord[5]}]]</option>
-        </select>
-      </td>
-    </tr>
+      </tbody>
+      </table>
 
-    <tr>
-      <td><label for="worker">[[${wordList.tableWord[5]}]]</label></td>
-      <td><input name="worker" id="worker" maxlength="30" th:value="${registData.worker}"></td>
-    </tr>
-
-    <tr>
-      <td><label for="deadline">[[${wordList.tableWord[6]}]]</label></td>
-      <td><input type="date" name="deadline" id="deadline" th:value="${registData.deadline}"></td>
-    </tr>
-
-    <tr>
-      <td></td>
-      <td><input type="submit" value="Edit" id="do_edit"></td>
-    </tr>
-
-    <tr>
-      <td></td>
-      <td><input type="button" value="Delete" th:onclick="'deleteConfirm(\'' + ${itemId} + '\')'"></td>
-    </tr>
+    </div>
+  </div>
   </form>
 
-  </tbody>
-  </table>
+  <hr>
+  進捗記入
+
+  <div style="display: flex;">
+    <div class="flexItem" >
+      <textarea name="progress" id="progress" maxlength="800" rows="10" cols="80"></textarea>
+    </div>
+    <div class="flexItem" >
+      <input class="flexButton" type="submit" value="Progress">
+    </div>
+  </div>
+
+  <hr>
+  <div class="progressMain" th:each="list : ${progressList}">
+    <p>[[${list.date}]]</p>
+    <p>[[${list.contents}]]</p><br>
+  </div>
+
 
   <hr>
   <div th:insert="~{footer :: links}"></div>

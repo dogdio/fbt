@@ -18,6 +18,7 @@ import java.util.Map;
 @Controller
 public class ActionItem {
 	private List<RegistData> itemList = new ArrayList<>();
+	private List<ProgressData> progressList = new ArrayList<>();
 	private int idCounter = 1;
 
 	// default: japanese
@@ -31,6 +32,10 @@ public class ActionItem {
 		itemList.add(new RegistData(idCounter++, "aaaaaaaaa", 1, 0, 2, "hoge", "2023-07-01"));
 		itemList.add(new RegistData(idCounter++, "bbbbbbbbb", 5, 2, 2, "hoge", "2023-07-02"));
 		itemList.add(new RegistData(idCounter++, "ccccccccc", 3, 1, 3, "hoge", "2023-07-03"));
+
+		progressList.add(new ProgressData("hoge hoge", "2023-07-03 09:25:00"));
+		progressList.add(new ProgressData("hoge hoge", "2023-07-03 09:26:00"));
+		progressList.add(new ProgressData("hoge hoge", "2023-07-03 09:27:00"));
 	}
 
 	@GetMapping("summary")
@@ -119,6 +124,7 @@ public class ActionItem {
 		model.addAttribute("titleShow", "#" + arg.getId() + ", " + arg.getTitle());
 		model.addAttribute("itemId", arg.getId());
 		model.addAttribute("registData", arg);
+		model.addAttribute("progressList", progressList);
 		model.addAttribute("wordList", wordList);
 
 		return "show";
@@ -144,6 +150,7 @@ public class ActionItem {
 		model.addAttribute("titleShow", "#" + dst.getId() + ", " + dst.getTitle());
 		model.addAttribute("itemId", dst.getId());
 		model.addAttribute("registData", dst);
+		model.addAttribute("progressList", progressList);
 		model.addAttribute("wordList", wordList);
 
 		return "show"; // 編集後に表示する内容は同じ

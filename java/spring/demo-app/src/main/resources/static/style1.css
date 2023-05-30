@@ -11,6 +11,20 @@ td {
   padding: 3px; 
 }
 
+hr {
+  color: #d9d9d9;
+  border: 1px dotted;
+}
+
+.flexItem {
+  padding: 3px; 
+  margin-right: 20px;
+}
+.flexButton {
+  margin-left: 20px;
+}
+
+
 .itemTableHead {
   background-color: #ccddcc; 
   border: 1px solid; 
