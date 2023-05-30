@@ -9,10 +9,7 @@
   <h1 th:object="${wordList}">[[${wordList.titleConfig}]]</h1>
   <hr>
 
-  <form action="config" method="post" name="configFormName" id="configForm"
-   th:object="${configForm}">
-
-  <table id="configTable">
+  <table id="configTable" th:object="${configForm}">
   <tbody>
     <tr>
       <td><label for="lang">Language</label></td>
@@ -40,8 +37,6 @@
     </tr>
   </tbody>
   </table>
-
-  </form>
 
   <hr>
   <!-- "file name :: fragment name" -->
