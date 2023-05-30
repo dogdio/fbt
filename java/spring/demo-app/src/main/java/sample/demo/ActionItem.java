@@ -137,16 +137,16 @@ public class ActionItem {
 		return "show";
 	}
 
-	@PostMapping("/edit/{itemId}")
-	public String edit(RegistData arg, @PathVariable Integer itemId, Model model)
+	@PostMapping("writeItem")
+	@ResponseBody
+	public List<RegistData> writeItem(@RequestBody RegistData arg)
 	{
-		System.out.println("<<<<< edit id=" + itemId);
 		System.out.println("Args| " + arg.getId() + ": " +
 			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
 			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
 		);
 
-		RegistData dst = GetRegistDataById(itemId);
+		RegistData dst = GetRegistDataById(arg.getId());
 		dst.setTitle(arg.getTitle());
 		dst.setPriority(arg.getPriority());
 		dst.setStatus(arg.getStatus());
@@ -154,13 +154,9 @@ public class ActionItem {
 		dst.setWorker(arg.getWorker());
 		dst.setDeadline(arg.getDeadline());
 
-		model.addAttribute("titleShow", "#" + dst.getId() + ", " + dst.getTitle());
-		model.addAttribute("itemId", dst.getId());
-		model.addAttribute("registData", dst);
-		model.addAttribute("progressList", progressList);
-		model.addAttribute("wordList", wordList);
-
-		return "show"; // 編集後に表示する内容は同じ
+		List<RegistData> ret = new ArrayList<>();
+		ret.add(arg);
+		return ret;
 	}
 
 	@GetMapping("/delete/{itemId}")

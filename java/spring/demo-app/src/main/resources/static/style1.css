@@ -19,6 +19,7 @@ hr {
 .flexItem {
   padding: 3px; 
   margin-right: 20px;
+  margin-top: 3px;
 }
 .flexButton {
   margin-left: 20px;

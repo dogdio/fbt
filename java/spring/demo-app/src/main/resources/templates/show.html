@@ -8,27 +8,23 @@
 <body>
   <h1>[[${titleShow}]]<span id="toggleTitleButton" onclick="toggleTitleEdit()">+</span></h1>
   <hr>
-
-  <form th:action="@{/edit/{Id}(Id=${itemId})}" method="post" name="editFormName" id="editForm"
-        th:object="${registData}">
       
   <div style="display: flex;">
     <div class="flexItem" >
       <table id="editTable" th:object="${wordList}">
-      <tbody>
-      
+      <tbody th:object="${registData}">
         <tr id="titleTr">
           <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
           <td><textarea name="title" id="title" maxlength="200" rows="4" cols="50"
                th:text="${registData.title}"></textarea></td>
         </tr>
-      
+
         <tr>
           <td><label for="priority">[[${wordList.tableWord[2]}]]</label></td>
           <td><input type="number" name="priority" id="priority" min="1" max="9"
                th:value="${registData.priority}"></td>
         </tr>
-      
+
         <tr>
           <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
           <td>
@@ -39,7 +35,7 @@
             </select>
           </td>
         </tr>
-      
+
         <tr>
           <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
           <td>
@@ -53,9 +49,6 @@
             </select>
           </td>
         </tr>
-      
-      
-      
       </tbody>
       </table>
     </div>
@@ -79,17 +72,14 @@
           <td>
           </td>
           <td>
-          <input class="flexButton" type="submit" value="Edit">
+          <input class="flexButton" type="button" value="Edit" th:onclick="'writeItem(\'' + ${itemId} + '\')'">
           <input class="flexButton" type="button" value="Delete" th:onclick="'deleteConfirm(\'' + ${itemId} + '\')'">
           </td>
         </tr>
-
       </tbody>
       </table>
-
     </div>
   </div>
-  </form>
 
   <hr>
   進捗記入
@@ -99,7 +89,7 @@
       <textarea name="progress" id="progress" maxlength="800" rows="10" cols="80"></textarea>
     </div>
     <div class="flexItem" >
-      <input class="flexButton" type="submit" value="Progress">
+      <input id="writeProgress" type="submit" value="Insert">
     </div>
   </div>
 
@@ -114,7 +104,7 @@
   <div th:insert="~{footer :: links}"></div>
   <div th:insert="~{footer :: deleteDialog}"></div>
 
-  <script src="/sample.js"></script>
+  <script src="/show.js"></script>
 </body>
 </html>
 
