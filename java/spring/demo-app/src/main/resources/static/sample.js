@@ -120,3 +120,11 @@ window.addEventListener("keydown", (event) => {
 			deleteConfirmAction(false);
 	}
 });
+
+window.addEventListener('pageshow', function(event) {
+	console.log("pageshow: " + location.toString());
+
+	if (event.persisted) { // Cacheの場合はリロード
+		window.location.reload();
+	}
+});
