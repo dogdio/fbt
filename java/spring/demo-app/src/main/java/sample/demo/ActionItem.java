@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +85,10 @@ public class ActionItem {
 		return "config";
 	}
 
-	@PostMapping("config")
-	public String writeConfig(ConfigForm arg, Model model)
+	// JSONを受信して、JSONを返す(Thymeleafを使わない)
+	@PostMapping("writeConfig")
+	@ResponseBody
+	public List<ConfigForm> writeConfig(@RequestBody ConfigForm arg)
 	{
 		if(!configLang.equals(arg.getLang())) {
 			configLang = arg.getLang();
@@ -93,11 +97,14 @@ public class ActionItem {
 				wordList = new WordListJp();
 			else if(configLang.equals("en"))
 				wordList = new WordListEn();
-		}
-		model.addAttribute("wordList", wordList);
 
-		System.out.println("LANG=" + configLang);
-		return "config";
+			arg.setReload(true);
+		}
+		System.out.println("LANG=" + arg.getLang() + ", Reload=" + arg.getReload());
+
+		List<ConfigForm> ret = new ArrayList<>();
+		ret.add(arg);
+		return ret;
 	}
 
 	private RegistData GetRegistDataById(Integer itemId)
