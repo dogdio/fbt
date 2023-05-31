@@ -16,11 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 @Controller
 public class ActionItem {
 	private List<RegistData> itemList = new ArrayList<>();
-	private List<ProgressData> progressList = new ArrayList<>();
+	private Map<Integer, List<ProgressData>> progressList = new HashMap<>();
 	private int idCounter = 1;
 
 	// default: japanese
@@ -35,9 +38,18 @@ public class ActionItem {
 		itemList.add(new RegistData(idCounter++, "bbbbbbbbb", 5, 2, 2, "hoge", "2023-07-02"));
 		itemList.add(new RegistData(idCounter++, "ccccccccc", 3, 1, 3, "hoge", "2023-07-03"));
 
-		progressList.add(new ProgressData("hoge hoge", "2023-07-03 09:25:00"));
-		progressList.add(new ProgressData("hoge hoge", "2023-07-03 09:26:00"));
-		progressList.add(new ProgressData("hoge hoge", "2023-07-03 09:27:00"));
+		progressList.put(1, new ArrayList<ProgressData>());
+		progressList.get(1).add(new ProgressData("aaa: hoge hoge", "2023-07-03 09:25:00"));
+		progressList.get(1).add(new ProgressData("aaa: hoge hoge", "2023-07-04 09:26:00"));
+		progressList.get(1).add(new ProgressData("aaa: hoge hoge", "2023-07-05 09:27:00"));
+
+		progressList.put(2, new ArrayList<ProgressData>());
+		progressList.get(2).add(new ProgressData("bbb: hoge hoge", "2023-07-07 09:35:00"));
+		progressList.get(2).add(new ProgressData("bbb: hoge hoge", "2023-07-08 09:36:00"));
+
+		progressList.put(3, new ArrayList<ProgressData>());
+		progressList.get(3).add(new ProgressData("ccc: hoge hoge", "2023-08-07 09:35:00"));
+		progressList.get(3).add(new ProgressData("ccc: hoge hoge", "2023-08-08 09:36:00"));
 	}
 
 	@GetMapping("summary")
@@ -117,6 +129,16 @@ public class ActionItem {
 		return nullRegistData;
 	}
 
+	private List<ProgressData> GetProgressDataById(Integer itemId)
+	{
+		List<ProgressData> ret = progressList.get(itemId);
+		if(ret == null) {
+			progressList.put(itemId, new ArrayList<ProgressData>());
+			ret = progressList.get(itemId);
+		}
+		return ret;
+	}
+
 	@GetMapping("/show/{itemId}")
 	public String show(@PathVariable Integer itemId, Model model)
 	{
@@ -131,7 +153,7 @@ public class ActionItem {
 		model.addAttribute("titleShow", "#" + arg.getId() + ", " + arg.getTitle());
 		model.addAttribute("itemId", arg.getId());
 		model.addAttribute("registData", arg);
-		model.addAttribute("progressList", progressList);
+		model.addAttribute("progressList", GetProgressDataById(itemId));
 		model.addAttribute("wordList", wordList);
 
 		return "show";
@@ -159,6 +181,25 @@ public class ActionItem {
 		return ret;
 	}
 
+	@PostMapping("writeProgress")
+	@ResponseBody
+	public List<ProgressForm> writeProgress(@RequestBody ProgressForm arg)
+	{
+		System.out.println("Args| " + arg.getId() + ": " + arg.getContents());
+
+		LocalDateTime date = LocalDateTime.now();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+		String dateStr = date.format(dtf);
+		System.out.println("Now| " + dateStr);
+
+		List<ProgressData> dst = GetProgressDataById(arg.getId());
+		dst.add(new ProgressData(arg.getContents(), dateStr));
+
+		List<ProgressForm> ret = new ArrayList<>();
+		ret.add(arg);
+		return ret;
+	}
+
 	@GetMapping("/delete/{itemId}")
 	public String delete(@PathVariable Integer itemId, Model model)
 	{
@@ -169,9 +210,11 @@ public class ActionItem {
 		model.addAttribute("titleShow", "#" + del.getId() + ", " + del.getTitle());
 		model.addAttribute("wordList", wordList);
 
-		if(itemList.get(itemId - 1) != null)
+		if(itemList.get(itemId - 1) != null) {
 			itemList.remove(itemId - 1);
 
+			// FIXME: delete progress
+		}
 		return "delete";
 	}
 }

@@ -1,9 +1,9 @@
 let deleteId;
-function deleteConfirm(id)
+function deleteConfirm()
 {
 	let m = document.getElementById("modal");
 	m.style.display = "block";
-	deleteId = id;
+	deleteId = itemId;
 }
 
 function deleteConfirmAction(answer)
@@ -45,6 +45,8 @@ let inputData = {
 	deadline: "",
 };
 
+let itemId = 0;
+
 window.addEventListener("load", () => {
 	inputData = {
 		title: document.getElementById('title').value,
@@ -55,7 +57,10 @@ window.addEventListener("load", () => {
 		deadline: document.getElementById('deadline').value,
 	};
 	console.log(inputData);
-	console.log(document.getElementById('titleH1'));
+
+	let m = location.toString().match(/\/(\d+)$/);
+	if(m.length == 2)
+		itemId = m[1];
 });
 
 window.addEventListener("keydown", (event) => {
@@ -76,11 +81,11 @@ window.addEventListener('pageshow', function(event) {
 	}
 });
 
-function writeItem(id)
+function writeItem()
 {
 	let url = '/writeItem';
 	let req = {
-		id: id,
+		id: itemId,
 		title: document.getElementById('title').value,
 		priority: document.getElementById('priority').value,
 		status: document.getElementById('status').value,
@@ -103,5 +108,24 @@ function writeItem(id)
 			window.location.reload();
 		}
 		inputData = data;
+	});
+}
+
+function writeProgress()
+{
+	let url = '/writeProgress';
+	let req = {
+		id: itemId,
+		contents: document.getElementById('progress').value,
+	};
+
+	fetch(url, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(req)
+	})
+	.then((resp) => resp.json())
+	.then((json) => {
+		window.location.reload();
 	});
 }

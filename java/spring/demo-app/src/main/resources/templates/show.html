@@ -72,8 +72,8 @@
           <td>
           </td>
           <td>
-          <input class="flexButton" type="button" value="Edit" th:onclick="'writeItem(\'' + ${itemId} + '\')'">
-          <input class="flexButton" type="button" value="Delete" th:onclick="'deleteConfirm(\'' + ${itemId} + '\')'">
+          <input class="flexButton" type="button" value="Edit" onclick="writeItem()">
+          <input class="flexButton" type="button" value="Delete" onclick="deleteConfirm()">
           </td>
         </tr>
       </tbody>
@@ -89,7 +89,7 @@
       <textarea name="progress" id="progress" maxlength="800" rows="10" cols="80"></textarea>
     </div>
     <div class="flexItem" >
-      <input id="writeProgress" type="submit" value="Insert">
+      <input id="writeProgress" type="button" value="Insert" onclick="writeProgress()">
     </div>
   </div>
 
