@@ -31,6 +31,73 @@ public class ActionItem {
 	private String configLang = "jp";
 	private final static RegistData nullRegistData = new RegistData(0, "", 0, 0, 0, "", "");
 
+	private RegistData GetRegistDataById(Integer itemId)
+	{
+		for(RegistData rd: itemList) {
+			if(itemId == rd.getId()) {
+				return rd;
+			}
+		}
+		return nullRegistData;
+	}
+
+	private List<ProgressData> GetProgressListById(Integer itemId)
+	{
+		List<ProgressData> ret = progressList.get(itemId);
+		if(ret == null) {
+			progressList.put(itemId, new ArrayList<ProgressData>());
+			ret = progressList.get(itemId);
+		}
+		return ret;
+	}
+
+	private ProgressData GetProgressDataById(List<ProgressData> pdList, Integer progressId)
+	{
+		for(ProgressData pd: pdList) {
+			if(progressId == pd.getId()) {
+				return pd;
+			}
+		}
+		return null;
+	}
+
+	private int GenerateProgressId(List<ProgressData> pd)
+	{
+		if(pd.size() == 0)
+			return 1;
+
+		ProgressData tail = pd.get(pd.size() - 1);
+		return tail.getId() + 1;
+	}
+
+	private void DumpItem(Integer itemId)
+	{
+		System.out.println("");
+
+		for(RegistData rd : itemList) {
+			if(itemId != 0 && itemId != rd.getId())
+				continue;
+            
+			System.out.println("Item " + rd.getId() + ": " +
+				rd.getTitle() + "," + rd.getPriority() + "," + rd.getStatus() + "," +
+				rd.getCategory() + "," + rd.getWorker() + "," + rd.getDeadline()
+			);
+		} 
+
+		for(Integer key : progressList.keySet()) {
+			if(itemId != 0 && itemId != key)
+				continue;
+
+			List<ProgressData> pdList = progressList.get(key);
+
+			for(ProgressData pd : pdList) {
+				System.out.println("Progress[" + key + "] " +
+					pd.getId() + ": " + pd.getDate() + "," + pd.getContents()
+				);
+			}
+		}
+	}
+
 	public ActionItem()
 	{
 		//FIXME: tentative items
@@ -117,45 +184,6 @@ public class ActionItem {
 		List<ConfigForm> ret = new ArrayList<>();
 		ret.add(arg);
 		return ret;
-	}
-
-	private RegistData GetRegistDataById(Integer itemId)
-	{
-		for(RegistData rd: itemList) {
-			if(itemId == rd.getId()) {
-				return rd;
-			}
-		}
-		return nullRegistData;
-	}
-
-	private List<ProgressData> GetProgressListById(Integer itemId)
-	{
-		List<ProgressData> ret = progressList.get(itemId);
-		if(ret == null) {
-			progressList.put(itemId, new ArrayList<ProgressData>());
-			ret = progressList.get(itemId);
-		}
-		return ret;
-	}
-
-	private ProgressData GetProgressDataById(List<ProgressData> pdList, Integer progressId)
-	{
-		for(ProgressData pd: pdList) {
-			if(progressId == pd.getId()) {
-				return pd;
-			}
-		}
-		return null;
-	}
-
-	private int GenerateProgressId(List<ProgressData> pd)
-	{
-		if(pd.size() == 0)
-			return 1;
-
-		ProgressData tail = pd.get(pd.size() - 1);
-		return tail.getId() + 1;
 	}
 
 	@GetMapping("/show/{itemId}")
@@ -266,12 +294,24 @@ public class ActionItem {
 		model.addAttribute("titleShow", "#" + del.getId() + ", " + del.getTitle());
 		model.addAttribute("wordList", wordList);
 
-		if(itemList.get(itemId - 1) != null) {
-			itemList.remove(itemId - 1); // FIXME: buggggy
+		if(del != nullRegistData) {
+			itemList.remove(del);
 
-			// FIXME: delete progress
+			List<ProgressData> pdList = progressList.get(itemId);
+			if(pdList != null) {
+				progressList.remove(itemId);
+				System.out.println("<<<<< delete pdList");
+			}
 		}
 		return "delete";
+	}
+
+	@GetMapping("/dump/{itemId}")
+	@ResponseBody
+	public String dump(@PathVariable Integer itemId)
+	{
+		DumpItem(itemId);
+		return "OK";
 	}
 }
 
