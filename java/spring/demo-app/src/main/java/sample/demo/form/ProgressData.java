@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor // 全てのメンバを設定するコンストラクタを生成
 @Data // getter/setterが自動生成される(getNum, setNum)
 public class ProgressData {
+	private Integer id;
 	private String contents;
 	private String date;
 }

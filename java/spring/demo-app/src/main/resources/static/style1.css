@@ -79,6 +79,14 @@ hr {
   cursor: pointer;
   margin-left: 10px;
 }
+#toggleProgressButton {
+  border: none;
+  background-color: #dddddd;
+  color: #0000ee;
+  font-size: 10pt;
+  cursor: pointer;
+  margin-left: 10px;
+}
 
 
 /* modal型 yes/no ダイアログ  */

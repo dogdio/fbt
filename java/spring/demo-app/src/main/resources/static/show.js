@@ -129,3 +129,92 @@ function writeProgress()
 		window.location.reload();
 	});
 }
+
+function deleteProgress(event, progressId)
+{
+	let url = '/deleteProgress/' + itemId;
+	let req = {
+		id: progressId,
+		contents: "Delete",
+	};
+
+	fetch(url, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(req)
+	})
+	.then((resp) => resp.json())
+	.then((json) => {
+		window.location.reload();
+	});
+
+}
+
+function updateProgress(event, progressId)
+{
+	console.log("Update: " + itemId + " " + progressId);
+	console.log(document.getElementById('progressEditor').value);
+
+	let url = '/updateProgress/' + itemId;
+	let req = {
+		id: progressId,
+		contents: document.getElementById('progressEditor').value,
+	};
+
+	fetch(url, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(req)
+	})
+	.then((resp) => resp.json())
+	.then((json) => {
+		window.location.reload();
+	});
+
+}
+
+let progressEditorOn = 0;
+let textSave = "";
+let targetSave = "";
+function toggleProgressEditor(event)
+{
+	let div1 = event.target.parentElement;
+	let progressId = div1.previousElementSibling.previousElementSibling;
+	let id = progressId.innerText.substring(1); // #[[${list.id}]]
+
+	if(progressEditorOn && (event.target != targetSave)) {
+		let div = targetSave.parentElement.parentElement;
+		let text = div.nextElementSibling;
+
+		text.innerHTML = textSave;
+		targetSave.innerHTML = "+";
+		progressEditorOn = 0;
+	}
+
+	let div2 = div1.parentElement; // <div style="display: flex;">
+	let text = div2.nextElementSibling; // <p>[[${list.contents}]]</p>
+
+	progressEditorOn ^= 1;
+	if(progressEditorOn) {
+		textSave = text.innerHTML;
+		text.innerHTML = 
+		'<div style="display: flex;">' +
+			'<div class="flexItem">' +
+				'<textarea id="progressEditor" maxlength="800" rows="7" cols="80">' +
+				text.innerHTML + 
+				'</textarea>' +
+			'</div>' +
+			'<div class="flexItem">' +
+			'<input type="button" value="Update" onclick="updateProgress(event, ' + id + ')"><br><br>' +
+			'<input type="button" value="Delete" onclick="deleteProgress(event, ' + id + ')">' +
+			'</div>' +
+		'</div>';
+		event.target.innerHTML = "-";
+	}
+	else {
+		text.innerHTML = textSave;
+		event.target.innerHTML = "+";
+	}
+
+	targetSave = event.target;
+}

@@ -39,17 +39,17 @@ public class ActionItem {
 		itemList.add(new RegistData(idCounter++, "ccccccccc", 3, 1, 3, "hoge", "2023-07-03"));
 
 		progressList.put(1, new ArrayList<ProgressData>());
-		progressList.get(1).add(new ProgressData("aaa: hoge hoge", "2023-07-03 09:25:00"));
-		progressList.get(1).add(new ProgressData("aaa: hoge hoge", "2023-07-04 09:26:00"));
-		progressList.get(1).add(new ProgressData("aaa: hoge hoge", "2023-07-05 09:27:00"));
+		progressList.get(1).add(new ProgressData(1, "aaa: hoge hoge", "2023-07-03 09:25:00"));
+		progressList.get(1).add(new ProgressData(2, "aaa: hoge hoge", "2023-07-04 09:26:00"));
+		progressList.get(1).add(new ProgressData(3, "aaa: hoge hoge", "2023-07-05 09:27:00"));
 
 		progressList.put(2, new ArrayList<ProgressData>());
-		progressList.get(2).add(new ProgressData("bbb: hoge hoge", "2023-07-07 09:35:00"));
-		progressList.get(2).add(new ProgressData("bbb: hoge hoge", "2023-07-08 09:36:00"));
+		progressList.get(2).add(new ProgressData(1, "bbb: hoge hoge", "2023-07-07 09:35:00"));
+		progressList.get(2).add(new ProgressData(2, "bbb: hoge hoge", "2023-07-08 09:36:00"));
 
 		progressList.put(3, new ArrayList<ProgressData>());
-		progressList.get(3).add(new ProgressData("ccc: hoge hoge", "2023-08-07 09:35:00"));
-		progressList.get(3).add(new ProgressData("ccc: hoge hoge", "2023-08-08 09:36:00"));
+		progressList.get(3).add(new ProgressData(1, "ccc: hoge hoge", "2023-08-07 09:35:00"));
+		progressList.get(3).add(new ProgressData(2, "ccc: hoge hoge", "2023-08-08 09:36:00"));
 	}
 
 	@GetMapping("summary")
@@ -129,7 +129,7 @@ public class ActionItem {
 		return nullRegistData;
 	}
 
-	private List<ProgressData> GetProgressDataById(Integer itemId)
+	private List<ProgressData> GetProgressListById(Integer itemId)
 	{
 		List<ProgressData> ret = progressList.get(itemId);
 		if(ret == null) {
@@ -137,6 +137,25 @@ public class ActionItem {
 			ret = progressList.get(itemId);
 		}
 		return ret;
+	}
+
+	private ProgressData GetProgressDataById(List<ProgressData> pdList, Integer progressId)
+	{
+		for(ProgressData pd: pdList) {
+			if(progressId == pd.getId()) {
+				return pd;
+			}
+		}
+		return null;
+	}
+
+	private int GenerateProgressId(List<ProgressData> pd)
+	{
+		if(pd.size() == 0)
+			return 1;
+
+		ProgressData tail = pd.get(pd.size() - 1);
+		return tail.getId() + 1;
 	}
 
 	@GetMapping("/show/{itemId}")
@@ -153,7 +172,7 @@ public class ActionItem {
 		model.addAttribute("titleShow", "#" + arg.getId() + ", " + arg.getTitle());
 		model.addAttribute("itemId", arg.getId());
 		model.addAttribute("registData", arg);
-		model.addAttribute("progressList", GetProgressDataById(itemId));
+		model.addAttribute("progressList", GetProgressListById(itemId));
 		model.addAttribute("wordList", wordList);
 
 		return "show";
@@ -188,12 +207,49 @@ public class ActionItem {
 		System.out.println("Args| " + arg.getId() + ": " + arg.getContents());
 
 		LocalDateTime date = LocalDateTime.now();
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String dateStr = date.format(dtf);
 		System.out.println("Now| " + dateStr);
 
-		List<ProgressData> dst = GetProgressDataById(arg.getId());
-		dst.add(new ProgressData(arg.getContents(), dateStr));
+		List<ProgressData> dst = GetProgressListById(arg.getId());
+		int id = GenerateProgressId(dst);
+		dst.add(new ProgressData(id, arg.getContents(), dateStr));
+
+		List<ProgressForm> ret = new ArrayList<>();
+		ret.add(arg);
+		return ret;
+	}
+
+	@PostMapping("/deleteProgress/{itemId}")
+	@ResponseBody
+	public List<ProgressForm>
+	deleteProgress(@RequestBody ProgressForm arg, @PathVariable Integer itemId)
+	{
+		System.out.println("Args| "+ itemId + ", " + arg.getId() + ", " + arg.getContents());
+
+		List<ProgressData> pdList = GetProgressListById(itemId);
+
+		ProgressData del = GetProgressDataById(pdList, arg.getId());
+		if(del != null)
+			pdList.remove(del);
+
+		List<ProgressForm> ret = new ArrayList<>();
+		ret.add(arg);
+		return ret;
+	}
+
+	@PostMapping("/updateProgress/{itemId}")
+	@ResponseBody
+	public List<ProgressForm>
+	updateProgress(@RequestBody ProgressForm arg, @PathVariable Integer itemId)
+	{
+		System.out.println("Args| "+ itemId + ", " + arg.getId() + ", " + arg.getContents());
+
+		List<ProgressData> pdList = GetProgressListById(itemId);
+
+		ProgressData update = GetProgressDataById(pdList, arg.getId());
+		if(update != null)
+			update.setContents(arg.getContents());
 
 		List<ProgressForm> ret = new ArrayList<>();
 		ret.add(arg);
@@ -211,7 +267,7 @@ public class ActionItem {
 		model.addAttribute("wordList", wordList);
 
 		if(itemList.get(itemId - 1) != null) {
-			itemList.remove(itemId - 1);
+			itemList.remove(itemId - 1); // FIXME: buggggy
 
 			// FIXME: delete progress
 		}
