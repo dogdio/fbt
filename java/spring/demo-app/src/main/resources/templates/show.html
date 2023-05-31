@@ -6,7 +6,7 @@
 </head>
 
 <body>
-  <h1>[[${titleShow}]]<span id="toggleTitleButton" onclick="toggleTitleEdit()">+</span></h1>
+  <h1>[[${titleShow}]]<input type="checkbox" onclick="toggleStyleDisplay(event, 'titleTr', 'table-row')"></h1>
   <hr>
       
   <div style="display: flex;">
@@ -83,8 +83,9 @@
 
   <hr>
   進捗記入
+  <input type="checkbox" onclick="toggleStyleDisplay(event, 'progressWriteArea', 'flex')">
 
-  <div style="display: flex;">
+  <div style="display: none;" id="progressWriteArea">
     <div class="flexItem" >
       <textarea name="progress" id="progress" maxlength="800" rows="10" cols="80"></textarea>
     </div>
@@ -96,14 +97,14 @@
   <hr>
   <div class="progressMain" th:each="list : ${progressList}">
     <div style="display: flex;">
-      <div class="flexItem">
+      <div class="flexItem2">
         #[[${list.id}]]
       </div>
-      <div class="flexItem" >
+      <div class="flexItem2" >
         [[${list.date}]]
       </div>
-      <div class="flexItem" >
-        <div id="toggleProgressButton" onclick="toggleProgressEditor(event)">+</div>
+      <div class="flexItem2" >
+        <input type="checkbox" onclick="toggleProgressEditor(event)">
       </div>
     </div>
     <p>[[${list.contents}]]</p><br>

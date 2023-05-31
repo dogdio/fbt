@@ -16,15 +16,23 @@ hr {
   border: 1px dotted;
 }
 
+input[type=checkbox] {
+  cursor: pointer;
+}
+
 .flexItem {
   padding: 3px; 
   margin-right: 20px;
   margin-top: 3px;
 }
+.flexItem2 {
+  padding: 3px;
+  margin-right: 10px;
+  margin-top: 3px;
+}
 .flexButton {
   margin-left: 20px;
 }
-
 
 .itemTableHead {
   background-color: #ccddcc; 
@@ -76,14 +84,6 @@ hr {
   background-color: #dddddd;
   color: #0000ee;
   font-size: small;
-  cursor: pointer;
-  margin-left: 10px;
-}
-#toggleProgressButton {
-  border: none;
-  background-color: #dddddd;
-  color: #0000ee;
-  font-size: 10pt;
   cursor: pointer;
   margin-left: 10px;
 }

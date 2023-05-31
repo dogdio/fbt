@@ -17,25 +17,6 @@ function deleteConfirmAction(answer)
 	}
 }
 
-let toggleTitle = 0;
-function toggleTitleEdit()
-{
-	toggleTitle ^= 1;
-
-	let e = document.getElementById("titleTr");
-	let b = document.getElementById("toggleTitleButton");
-
-	// visibilityだと枠が確保されて空白が丸見えになる
-	if(toggleTitle) {
-		e.style.display = 'table-row';
-		b.innerHTML = "-";
-	}
-	else {
-		e.style.display = 'none';
-		b.innerHTML = "+";
-	}
-}
-
 let inputData = {
 	title: "",
 	priority: 0,
@@ -173,29 +154,26 @@ function updateProgress(event, progressId)
 
 }
 
-let progressEditorOn = 0;
 let textSave = "";
-let targetSave = "";
+let targetSave = null;
 function toggleProgressEditor(event)
 {
 	let div1 = event.target.parentElement;
 	let progressId = div1.previousElementSibling.previousElementSibling;
 	let id = progressId.innerText.substring(1); // #[[${list.id}]]
 
-	if(progressEditorOn && (event.target != targetSave)) {
+	if(targetSave != null && (event.target != targetSave)) {
 		let div = targetSave.parentElement.parentElement;
 		let text = div.nextElementSibling;
 
 		text.innerHTML = textSave;
-		targetSave.innerHTML = "+";
-		progressEditorOn = 0;
+		targetSave.checked = false;
 	}
 
 	let div2 = div1.parentElement; // <div style="display: flex;">
 	let text = div2.nextElementSibling; // <p>[[${list.contents}]]</p>
 
-	progressEditorOn ^= 1;
-	if(progressEditorOn) {
+	if(event.target.checked) {
 		textSave = text.innerHTML;
 		text.innerHTML = 
 		'<div style="display: flex;">' +
@@ -209,12 +187,24 @@ function toggleProgressEditor(event)
 			'<input type="button" value="Delete" onclick="deleteProgress(event, ' + id + ')">' +
 			'</div>' +
 		'</div>';
-		event.target.innerHTML = "-";
 	}
 	else {
 		text.innerHTML = textSave;
-		event.target.innerHTML = "+";
 	}
 
 	targetSave = event.target;
 }
+
+function toggleStyleDisplay(event, id, setting)
+{
+	let checked = event.target.checked;
+
+	let e = document.getElementById(id);
+	if(checked) {
+		e.style.display = setting;
+	}
+	else {
+		e.style.display = 'none';
+	}
+}
+
