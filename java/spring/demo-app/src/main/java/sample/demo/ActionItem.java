@@ -2,6 +2,7 @@ package sample.demo;
 
 import sample.demo.form.*;
 import sample.demo.word.*;
+import sample.demo.serv.*;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,9 @@ public class ActionItem {
 	private WordListIF wordList = new WordListJp();
 	private String configLang = "jp";
 	private final static RegistData nullRegistData = new RegistData(0, "", 0, 0, 0, "", "");
+
+	@Autowired
+	ItemService itemServ;
 
 	private RegistData GetRegistDataById(Integer itemId)
 	{
@@ -122,7 +127,14 @@ public class ActionItem {
 	@GetMapping("summary")
 	public String summary(Model model)
 	{
-		model.addAttribute("lists", itemList);
+		Iterable<RegistData> rdList  = itemServ.findAll();
+		for(RegistData rd : rdList)
+			System.out.println("RD " + rd.getId() + ":" +
+				rd.getTitle() + "," + rd.getPriority() + "," + rd.getStatus() + "," +
+				rd.getCategory() + "," + rd.getWorker() + "," + rd.getDeadline()
+			);
+
+		model.addAttribute("lists", rdList);
 		model.addAttribute("wordList", wordList);
 		return "summary";
 	}
@@ -142,15 +154,15 @@ public class ActionItem {
 			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
 		);
 
-		model.addAttribute("regist_number", idCounter);
 		RegistData rd = new RegistData(
-			idCounter++,
+			null,
 			arg.getTitle(), arg.getPriority(), arg.getStatus(),
 			arg.getCategory(), arg.getWorker(), arg.getDeadline()
 		);
 
-		itemList.add(rd);
+		Integer id = itemServ.save(rd);
 
+		model.addAttribute("regist_number", id);
 		model.addAttribute("wordList", wordList);
 		return "regist";
 	}
@@ -189,17 +201,16 @@ public class ActionItem {
 	@GetMapping("/show/{itemId}")
 	public String show(@PathVariable Integer itemId, Model model)
 	{
-		System.out.println("<<<<< show id=" + itemId);
+		RegistData rd = itemServ.findById(itemId);
 
-		RegistData arg = GetRegistDataById(itemId);
-		System.out.println("Args| " + arg.getId() + ": " +
-			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
-			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
+		System.out.println("[show] " + rd.getId() + ": " +
+			rd.getTitle() + "," + rd.getPriority() + "," + rd.getStatus() + "," +
+			rd.getCategory() + "," + rd.getWorker() + "," + rd.getDeadline()
 		);
 
-		model.addAttribute("titleShow", "#" + arg.getId() + ", " + arg.getTitle());
-		model.addAttribute("itemId", arg.getId());
-		model.addAttribute("registData", arg);
+		model.addAttribute("titleShow", "#" + rd.getId() + ", " + rd.getTitle());
+		model.addAttribute("itemId", rd.getId());
+		model.addAttribute("registData", rd);
 		model.addAttribute("progressList", GetProgressListById(itemId));
 		model.addAttribute("wordList", wordList);
 
@@ -210,18 +221,18 @@ public class ActionItem {
 	@ResponseBody
 	public List<RegistData> writeItem(@RequestBody RegistData arg)
 	{
-		System.out.println("Args| " + arg.getId() + ": " +
+		System.out.println("[writeItem] " + arg.getId() + ": " +
 			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
 			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
 		);
 
-		RegistData dst = GetRegistDataById(arg.getId());
-		dst.setTitle(arg.getTitle());
-		dst.setPriority(arg.getPriority());
-		dst.setStatus(arg.getStatus());
-		dst.setCategory(arg.getCategory());
-		dst.setWorker(arg.getWorker());
-		dst.setDeadline(arg.getDeadline());
+		if(itemServ.isExists(arg.getId())) {
+			RegistData rd = new RegistData(
+				arg.getId(), arg.getTitle(), arg.getPriority(), arg.getStatus(),
+				arg.getCategory(), arg.getWorker(), arg.getDeadline()
+			);
+			itemServ.save(rd);
+		}
 
 		List<RegistData> ret = new ArrayList<>();
 		ret.add(arg);
@@ -287,22 +298,18 @@ public class ActionItem {
 	@GetMapping("/delete/{itemId}")
 	public String delete(@PathVariable Integer itemId, Model model)
 	{
-		System.out.println("<<<<< delete id=" + itemId);
+		String title = "#" + itemId + ", ";
 
-		RegistData del = GetRegistDataById(itemId);
+		if(itemServ.isExists(itemId)) {
+			RegistData del = itemServ.findById(itemId);
+			title += del.getTitle();
 
-		model.addAttribute("titleShow", "#" + del.getId() + ", " + del.getTitle());
-		model.addAttribute("wordList", wordList);
-
-		if(del != nullRegistData) {
-			itemList.remove(del);
-
-			List<ProgressData> pdList = progressList.get(itemId);
-			if(pdList != null) {
-				progressList.remove(itemId);
-				System.out.println("<<<<< delete pdList");
-			}
+			itemServ.deleteById(itemId);
+			// FIXME: delete progress
 		}
+
+		model.addAttribute("titleShow", title);
+		model.addAttribute("wordList", wordList);
 		return "delete";
 	}
 
