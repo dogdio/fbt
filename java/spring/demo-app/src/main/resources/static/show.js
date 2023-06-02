@@ -92,12 +92,22 @@ function writeItem()
 	});
 }
 
+function BRtoLF(str)
+{
+	return str.replace(/<br>/gi, "\n");
+}
+
+function LFtoBR(str)
+{
+	return str.replace(/\n|\r\n/g, "<br>");
+}
+
 function writeProgress()
 {
 	let url = '/writeProgress';
 	let req = {
 		id: itemId,
-		contents: document.getElementById('progress').value,
+		contents: LFtoBR(document.getElementById('progress').value),
 	};
 
 	fetch(url, {
@@ -139,7 +149,7 @@ function updateProgress(event, id)
 	let url = '/updateProgress/' + itemId;
 	let req = {
 		id: id,
-		contents: document.getElementById('progressEditor').value,
+		contents: LFtoBR(document.getElementById('progressEditor').value),
 	};
 
 	fetch(url, {
@@ -179,7 +189,7 @@ function toggleProgressEditor(event)
 		'<div style="display: flex;">' +
 			'<div class="flexItem">' +
 				'<textarea id="progressEditor" maxlength="800" rows="7" cols="80">' +
-				text.innerHTML + 
+				BRtoLF(text.innerHTML) +
 				'</textarea>' +
 			'</div>' +
 			'<div class="flexItem">' +
