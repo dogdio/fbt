@@ -3,11 +3,9 @@ package sample.demo.form;
 import org.springframework.data.annotation.Id;
 import lombok.Data;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 //import javax.persistence.Table;
 //import javax.persistence.Entity;
 
-@NoArgsConstructor
 @AllArgsConstructor // 全てのメンバを設定するコンストラクタを生成
 @Data // getter/setterが自動生成される(getNum, setNum)
 public class RegistData {

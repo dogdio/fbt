@@ -111,11 +111,11 @@ function writeProgress()
 	});
 }
 
-function deleteProgress(event, progressId)
+function deleteProgress(event, id)
 {
 	let url = '/deleteProgress/' + itemId;
 	let req = {
-		id: progressId,
+		id: id,
 		contents: "Delete",
 	};
 
@@ -131,14 +131,14 @@ function deleteProgress(event, progressId)
 
 }
 
-function updateProgress(event, progressId)
+function updateProgress(event, id)
 {
-	console.log("Update: " + itemId + " " + progressId);
+	console.log("Update/" + itemId + "/ " + id);
 	console.log(document.getElementById('progressEditor').value);
 
 	let url = '/updateProgress/' + itemId;
 	let req = {
-		id: progressId,
+		id: id,
 		contents: document.getElementById('progressEditor').value,
 	};
 
@@ -159,8 +159,8 @@ let targetSave = null;
 function toggleProgressEditor(event)
 {
 	let div1 = event.target.parentElement;
-	let progressId = div1.previousElementSibling.previousElementSibling;
-	let id = progressId.innerText.substring(1); // #[[${list.id}]]
+	let key = div1.nextElementSibling;
+	let id = key.innerText.substring(1); // #[[${list.id}]]
 
 	if(targetSave != null && (event.target != targetSave)) {
 		let div = targetSave.parentElement.parentElement;

@@ -98,13 +98,16 @@
   <div class="progressMain" th:each="list : ${progressList}">
     <div style="display: flex;">
       <div class="flexItem2">
-        #[[${list.id}]]
+        #[[${list.progressId}]]
       </div>
       <div class="flexItem2" >
         [[${list.date}]]
       </div>
       <div class="flexItem2" >
         <input type="checkbox" onclick="toggleProgressEditor(event)">
+      </div>
+      <div style="display: none;" id="KeyId">
+        [[${list.id}]]
       </div>
     </div>
     <p>[[${list.contents}]]</p><br>

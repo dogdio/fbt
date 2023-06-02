@@ -16,113 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
 @Controller
 public class ActionItem {
-	private List<RegistData> itemList = new ArrayList<>();
-	private Map<Integer, List<ProgressData>> progressList = new HashMap<>();
-	private int idCounter = 1;
-
 	// default: japanese
 	private WordListIF wordList = new WordListJp();
 	private String configLang = "jp";
-	private final static RegistData nullRegistData = new RegistData(0, "", 0, 0, 0, "", "");
 
-	@Autowired
-	ItemService itemServ;
-
-	private RegistData GetRegistDataById(Integer itemId)
-	{
-		for(RegistData rd: itemList) {
-			if(itemId == rd.getId()) {
-				return rd;
-			}
-		}
-		return nullRegistData;
-	}
-
-	private List<ProgressData> GetProgressListById(Integer itemId)
-	{
-		List<ProgressData> ret = progressList.get(itemId);
-		if(ret == null) {
-			progressList.put(itemId, new ArrayList<ProgressData>());
-			ret = progressList.get(itemId);
-		}
-		return ret;
-	}
-
-	private ProgressData GetProgressDataById(List<ProgressData> pdList, Integer progressId)
-	{
-		for(ProgressData pd: pdList) {
-			if(progressId == pd.getId()) {
-				return pd;
-			}
-		}
-		return null;
-	}
-
-	private int GenerateProgressId(List<ProgressData> pd)
-	{
-		if(pd.size() == 0)
-			return 1;
-
-		ProgressData tail = pd.get(pd.size() - 1);
-		return tail.getId() + 1;
-	}
-
-	private void DumpItem(Integer itemId)
-	{
-		System.out.println("");
-
-		for(RegistData rd : itemList) {
-			if(itemId != 0 && itemId != rd.getId())
-				continue;
-            
-			System.out.println("Item " + rd.getId() + ": " +
-				rd.getTitle() + "," + rd.getPriority() + "," + rd.getStatus() + "," +
-				rd.getCategory() + "," + rd.getWorker() + "," + rd.getDeadline()
-			);
-		} 
-
-		for(Integer key : progressList.keySet()) {
-			if(itemId != 0 && itemId != key)
-				continue;
-
-			List<ProgressData> pdList = progressList.get(key);
-
-			for(ProgressData pd : pdList) {
-				System.out.println("Progress[" + key + "] " +
-					pd.getId() + ": " + pd.getDate() + "," + pd.getContents()
-				);
-			}
-		}
-	}
-
-	public ActionItem()
-	{
-		//FIXME: tentative items
-		itemList.add(new RegistData(idCounter++, "aaaaaaaaa", 1, 0, 2, "hoge", "2023-07-01"));
-		itemList.add(new RegistData(idCounter++, "bbbbbbbbb", 5, 2, 2, "hoge", "2023-07-02"));
-		itemList.add(new RegistData(idCounter++, "ccccccccc", 3, 1, 3, "hoge", "2023-07-03"));
-
-		progressList.put(1, new ArrayList<ProgressData>());
-		progressList.get(1).add(new ProgressData(1, "aaa: hoge hoge", "2023-07-03 09:25:00"));
-		progressList.get(1).add(new ProgressData(2, "aaa: hoge hoge", "2023-07-04 09:26:00"));
-		progressList.get(1).add(new ProgressData(3, "aaa: hoge hoge", "2023-07-05 09:27:00"));
-
-		progressList.put(2, new ArrayList<ProgressData>());
-		progressList.get(2).add(new ProgressData(1, "bbb: hoge hoge", "2023-07-07 09:35:00"));
-		progressList.get(2).add(new ProgressData(2, "bbb: hoge hoge", "2023-07-08 09:36:00"));
-
-		progressList.put(3, new ArrayList<ProgressData>());
-		progressList.get(3).add(new ProgressData(1, "ccc: hoge hoge", "2023-08-07 09:35:00"));
-		progressList.get(3).add(new ProgressData(2, "ccc: hoge hoge", "2023-08-08 09:36:00"));
-	}
+	@Autowired ItemService itemServ;
+	@Autowired ProgressService progressServ;
 
 	@GetMapping("summary")
 	public String summary(Model model)
@@ -211,7 +116,7 @@ public class ActionItem {
 		model.addAttribute("titleShow", "#" + rd.getId() + ", " + rd.getTitle());
 		model.addAttribute("itemId", rd.getId());
 		model.addAttribute("registData", rd);
-		model.addAttribute("progressList", GetProgressListById(itemId));
+		model.addAttribute("progressList", progressServ.findAll(itemId));
 		model.addAttribute("wordList", wordList);
 
 		return "show";
@@ -245,14 +150,17 @@ public class ActionItem {
 	{
 		System.out.println("Args| " + arg.getId() + ": " + arg.getContents());
 
-		LocalDateTime date = LocalDateTime.now();
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		String dateStr = date.format(dtf);
-		System.out.println("Now| " + dateStr);
+		if(itemServ.isExists(arg.getId())) {
+			LocalDateTime date = LocalDateTime.now();
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			String dateStr = date.format(dtf);
+			System.out.println("Now| " + dateStr);
 
-		List<ProgressData> dst = GetProgressListById(arg.getId());
-		int id = GenerateProgressId(dst);
-		dst.add(new ProgressData(id, arg.getContents(), dateStr));
+			int progressId = progressServ.generateProgressId(arg.getId());
+			ProgressData pd = new ProgressData(null, arg.getId(), progressId,
+												arg.getContents(), dateStr);
+			progressServ.save(pd);
+		}
 
 		List<ProgressForm> ret = new ArrayList<>();
 		ret.add(arg);
@@ -264,13 +172,11 @@ public class ActionItem {
 	public List<ProgressForm>
 	deleteProgress(@RequestBody ProgressForm arg, @PathVariable Integer itemId)
 	{
-		System.out.println("Args| "+ itemId + ", " + arg.getId() + ", " + arg.getContents());
+		System.out.println("### Delete key: " + arg.getId() +
+			", item=" + itemId + ", " + arg.getContents());
 
-		List<ProgressData> pdList = GetProgressListById(itemId);
-
-		ProgressData del = GetProgressDataById(pdList, arg.getId());
-		if(del != null)
-			pdList.remove(del);
+		if(progressServ.isExists(arg.getId()))
+			progressServ.deleteById(arg.getId());
 
 		List<ProgressForm> ret = new ArrayList<>();
 		ret.add(arg);
@@ -282,13 +188,14 @@ public class ActionItem {
 	public List<ProgressForm>
 	updateProgress(@RequestBody ProgressForm arg, @PathVariable Integer itemId)
 	{
-		System.out.println("Args| "+ itemId + ", " + arg.getId() + ", " + arg.getContents());
+		System.out.println("### Update key: " + arg.getId() +
+			", item=" + itemId + ", " + arg.getContents());
 
-		List<ProgressData> pdList = GetProgressListById(itemId);
-
-		ProgressData update = GetProgressDataById(pdList, arg.getId());
-		if(update != null)
-			update.setContents(arg.getContents());
+		ProgressData pd = progressServ.findById(arg.getId());
+		if(pd.getId() == arg.getId()) {
+			pd.setContents(arg.getContents());
+			progressServ.save(pd);
+		}
 
 		List<ProgressForm> ret = new ArrayList<>();
 		ret.add(arg);
@@ -305,7 +212,7 @@ public class ActionItem {
 			title += del.getTitle();
 
 			itemServ.deleteById(itemId);
-			// FIXME: delete progress
+			progressServ.deleteAllByItemId(itemId);
 		}
 
 		model.addAttribute("titleShow", title);
@@ -317,7 +224,9 @@ public class ActionItem {
 	@ResponseBody
 	public String dump(@PathVariable Integer itemId)
 	{
-		DumpItem(itemId);
+//		int ret = progressServ.generateProgressId(itemId);
+//		System.out.println("ret = " + ret);
+//		progressServ.deleteAllByItemId(itemId);
 		return "OK";
 	}
 }
