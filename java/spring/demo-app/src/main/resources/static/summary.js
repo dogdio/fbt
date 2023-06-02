@@ -1,4 +1,3 @@
-
 ////////////////////////////////////////////////////////
 //
 // Table Sort
@@ -72,55 +71,6 @@ function compareNumRev(a, b)
 	return b.cmpValue - a.cmpValue;
 }
 
-let deleteId;
-function deleteConfirm(id)
-{
-	var m = document.getElementById("modal");
-	m.style.display = "block";
-	deleteId = id;
-}
-
-function deleteConfirmAction(answer)
-{
-	var m = document.getElementById("modal");
-	m.style.display = "none";
-
-	if (answer) {
-		console.log("####### delete" + deleteId);
-		location.href = "/delete/" + deleteId;
-	}
-}
-
-
-let toggleTitle = 0;
-function toggleTitleEdit()
-{
-	toggleTitle ^= 1;
-
-	let e = document.getElementById("titleTr");
-	let b = document.getElementById("toggleTitleButton");
-
-	// visibilityだと枠が確保されて空白が丸見えになる
-	if(toggleTitle) {
-		e.style.display = 'table-row';
-		b.innerHTML = "-";
-	}
-	else {
-		e.style.display = 'none';
-		b.innerHTML = "+";
-	}
-}
-
-window.addEventListener("keydown", (event) => {
-//	console.log(event);
-
-	var m = document.getElementById("modal");
-	if(m.style.display == 'block') {
-		if(event.key == 'Escape')
-			deleteConfirmAction(false);
-	}
-});
-
 window.addEventListener('pageshow', function(event) {
 	console.log("pageshow: " + location.toString());
 
@@ -129,25 +79,3 @@ window.addEventListener('pageshow', function(event) {
 	}
 });
 
-document.getElementById("writeConfig").addEventListener("click", (event) => {
-	let v0 = document.getElementById('lang').value;
-	let v1 = document.getElementById('value1').value;
-	let v2 = document.getElementById('value2').value;
-
-	var url = 'writeConfig';
-	var data = { lang: v0, value1: v1, value2: v2, reload: false };
-
-	fetch(url, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify(data)
-	})
-	.then((resp) => resp.json())
-	.then((json) => {
-		let config = json[0];
-		console.log(config.lang + ", " + config.reload);
-
-		if(config.reload)
-			window.location.reload();
-	});
-});
