@@ -1,0 +1,6 @@
+drop table regist_data;
+drop table progress_data;
+
+create table regist_data (id serial primary key, title character varying(200) not null, priority integer, status integer, category integer, worker character varying(30), deadline character varying(10));
+create table progress_data (id serial primary key, item_id integer, progress_id integer, contents text, date character varying(19));
+

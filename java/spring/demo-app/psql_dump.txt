@@ -1,0 +1,3 @@
+SELECT * FROM regist_data;
+SELECT * FROM progress_data;
+
