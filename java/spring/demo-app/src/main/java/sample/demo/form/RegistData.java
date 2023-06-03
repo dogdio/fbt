@@ -3,6 +3,7 @@ package sample.demo.form;
 import org.springframework.data.annotation.Id;
 import lombok.Data;
 import lombok.AllArgsConstructor;
+import java.time.LocalDate;
 //import javax.persistence.Table;
 //import javax.persistence.Entity;
 
@@ -17,6 +18,6 @@ public class RegistData {
 	private Integer status;
 	private Integer category;
 	private String worker;
-	private String deadline;
+	private LocalDate deadline;
 }
 

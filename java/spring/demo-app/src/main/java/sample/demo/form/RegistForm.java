@@ -1,6 +1,7 @@
 package sample.demo.form;
 import lombok.Data;
 import lombok.AllArgsConstructor;
+import java.time.LocalDate;
 
 @AllArgsConstructor // 全てのメンバを設定するコンストラクタを生成
 @Data // getter/setterが自動生成される(getNum, setNum)
@@ -10,6 +11,6 @@ public class RegistForm {
 	private Integer status;
 	private Integer category;
 	private String worker;
-	private String deadline;
+	private LocalDate deadline;
 }
 

@@ -17,29 +17,54 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 
 @Controller
 public class ActionItem {
 	// default: japanese
 	private WordListIF wordList = new WordListJp();
 	private String configLang = "jp";
+	private ConfigData config = new ConfigData(999, 999, "", LocalDate.now(), LocalDate.now().plusMonths(1));
 
 	@Autowired ItemService itemServ;
 	@Autowired ProgressService progressServ;
 
 	@GetMapping("summary")
-	public String summary(Model model)
+	public String summary(ConfigData arg, Model model)
 	{
-		Iterable<RegistData> rdList  = itemServ.findAll();
-		for(RegistData rd : rdList)
+		System.out.println("arg " + arg.getStatus() + "," + arg.getCategory() + "," +
+			arg.getWorker() + "," + arg.getStartDate() + "," + arg.getStopDate()
+		);
+		if(arg.getStatus() != null)
+			config.setStatus(arg.getStatus());
+		if(arg.getCategory() != null)
+			config.setCategory(arg.getCategory());
+		if(arg.getWorker() != null)
+			config.setWorker(arg.getWorker());
+		if(arg.getStartDate() != null)
+			config.setStartDate(arg.getStartDate());
+		if(arg.getStopDate() != null)
+			config.setStopDate(arg.getStopDate());
+
+		Iterable<RegistData> rdList  = itemServ.findAll(config);
+
+		List<RegistData> rdList2 = new ArrayList<RegistData>();
+		for(RegistData rd : rdList) {
+			if(config.getWorker().length() != 0) {
+				if(!config.getWorker().equals(rd.getWorker())) {
+					continue;
+				}
+			}
+
+			rdList2.add(rd);
 			System.out.println("RD " + rd.getId() + ":" +
 				rd.getTitle() + "," + rd.getPriority() + "," + rd.getStatus() + "," +
 				rd.getCategory() + "," + rd.getWorker() + "," + rd.getDeadline()
 			);
-
-		model.addAttribute("lists", rdList);
+		}
+		model.addAttribute("lists", rdList2);
+		model.addAttribute("configData", config);
 		model.addAttribute("wordList", wordList);
 		return "summary";
 	}

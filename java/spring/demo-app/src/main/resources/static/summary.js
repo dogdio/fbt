@@ -79,3 +79,10 @@ window.addEventListener('pageshow', function(event) {
 	}
 });
 
+function setStatus(event)
+{
+	let e = event.target;
+	console.log("status: " + e.options[e.selectedIndex].text);
+
+
+}

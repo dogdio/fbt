@@ -9,6 +9,73 @@
   <h1 th:object="${wordList}">[[${wordList.titleSummary}]]</h1>
   <hr>
 
+  <p>Query</p>
+  <div th:object="${wordList}">
+    <form>
+    <div style="display: flex;" th:object="${configData}">
+      <div class="flexItem" >
+        <table>
+        <tbody>
+        <tr>
+          <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
+          <td><select name="status" id="status" onchange="setStatus(event)">
+            <option value="999" th:selected="${configData.status == 999}">-</option>
+            <option value="0" th:selected="${configData.status == 0}">[[${wordList.statusWord[0]}]]</option>
+            <option value="1" th:selected="${configData.status == 1}">[[${wordList.statusWord[1]}]]</option>
+            <option value="2" th:selected="${configData.status == 2}">[[${wordList.statusWord[2]}]]</option>
+          </select></td>
+        </tr>
+
+        <tr>
+          <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
+          <td><select name="category" id="category">
+            <option value="999" th:selected="${configData.category == 999}">-</option>
+            <option value="0" th:selected="${configData.category == 0}">[[${wordList.categoryWord[0]}]]</option>
+            <option value="1" th:selected="${configData.category == 1}">[[${wordList.categoryWord[1]}]]</option>
+            <option value="2" th:selected="${configData.category == 2}">[[${wordList.categoryWord[2]}]]</option>
+            <option value="3" th:selected="${configData.category == 3}">[[${wordList.categoryWord[3]}]]</option>
+            <option value="4" th:selected="${configData.category == 4}">[[${wordList.categoryWord[4]}]]</option>
+            <option value="5" th:selected="${configData.category == 5}">[[${wordList.categoryWord[5]}]]</option>
+          </select></td>
+        </tr>
+        </tbody>
+        </table>
+      </div>
+
+      <div class="flexItem" >
+        <table>
+        <tbody>
+        <tr>
+          <td><label for="worker">[[${wordList.tableWord[5]}]]</label></td>
+          <td><input name="worker" id="worker" maxlength="30" th:value="${configData.worker}"></td>
+        </tr>
+
+        <tr>
+          <td><label for="deadline">[[${wordList.tableWord[6]}]]</label></td>
+          <td><input type="date" name="startDate" id="startDate" maxlength="10" th:value="${configData.startDate}" style="margin-right: 6px;">～
+              <input type="date" name="stopDate" id="stopDate" maxlength="10" th:value="${configData.stopDate}"></td>
+        </tr>
+        </tbody>
+        </table>
+      </div>
+
+      <div class="flexItem" >
+          <input class="flexButton" type="submit" value="Query">
+      </div>
+    </div>
+    </form>
+
+    <p>Filter</p>
+    <div th:object="${configData}">
+      <div th:if="${configData.status} == 999">
+        <input type="checkbox" id="new" checked>  <label for="new">未着手</label>
+        <input type="checkbox" id="proc" checked> <label for="proc">作業中</label>
+        <input type="checkbox" id="end" checked>  <label for="end">完了</label>
+      </div>
+    </div>
+  </div>
+
+  <hr>
   <table id="itemTable" th:object="${wordList}">
     <thead>
       <tr class="itemTableHead">
