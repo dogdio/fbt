@@ -105,16 +105,12 @@ public class ActionItem {
 				arg.getCategory(), arg.getWorker(), arg.getDeadline()
 			);
 			id = itemServ.save(rd);
+
 		}
 
-		System.out.println("Args| " +
-			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
-			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
-		);
-
-		model.addAttribute("regist_number", id);
-		model.addAttribute("wordList", wordList);
-		return "regist";
+		// HTML内のinline Javascriptにidを埋め込む
+		model.addAttribute("destURL", "/show/" + id);
+		return "transition";
 	}
 
 	@GetMapping("config")
@@ -157,6 +153,10 @@ public class ActionItem {
 			rd.getTitle() + "," + rd.getPriority() + "," + rd.getStatus() + "," +
 			rd.getCategory() + "," + rd.getWorker() + "," + rd.getDeadline()
 		);
+		if(rd.getId() == 0) {
+			model.addAttribute("destURL", "/summary");
+			return "transition";
+		}
 
 		model.addAttribute("titleShow", "#" + rd.getId() + ", " + rd.getTitle());
 		model.addAttribute("itemId", rd.getId());
@@ -250,19 +250,13 @@ public class ActionItem {
 	@GetMapping("/delete/{itemId}")
 	public String delete(@PathVariable Integer itemId, Model model)
 	{
-		String title = "#" + itemId + ", ";
-
 		if(itemServ.isExists(itemId)) {
-			RegistData del = itemServ.findById(itemId);
-			title += del.getTitle();
-
 			itemServ.deleteById(itemId);
 			progressServ.deleteAllByItemId(itemId);
 		}
 
-		model.addAttribute("titleShow", title);
-		model.addAttribute("wordList", wordList);
-		return "delete";
+		model.addAttribute("destURL", "/summary");
+		return "transition";
 	}
 
 	@GetMapping("/dump/{itemId}")
