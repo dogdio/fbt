@@ -4,7 +4,7 @@ import lombok.Data;
 @Data // getter/setterが自動生成される(getNum, setNum)
 public class ConfigForm {
 	private String lang;
-	private String value1;
+	private Integer itemSortOrder;
 	private String value2;
 	private Boolean reload;
 }

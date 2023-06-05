@@ -1,11 +1,11 @@
 
 document.getElementById("writeConfig").addEventListener("click", (event) => {
 	let v0 = document.getElementById('lang').value;
-	let v1 = document.getElementById('value1').value;
+	let v1 = document.getElementById('itemSortOrder').value;
 	let v2 = document.getElementById('value2').value;
 
 	var url = 'writeConfig';
-	var data = { lang: v0, value1: v1, value2: v2, reload: false };
+	var data = { lang: v0, itemSortOrder: v1, value2: v2, reload: false };
 
 	fetch(url, {
 		method: 'POST',

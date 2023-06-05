@@ -28,7 +28,8 @@ public class ActionItem {
 	// default: japanese
 	private WordListIF wordList = new WordListJp();
 	private String configLang = "jp";
-	private ConfigData config = new ConfigData(Constants.STATUS_MIN, 999, "", LocalDate.now(), LocalDate.now().plusMonths(1));
+	private ConfigData config = new ConfigData(Constants.STATUS_MIN, 999, "",
+		LocalDate.now(), LocalDate.now().plusMonths(1), "jp", 6);
 
 	@Autowired ItemService itemServ;
 	@Autowired ProgressService progressServ;
@@ -119,6 +120,8 @@ public class ActionItem {
 		model.addAttribute("wordList", wordList);
 
 		arg.setLang(configLang);
+		arg.setItemSortOrder(config.getItemSortOrder());
+
 		return "config";
 	}
 
@@ -137,7 +140,11 @@ public class ActionItem {
 
 			arg.setReload(true);
 		}
+
+		config.setItemSortOrder(arg.getItemSortOrder());
+
 		System.out.println("LANG=" + arg.getLang() + ", Reload=" + arg.getReload());
+		System.out.println("ItemSort=" + arg.getLang() + ", Reload=" + arg.getReload());
 
 		List<ConfigForm> ret = new ArrayList<>();
 		ret.add(arg);

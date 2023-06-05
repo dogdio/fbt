@@ -22,8 +22,18 @@
     </tr>
 
     <tr>
-      <td><label for="value1">value1</label></td>
-      <td><input name="value1" id="value1" maxlength="30"></td>
+      <td><label for="itemSortOrder">[[${wordList.configWord[0]}]]</label></td>
+      <td>
+        <select name="itemSortOrder" id="itemSortOrder">
+          <option value="0" th:selected="${configForm.itemSortOrder == 0}">[[${wordList.tableWord[0]}]]</option>
+          <option value="1" th:selected="${configForm.itemSortOrder == 1}">[[${wordList.tableWord[1]}]]</option>
+          <option value="2" th:selected="${configForm.itemSortOrder == 2}">[[${wordList.tableWord[2]}]]</option>
+          <option value="3" th:selected="${configForm.itemSortOrder == 3}">[[${wordList.tableWord[3]}]]</option>
+          <option value="4" th:selected="${configForm.itemSortOrder == 4}">[[${wordList.tableWord[4]}]]</option>
+          <option value="5" th:selected="${configForm.itemSortOrder == 5}">[[${wordList.tableWord[5]}]]</option>
+          <option value="6" th:selected="${configForm.itemSortOrder == 6}">[[${wordList.tableWord[6]}]]</option>
+        </select>
+      </td>
     </tr>
 
     <tr>

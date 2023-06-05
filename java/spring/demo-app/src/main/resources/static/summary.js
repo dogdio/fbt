@@ -104,3 +104,9 @@ function itemFilter(event, col, clicked)
 	}
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+	let e = document.getElementById("configItemSortOrder");
+	console.log(e);
+	sortTable(e.innerHTML);
+});
+
