@@ -27,9 +27,8 @@ import java.time.format.DateTimeFormatter;
 public class ActionItem {
 	// default: japanese
 	private WordListIF wordList = new WordListJp();
-	private String configLang = "jp";
 	private ConfigData config = new ConfigData(Constants.STATUS_MIN, 999, "",
-		LocalDate.now(), LocalDate.now().plusMonths(1), "jp", 6);
+		LocalDate.now(), LocalDate.now().plusMonths(1), Constants.LANG_JP, Constants.ITEM_SORT_DEADLINE);
 
 	@Autowired ItemService itemServ;
 	@Autowired ProgressService progressServ;
@@ -119,7 +118,7 @@ public class ActionItem {
 	{
 		model.addAttribute("wordList", wordList);
 
-		arg.setLang(configLang);
+		arg.setLang(config.getLang());
 		arg.setItemSortOrder(config.getItemSortOrder());
 
 		return "config";
@@ -130,12 +129,12 @@ public class ActionItem {
 	@ResponseBody
 	public List<ConfigForm> writeConfig(@RequestBody ConfigForm arg)
 	{
-		if(!configLang.equals(arg.getLang())) {
-			configLang = arg.getLang();
+		if(!config.getLang().equals(arg.getLang())) {
+			config.setLang(arg.getLang());
 
-			if(configLang.equals("jp"))
+			if(config.getLang().equals(Constants.LANG_JP))
 				wordList = new WordListJp();
-			else if(configLang.equals("en"))
+			else if(config.getLang().equals(Constants.LANG_EN))
 				wordList = new WordListEn();
 
 			arg.setReload(true);
@@ -144,7 +143,7 @@ public class ActionItem {
 		config.setItemSortOrder(arg.getItemSortOrder());
 
 		System.out.println("LANG=" + arg.getLang() + ", Reload=" + arg.getReload());
-		System.out.println("ItemSort=" + arg.getLang() + ", Reload=" + arg.getReload());
+		System.out.println("ItemSort=" + arg.getItemSortOrder());
 
 		List<ConfigForm> ret = new ArrayList<>();
 		ret.add(arg);
