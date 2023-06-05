@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sample.demo.form.RegistData;
 import sample.demo.form.ConfigData;
+import sample.demo.form.Constants;
 import sample.demo.repo.ItemRepository;
 
 @Service
@@ -20,13 +21,13 @@ public class ItemServiceImpl implements ItemService {
 	public Iterable<RegistData> findAll(ConfigData config)
 	{
 //		return repository.findAllSortById();
-		int statusMin = 0;
-		int statusMax = 2;
-		if(config.getStatus() != 999)
+		int statusMin = Constants.STATUS_MIN + 1;
+		int statusMax = Constants.STATUS_MAX;
+		if(config.getStatus() != Constants.STATUS_MIN)
 			statusMin = statusMax = config.getStatus();
 
-		int cateMin = 0;
-		int cateMax = 5;
+		int cateMin = Constants.CATEGORY_MIN;
+		int cateMax = Constants.CATEGORY_MAX;
 		if(config.getCategory() != 999)
 			cateMin = cateMax = config.getCategory();
 

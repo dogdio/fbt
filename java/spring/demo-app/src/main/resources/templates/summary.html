@@ -19,10 +19,11 @@
         <tr>
           <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
           <td><select name="status" id="status" onchange="setStatus(event)">
-            <option value="999" th:selected="${configData.status == 999}">-</option>
             <option value="0" th:selected="${configData.status == 0}">[[${wordList.statusWord[0]}]]</option>
             <option value="1" th:selected="${configData.status == 1}">[[${wordList.statusWord[1]}]]</option>
             <option value="2" th:selected="${configData.status == 2}">[[${wordList.statusWord[2]}]]</option>
+            <option value="3" th:selected="${configData.status == 3}">[[${wordList.statusWord[3]}]]</option>
+            <option value="4" th:selected="${configData.status == 4}">[[${wordList.statusWord[4]}]]</option>
           </select></td>
         </tr>
 
@@ -67,10 +68,11 @@
 
     <h3>Filter</h3>
     <div th:object="${configData}">
-      <div th:if="${configData.status} == 999">
-        <input type="checkbox" id="new" checked  onclick="itemFilter(event, 3, 0)"> <label for="new" >[[${wordList.statusWord[0]}]]</label>
-        <input type="checkbox" id="proc" checked onclick="itemFilter(event, 3, 1)"> <label for="proc">[[${wordList.statusWord[1]}]]</label>
-        <input type="checkbox" id="end" checked  onclick="itemFilter(event, 3, 2)"> <label for="end" >[[${wordList.statusWord[2]}]]</label>
+      <div th:if="${configData.status} == 0">
+        <input type="checkbox" id="st1" checked onclick="itemFilter(event, 3, 1)"> <label for="st1">[[${wordList.statusWord[1]}]]</label>
+        <input type="checkbox" id="st2" checked onclick="itemFilter(event, 3, 2)"> <label for="st2">[[${wordList.statusWord[2]}]]</label>
+        <input type="checkbox" id="st3" checked onclick="itemFilter(event, 3, 3)"> <label for="st3">[[${wordList.statusWord[3]}]]</label>
+        <input type="checkbox" id="st4" checked onclick="itemFilter(event, 3, 4)"> <label for="st4">[[${wordList.statusWord[4]}]]</label>
       </div>
       <div style="margin-bottom: 5px;"> </div>
       <div th:if="${configData.category} == 999">

@@ -29,9 +29,10 @@
           <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
           <td>
             <select name="status" id="status">
-              <option value="0" th:selected="${registData.status == 0}">[[${wordList.statusWord[0]}]]</option>
               <option value="1" th:selected="${registData.status == 1}">[[${wordList.statusWord[1]}]]</option>
               <option value="2" th:selected="${registData.status == 2}">[[${wordList.statusWord[2]}]]</option>
+              <option value="3" th:selected="${registData.status == 3}">[[${wordList.statusWord[3]}]]</option>
+              <option value="4" th:selected="${registData.status == 4}">[[${wordList.statusWord[4]}]]</option>
             </select>
           </td>
         </tr>

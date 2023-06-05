@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +28,7 @@ public class ActionItem {
 	// default: japanese
 	private WordListIF wordList = new WordListJp();
 	private String configLang = "jp";
-	private ConfigData config = new ConfigData(999, 999, "", LocalDate.now(), LocalDate.now().plusMonths(1));
+	private ConfigData config = new ConfigData(Constants.STATUS_MIN, 999, "", LocalDate.now(), LocalDate.now().plusMonths(1));
 
 	@Autowired ItemService itemServ;
 	@Autowired ProgressService progressServ;
@@ -77,20 +80,37 @@ public class ActionItem {
 	}
 
 	@PostMapping("regist")
-	public String regist(RegistForm arg, Model model)
+	public String regist(@Validated RegistForm arg, BindingResult result, Model model)
 	{
 		System.out.println("Args| " +
 			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
 			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
 		);
 
-		RegistData rd = new RegistData(
-			null,
-			arg.getTitle(), arg.getPriority(), arg.getStatus(),
-			arg.getCategory(), arg.getWorker(), arg.getDeadline()
-		);
+		Integer id = -1;
 
-		Integer id = itemServ.save(rd);
+		if (result.hasErrors()) {
+			List<FieldError> errors = result.getFieldErrors();
+			for(FieldError err : errors) {
+				if(err.getField().equals("status")) {
+					System.out.println("!!! Status Error: " + arg.getStatus());
+					arg.setStatus(0);
+				}
+			}
+		}
+		else {
+			RegistData rd = new RegistData(
+				null,
+				arg.getTitle(), arg.getPriority(), arg.getStatus(),
+				arg.getCategory(), arg.getWorker(), arg.getDeadline()
+			);
+			id = itemServ.save(rd);
+		}
+
+		System.out.println("Args| " +
+			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
+			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
+		);
 
 		model.addAttribute("regist_number", id);
 		model.addAttribute("wordList", wordList);
