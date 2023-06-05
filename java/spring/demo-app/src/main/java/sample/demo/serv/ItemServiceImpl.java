@@ -26,9 +26,9 @@ public class ItemServiceImpl implements ItemService {
 		if(config.getStatus() != Constants.STATUS_MIN)
 			statusMin = statusMax = config.getStatus();
 
-		int cateMin = Constants.CATEGORY_MIN;
+		int cateMin = Constants.CATEGORY_MIN + 1;
 		int cateMax = Constants.CATEGORY_MAX;
-		if(config.getCategory() != 999)
+		if(config.getCategory() != Constants.CATEGORY_MIN)
 			cateMin = cateMax = config.getCategory();
 
 		return repository.findAllWithMyQuery(

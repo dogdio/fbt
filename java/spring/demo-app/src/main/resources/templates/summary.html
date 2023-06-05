@@ -30,13 +30,13 @@
         <tr>
           <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
           <td><select name="category" id="category">
-            <option value="999" th:selected="${configData.category == 999}">-</option>
             <option value="0" th:selected="${configData.category == 0}">[[${wordList.categoryWord[0]}]]</option>
             <option value="1" th:selected="${configData.category == 1}">[[${wordList.categoryWord[1]}]]</option>
             <option value="2" th:selected="${configData.category == 2}">[[${wordList.categoryWord[2]}]]</option>
             <option value="3" th:selected="${configData.category == 3}">[[${wordList.categoryWord[3]}]]</option>
             <option value="4" th:selected="${configData.category == 4}">[[${wordList.categoryWord[4]}]]</option>
             <option value="5" th:selected="${configData.category == 5}">[[${wordList.categoryWord[5]}]]</option>
+            <option value="6" th:selected="${configData.category == 6}">[[${wordList.categoryWord[6]}]]</option>
           </select></td>
         </tr>
         </tbody>
@@ -75,13 +75,13 @@
         <input type="checkbox" id="st4" checked onclick="itemFilter(event, 3, 4)"> <label for="st4">[[${wordList.statusWord[4]}]]</label>
       </div>
       <div style="margin-bottom: 5px;"> </div>
-      <div th:if="${configData.category} == 999">
-        <input type="checkbox" id="cate0" checked onclick="itemFilter(event, 4, 0)"> <label for="cate0">[[${wordList.categoryWord[0]}]]</label>
+      <div th:if="${configData.category} == 0">
         <input type="checkbox" id="cate1" checked onclick="itemFilter(event, 4, 1)"> <label for="cate1">[[${wordList.categoryWord[1]}]]</label>
         <input type="checkbox" id="cate2" checked onclick="itemFilter(event, 4, 2)"> <label for="cate2">[[${wordList.categoryWord[2]}]]</label>
         <input type="checkbox" id="cate3" checked onclick="itemFilter(event, 4, 3)"> <label for="cate3">[[${wordList.categoryWord[3]}]]</label>
         <input type="checkbox" id="cate4" checked onclick="itemFilter(event, 4, 4)"> <label for="cate4">[[${wordList.categoryWord[4]}]]</label>
         <input type="checkbox" id="cate5" checked onclick="itemFilter(event, 4, 5)"> <label for="cate5">[[${wordList.categoryWord[5]}]]</label>
+        <input type="checkbox" id="cate6" checked onclick="itemFilter(event, 4, 6)"> <label for="cate6">[[${wordList.categoryWord[6]}]]</label>
       </div>
     </div>
   </div>

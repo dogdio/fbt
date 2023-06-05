@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 public class ActionItem {
 	// default: japanese
 	private WordListIF wordList = new WordListJp();
-	private ConfigData config = new ConfigData(Constants.STATUS_MIN, 999, "",
+	private ConfigData config = new ConfigData(Constants.STATUS_MIN, Constants.CATEGORY_MIN, "",
 		LocalDate.now(), LocalDate.now().plusMonths(1), Constants.LANG_JP, Constants.ITEM_SORT_DEADLINE);
 
 	@Autowired ItemService itemServ;

@@ -4,7 +4,7 @@ public class Constants {
 	public static final int STATUS_MIN = 0;
 	public static final int STATUS_MAX = 4; // statusWord
 	public static final int CATEGORY_MIN = 0;
-	public static final int CATEGORY_MAX = 5; // categoryWord
+	public static final int CATEGORY_MAX = 6; // categoryWord
 
 	public static final String LANG_JP = "jp";
 	public static final String LANG_EN = "en";

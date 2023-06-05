@@ -3,7 +3,7 @@ package sample.demo.word;
 public class WordListEn implements WordListIF {
 	public final String tableWord[] = { "ID", "Title", "Priority", "Status", "Category", "Worker", "Deadline" };
 	public final String statusWord[] = { "-", "Open", "Processing", "Complete", "Close" };
-	public final String categoryWord[] = {"new feature", "bug fix", "refactor", "study", "retrospective", "etc" };
+	public final String categoryWord[] = { "-", "new feature", "bug fix", "refactor", "study", "retrospective", "etc" };
 	public final String linkWord[] = {"new item", "summary", "config" };
 	public final String dialogWord[] = {"Delete this ?"};
 	public final String configWord[] = {"Item Sort Order"};
