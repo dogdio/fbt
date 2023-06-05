@@ -83,6 +83,24 @@ function setStatus(event)
 {
 	let e = event.target;
 	console.log("status: " + e.options[e.selectedIndex].text);
-
-
 }
+
+function itemFilter(event, col, clicked)
+{
+	let table = document.getElementById("itemTable");
+
+	console.log("columun["+col+"]: " + event.target.checked + ", click=" + clicked);
+	for (let r = 1; r < table.rows.length; r++) {
+		let row = table.rows[r];
+		let sv = row.cells[col].firstElementChild;
+
+		//console.log(sv);
+		if(clicked == sv.value) {
+			if(event.target.checked)
+				row.style.display = 'table-row';
+			else
+				row.style.display = 'none';
+		}
+	}
+}
+
