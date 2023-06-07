@@ -9,55 +9,62 @@
   <h1 th:object="${wordList}">[[${wordList.titleNewItem}]]</h1>
   <hr>
 
-  <form action="regist" method="post" name="registFormName" id="registForm">
+  <form action="regist" method="post" name="registFormName" id="registForm" th:object="${registData}">
 
-  <table id="registTable" th:object="${wordList}">
+  <table id="registTable">
   <tbody>
     <tr>
       <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
-      <td><textarea name="title" id="title" maxlength="200" rows="4" cols="50"></textarea></td>
+      <td><textarea name="title" id="title" maxlength="210" rows="4" cols="50" th:field="*{title}"></textarea></td>
+      <td><div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color: red"></div></td>
     </tr>
 
     <tr>
       <td><label for="priority">[[${wordList.tableWord[2]}]]</label></td>
-      <td><input type="number" name="priority" id="priority" min="1" max="9"></td>
+      <td><input type="number" name="priority" id="priority" min="1" max="9" th:field="*{priority}"></td>
+      <td><div th:if="${#fields.hasErrors('priority')}" th:errors="*{priority}" style="color: red"></div></td>
     </tr>
 
     <tr>
       <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
       <td>
         <select name="status" id="status">
-          <option value="1" selected>[[${wordList.statusWord[1]}]]</option>
-          <option value="2">[[${wordList.statusWord[2]}]]</option>
-          <option value="3">[[${wordList.statusWord[3]}]]</option>
-          <option value="4">[[${wordList.statusWord[4]}]]</option>
-          <option value="5">for-error</option><!-- for debug-->
+          <option value="1" th:selected="*{status == 1}">[[${wordList.statusWord[1]}]]</option>
+          <option value="2" th:selected="*{status == 2}">[[${wordList.statusWord[2]}]]</option>
+          <option value="3" th:selected="*{status == 3}">[[${wordList.statusWord[3]}]]</option>
+          <option value="4" th:selected="*{status == 4}">[[${wordList.statusWord[4]}]]</option>
+          <option value="5" th:selected="*{status == 5}">for-error</option><!-- for debug-->
         </select>
       </td>
+      <td><div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" style="color: red"></div></td>
     </tr>
 
     <tr>
       <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
       <td>
         <select name="category" id="category">
-          <option value="1" selected>[[${wordList.categoryWord[1]}]]</option>
-          <option value="2">[[${wordList.categoryWord[2]}]]</option>
-          <option value="3">[[${wordList.categoryWord[3]}]]</option>
-          <option value="4">[[${wordList.categoryWord[4]}]]</option>
-          <option value="5">[[${wordList.categoryWord[5]}]]</option>
-          <option value="6">[[${wordList.categoryWord[6]}]]</option>
+          <option value="1" th:selected="*{category == 1}">[[${wordList.categoryWord[1]}]]</option>
+          <option value="2" th:selected="*{category == 2}">[[${wordList.categoryWord[2]}]]</option>
+          <option value="3" th:selected="*{category == 3}">[[${wordList.categoryWord[3]}]]</option>
+          <option value="4" th:selected="*{category == 4}">[[${wordList.categoryWord[4]}]]</option>
+          <option value="5" th:selected="*{category == 5}">[[${wordList.categoryWord[5]}]]</option>
+          <option value="6" th:selected="*{category == 6}">[[${wordList.categoryWord[6]}]]</option>
+          <option value="-1">for-error</option><!-- for debug-->
         </select>
       </td>
+      <td><div th:if="${#fields.hasErrors('category')}" th:errors="*{category}" style="color: red"></div></td>
     </tr>
 
     <tr>
       <td><label for="worker">[[${wordList.tableWord[5]}]]</label></td>
-      <td><input name="worker" id="worker" maxlength="30"></td>
+      <td><input name="worker" id="worker" maxlength="35" th:field="*{worker}"></td>
+      <td><div th:if="${#fields.hasErrors('worker')}" th:errors="*{worker}" style="color: red"></div></td>
     </tr>
 
     <tr>
       <td><label for="deadline">[[${wordList.tableWord[6]}]]</label></td>
-      <td><input type="date" name="deadline" id="deadline"></td>
+      <td><input type="date" name="deadline" id="deadline" th:value="*{deadline}"></td>
+      <td><div th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}" style="color: red"></div></td>
     </tr>
 
     <tr>
@@ -72,7 +79,7 @@
   <hr>
   <div th:insert="~{footer :: links}"></div>
 
-  <!--script src="sample.js"></script-->
+  <script src="new_item.js"></script>
 </body>
 </html>
 

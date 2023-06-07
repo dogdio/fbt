@@ -75,37 +75,32 @@ public class ActionItem {
 	@GetMapping("new_item")
 	public String newItem(Model model)
 	{
+		RegistData rd = new RegistData(-1, "new item", Constants.PRIORITY_MIN, Constants.STATUS_MIN+1,
+										Constants.CATEGORY_MIN+1, "hoge", LocalDate.now());
+
+		model.addAttribute("registData", rd);
 		model.addAttribute("wordList", wordList);
 		return "new_item";
 	}
 
 	@PostMapping("regist")
-	public String regist(@Validated RegistForm arg, BindingResult result, Model model)
+	public String regist(@Validated RegistData arg, BindingResult result, Model model)
 	{
 		System.out.println("Args| " +
 			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
 			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
 		);
-
 		Integer id = -1;
 
 		if (result.hasErrors()) {
-			List<FieldError> errors = result.getFieldErrors();
-			for(FieldError err : errors) {
-				if(err.getField().equals("status")) {
-					System.out.println("!!! Status Error: " + arg.getStatus());
-					arg.setStatus(0);
-				}
-			}
+			System.out.println("<<<<<<<<<<<<< Input Error");
+			model.addAttribute("registData", arg);
+			model.addAttribute("wordList", wordList);
+			return "new_item";
 		}
 		else {
-			RegistData rd = new RegistData(
-				null,
-				arg.getTitle(), arg.getPriority(), arg.getStatus(),
-				arg.getCategory(), arg.getWorker(), arg.getDeadline()
-			);
-			id = itemServ.save(rd);
-
+			arg.setId(null);
+			id = itemServ.save(arg);
 		}
 
 		// HTML内のinline Javascriptにidを埋め込む
