@@ -22,6 +22,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @Controller
 public class ActionItem {
@@ -75,32 +76,45 @@ public class ActionItem {
 	@GetMapping("new_item")
 	public String newItem(Model model)
 	{
-		RegistData rd = new RegistData(-1, "new item", Constants.PRIORITY_MIN, Constants.STATUS_MIN+1,
-										Constants.CATEGORY_MIN+1, "hoge", LocalDate.now());
+		RegistForm rf = new RegistForm(-1, "new item", Constants.PRIORITY_MIN, Constants.STATUS_MIN+1,
+										Constants.CATEGORY_MIN+1, "hoge", "");
 
-		model.addAttribute("registData", rd);
+		model.addAttribute("registForm", rf);
 		model.addAttribute("wordList", wordList);
 		return "new_item";
 	}
 
 	@PostMapping("regist")
-	public String regist(@Validated RegistData arg, BindingResult result, Model model)
+	public String regist(@Validated RegistForm arg, BindingResult result, Model model)
 	{
 		System.out.println("Args| " +
 			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
 			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
 		);
 		Integer id = -1;
+		LocalDate deadline = null;
+
+		if(arg.getDeadline() != null && arg.getDeadline().length() != 0) {
+			try {
+				deadline = LocalDate.parse(arg.getDeadline(), DateTimeFormatter.ISO_DATE);
+			}
+			catch (DateTimeParseException e){
+				FieldError fieldError = new FieldError("arg", "deadline", "must be: yyyy-mm-dd");
+				result.addError(fieldError);
+			}
+		}
 
 		if (result.hasErrors()) {
 			System.out.println("<<<<<<<<<<<<< Input Error");
-			model.addAttribute("registData", arg);
+			model.addAttribute("registForm", arg);
 			model.addAttribute("wordList", wordList);
 			return "new_item";
 		}
 		else {
-			arg.setId(null);
-			id = itemServ.save(arg);
+			RegistData rd = new RegistData(null, arg.getTitle(), arg.getPriority(), arg.getStatus(),
+											arg.getCategory(), arg.getWorker(), deadline);
+			System.out.println("Date " + deadline);
+			id = itemServ.save(rd);
 		}
 
 		// HTML内のinline Javascriptにidを埋め込む

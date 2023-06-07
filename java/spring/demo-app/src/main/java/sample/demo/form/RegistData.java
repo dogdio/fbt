@@ -35,12 +35,12 @@ public class RegistData {
 	@Range(min = Constants.CATEGORY_MIN+1, max = Constants.CATEGORY_MAX)
 	private Integer category;
 
-	@NotBlank // FIXME: ???
+	@NotBlank
 	@Length(min = 1, max = 30)
 	private String worker;
 
-	@NotNull // FIXME: ???
-	@FutureOrPresent // FIXME: ???
+	@NotNull
+	@FutureOrPresent
 	private LocalDate deadline;
 }
 
