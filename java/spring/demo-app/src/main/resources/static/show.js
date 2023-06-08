@@ -186,7 +186,7 @@ function toggleProgressEditor(event)
 	if(event.target.checked) {
 		textSave = text.innerHTML;
 		text.innerHTML = 
-		'<div style="display: flex;">' +
+		'<div style="display: flex;" class="dynamicArea">' +
 			'<div class="flexItem">' +
 				'<textarea id="progressEditor" maxlength="800" rows="7" cols="80">' +
 				BRtoLF(text.innerHTML) +
@@ -197,6 +197,8 @@ function toggleProgressEditor(event)
 			'<input type="button" value="Delete" onclick="deleteProgress(event, ' + id + ')">' +
 			'</div>' +
 		'</div>';
+		let e = text.firstElementChild;
+		e.classList.toggle("active");
 	}
 	else {
 		text.innerHTML = textSave;
@@ -205,11 +207,12 @@ function toggleProgressEditor(event)
 	targetSave = event.target;
 }
 
-function toggleStyleDisplay(event, id, setting)
+function toggleDynamicArea(event, id, setting)
 {
 	let checked = event.target.checked;
 
 	let e = document.getElementById(id);
+	e.classList.toggle("active");
 	if(checked) {
 		e.style.display = setting;
 	}

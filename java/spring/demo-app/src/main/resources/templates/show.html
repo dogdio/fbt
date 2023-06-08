@@ -6,14 +6,17 @@
 </head>
 
 <body>
-  <h1>[[${titleShow}]]<input type="checkbox" onclick="toggleStyleDisplay(event, 'titleTr', 'table-row')"></h1>
+  <h1>[[${titleShow}]]
+    <input type="checkbox" onclick="toggleDynamicArea(event, 'titleTr', 'table-row')" id="custom1" class="customCheckBox1">
+    <label for="custom1" class="customCheckBoxL1"></label>
+  </h1>
   <hr>
       
   <div style="display: flex;">
     <div class="flexItem" >
       <table id="editTable" th:object="${wordList}">
       <tbody th:object="${registData}">
-        <tr id="titleTr">
+        <tr style="display: none;" id="titleTr" class="dynamicArea">
           <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
           <td><textarea name="title" id="title" maxlength="200" rows="4" cols="50"
                th:text="${registData.title}"></textarea></td>
@@ -83,10 +86,12 @@
   </div>
 
   <hr>
-  進捗記入
-  <input type="checkbox" onclick="toggleStyleDisplay(event, 'progressWriteArea', 'flex')">
+  <h3>進捗記入
+    <input type="checkbox" onclick="toggleDynamicArea(event, 'progressWriteArea', 'flex')" id="custom2" class="customCheckBox1">
+    <label for="custom2" class="customCheckBoxL1"></label>
+  </h3>
 
-  <div style="display: none;" id="progressWriteArea">
+  <div style="display: none;" id="progressWriteArea" class="dynamicArea">
     <div class="flexItem" >
       <textarea name="progress" id="progress" maxlength="800" rows="10" cols="80"></textarea>
     </div>
@@ -105,7 +110,8 @@
         [[${list.date}]]
       </div>
       <div class="flexItem2" >
-        <input type="checkbox" onclick="toggleProgressEditor(event)">
+        <input type="checkbox" onclick="toggleProgressEditor(event)" th:id="'pid' + ${list.progressId}" class="customCheckBox1">
+        <label th:for="'pid' + ${list.progressId}" class="customCheckBoxL1"></label>
       </div>
       <div style="display: none;" id="KeyId">
         [[${list.id}]]
