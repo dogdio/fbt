@@ -172,6 +172,7 @@ function toggleProgressEditor(event)
 	let key = div1.nextElementSibling;
 	let id = key.innerText.substring(1); // #[[${list.id}]]
 
+	// 既に開いている方をすぐに閉じる（アニメなし）
 	if(targetSave != null && (event.target != targetSave)) {
 		let div = targetSave.parentElement.parentElement;
 		let text = div.nextElementSibling;
@@ -198,10 +199,17 @@ function toggleProgressEditor(event)
 			'</div>' +
 		'</div>';
 		let e = text.firstElementChild;
-		e.classList.toggle("active");
+		e.classList.add("active");
+		e.classList.remove("inactive");
 	}
 	else {
-		text.innerHTML = textSave;
+		let e = text.firstElementChild;
+		e.addEventListener("animationend", (event) => {
+			if(e.classList.contains('inactive'))
+				text.innerHTML = textSave;
+		});
+		e.classList.remove("active");
+		e.classList.add("inactive");
 	}
 
 	targetSave = event.target;
@@ -212,12 +220,19 @@ function toggleDynamicArea(event, id, setting)
 	let checked = event.target.checked;
 
 	let e = document.getElementById(id);
-	e.classList.toggle("active");
 	if(checked) {
+		e.classList.add("active");
+		e.classList.remove("inactive");
 		e.style.display = setting;
 	}
 	else {
-		e.style.display = 'none';
+		e.addEventListener("animationend", (event) => {
+			if(e.classList.contains('inactive'))
+				e.style.display = 'none';
+		});
+		e.classList.remove("active");
+		e.classList.add("inactive");
 	}
 }
+
 
