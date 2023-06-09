@@ -12,7 +12,8 @@
 
   <h2>システム設定</h2><div class="h2Line"></div><div class="blankLine"></div>
 
-  <table id="configTable" th:object="${configForm}">
+  <div class="customTable1">
+  <table th:object="${configForm}">
   <tbody>
     <tr>
       <td><label for="lang">Language</label></td>
@@ -50,6 +51,7 @@
     </tr>
   </tbody>
   </table>
+  </div>
 
   <hr>
   <!-- "file name :: fragment name" -->

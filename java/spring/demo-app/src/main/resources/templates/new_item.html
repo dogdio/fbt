@@ -14,7 +14,8 @@
 
   <form action="regist" method="post" name="registFormName" id="registForm" th:object="${registForm}">
 
-  <table id="registTable">
+  <div class="customTable1">
+  <table>
   <tbody>
     <tr>
       <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
@@ -76,6 +77,7 @@
     </tr>
   </tbody>
   </table>
+  </div>
 
   </form>
 
