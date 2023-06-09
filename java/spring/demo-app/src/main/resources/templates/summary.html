@@ -6,10 +6,12 @@
 </head>
 
 <body>
-  <h1 th:object="${wordList}">[[${wordList.titleSummary}]]</h1>
-  <hr>
+  <header>
+    <h1 th:object="${wordList}">[[${wordList.titleSummary}]]</h1>
+  </header>
 
-  <h3>Query</h3>
+  <h3>Query</h3><div class="h3Line"></div>
+
   <div th:object="${wordList}">
     <form>
     <div style="display: flex;" th:object="${configData}">
@@ -66,7 +68,8 @@
     </div>
     </form>
 
-    <h3>Filter</h3>
+    <h3>Filter</h3><div class="h3Line"></div><div class="blankLine"></div>
+
     <div th:object="${configData}">
       <div th:if="${configData.status} == 0">
         <input type="checkbox" id="st1" checked onclick="itemFilter(event, 3, 1)"> <label for="st1">[[${wordList.statusWord[1]}]]</label>
@@ -86,7 +89,7 @@
     </div>
   </div>
 
-  <hr>
+  <h3>Table</h3><div class="h3Line"></div><div class="blankLine"></div>
   <span id="configItemSortOrder" style="display: none;" th:object="${configData}">[[${configData.itemSortOrder}]]</span>
   <table id="itemTable" th:object="${wordList}">
     <thead>
@@ -116,7 +119,7 @@
     </tbody>
   </table>
 
-  <hr>
+  <br><hr>
   <div th:insert="~{footer :: links}"></div>
 
   <script src="summary.js"></script>

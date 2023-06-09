@@ -6,8 +6,11 @@
 </head>
 
 <body>
-  <h1 th:object="${wordList}">[[${wordList.titleConfig}]]</h1>
-  <hr>
+  <header>
+    <h1 th:object="${wordList}">[[${wordList.titleConfig}]]</h1>
+  </header>
+
+  <h2>システム設定</h2><div class="h2Line"></div><div class="blankLine"></div>
 
   <table id="configTable" th:object="${configForm}">
   <tbody>

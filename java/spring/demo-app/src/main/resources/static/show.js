@@ -174,14 +174,14 @@ function toggleProgressEditor(event)
 
 	// 既に開いている方をすぐに閉じる（アニメなし）
 	if(targetSave != null && (event.target != targetSave)) {
-		let div = targetSave.parentElement.parentElement;
+		let div = targetSave.parentElement.parentElement.parentElement;
 		let text = div.nextElementSibling;
 
 		text.innerHTML = textSave;
 		targetSave.checked = false;
 	}
 
-	let div2 = div1.parentElement; // <div style="display: flex;">
+	let div2 = div1.parentElement.parentElement; // <div style="display: flex;"> FIXME: id
 	let text = div2.nextElementSibling; // <p>[[${list.contents}]]</p>
 
 	if(event.target.checked) {

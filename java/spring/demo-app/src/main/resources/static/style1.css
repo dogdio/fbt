@@ -1,4 +1,93 @@
 
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 35px;
+  padding: 10px;
+  background: #f0f0f4;
+  color: #010101;
+  border-bottom: 2px solid #b8c0c0;
+  margin-bottom: 30px;
+}
+body {
+  margin-top: 55px; /* headerの分だけ下にずらす */
+}
+
+h1 {
+  margin: 0px;
+}
+
+h2 {
+  display: inline-block;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  color: #010101;
+  background: #eee8aa;
+  border-radius: 10px 10px 0 0;
+  margin-bottom: 0px;
+}
+.h2Line {
+  position: relative;
+}
+.h2Line::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 4px;
+  background-color: #eee8aa;
+}
+
+h3 {
+  display: inline-block;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  color: #010101;
+  background: #d0f8eb;
+  border-radius: 10px 10px 0 0;
+  margin-bottom: 0px;
+}
+.h3Line {
+  position: relative;
+}
+.h3Line::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 3px;
+  background-color: #d0f8eb;
+}
+
+.blankLine {
+  margin-top: 8px;
+  position: relative;
+}
+.blankLine::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* URLを統一 */
+a {
+  color: #006400;
+  text-decoration: none;
+}
+a:hover {
+  color: #1e90ff;
+}
+
 span {
   font-size: 6px;
 }
@@ -16,10 +105,6 @@ hr {
   border: 1px dotted;
 }
 
-input[type=checkbox] {
-  cursor: pointer;
-}
-
 .flexItem {
   padding: 3px; 
   margin-right: 20px;
@@ -27,7 +112,8 @@ input[type=checkbox] {
 }
 .flexItem2 {
   padding: 3px;
-  margin-right: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
   margin-top: 3px;
 }
 .flexButton {
@@ -37,16 +123,18 @@ input[type=checkbox] {
 .itemTableHead {
   background-color: #ccddcc; 
   border: 1px solid; 
+  border-color: #808080; 
   padding: 3px; 
 }
 
 .itemTableBody {
   border: 1px solid; 
+  border-color: #dcdcdc; 
   padding: 3px; 
 }
 
 .itemTableBody:hover {
-  background-color: #afeeee; 
+  background-color: #f0f0f2; 
 }
 
 /* 横一列に等間隔で並べて、縦線で区切る */
@@ -65,7 +153,6 @@ input[type=checkbox] {
   padding: 4px 10px;
   display: inline;
 }
-
 
 #sortIcon0 { cursor: pointer; }
 #sortIcon1 { cursor: pointer; }
@@ -116,10 +203,12 @@ input[type=checkbox] {
   cursor: pointer;
 }
 
-
 /* カスタムチェックボックス */
 input[type=checkbox].customCheckBox1 {
     display:none
+}
+input[type=checkbox] {
+  cursor: pointer;
 }
 
 .customCheckBoxL1{
@@ -141,11 +230,11 @@ input[type=checkbox].customCheckBox1 {
   border-right:  4px solid #b0c4de;
   border-bottom: 4px solid #b0c4de;
   transform: rotate(45deg);
-  box-shadow: rgba(0,0,0,0.2) 2px 2px 2px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 2px;
   margin-top: -11px;
   opacity: 1;
 }
-.customCheckBoxL1::after {  /* 横き矢印 */
+.customCheckBoxL1::after {  /* 横向き矢印 */
   border-right:  4px solid #ff8c00;
   border-bottom: 4px solid #ff8c00;
   transform: rotate(-45deg);
@@ -189,4 +278,21 @@ input[type=checkbox]:checked + .customCheckBoxL1::before {
   to {
     opacity: 0;
   }
+}
+
+/* 進捗データ */
+.customHeadline1 {
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: #c0f0f6;
+  border-radius: 10px 10px 0 0;
+}
+.customContents1 {
+  background-color: #fcfcfc;
+  border: 1px dotted #c9c9c9;
+  border-radius: 0 10px 10px 10px;
+  margin: 0px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 18px;
 }
