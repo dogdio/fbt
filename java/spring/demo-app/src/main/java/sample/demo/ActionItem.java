@@ -22,7 +22,6 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 @Controller
 public class ActionItem {
@@ -35,7 +34,7 @@ public class ActionItem {
 	@Autowired ProgressService progressServ;
 
 	@GetMapping("summary")
-	public String summary(ConfigData arg, Model model)
+	public String summary(QueryForm arg, Model model)
 	{
 		System.out.println("arg " + arg.getStatus() + "," + arg.getCategory() + "," +
 			arg.getWorker() + "," + arg.getStartDate() + "," + arg.getStopDate()
@@ -46,10 +45,13 @@ public class ActionItem {
 			config.setCategory(arg.getCategory());
 		if(arg.getWorker() != null)
 			config.setWorker(arg.getWorker());
-		if(arg.getStartDate() != null)
-			config.setStartDate(arg.getStartDate());
-		if(arg.getStopDate() != null)
-			config.setStopDate(arg.getStopDate());
+
+		LocalDate date = Utils.strToLocalDate(arg.getStartDate());
+		if(date != null)
+			config.setStartDate(date);
+		date = Utils.strToLocalDate(arg.getStopDate());
+		if(date != null)
+			config.setStopDate(date);
 
 		Iterable<RegistData> rdList  = itemServ.findAll(config);
 
@@ -95,10 +97,8 @@ public class ActionItem {
 		LocalDate deadline = null;
 
 		if(arg.getDeadline() != null && arg.getDeadline().length() != 0) {
-			try {
-				deadline = LocalDate.parse(arg.getDeadline(), DateTimeFormatter.ISO_DATE);
-			}
-			catch (DateTimeParseException e){
+			deadline = Utils.strToLocalDate(arg.getDeadline());
+			if(deadline == null) {
 				FieldError fieldError = new FieldError("arg", "deadline", "must be: yyyy-mm-dd");
 				result.addError(fieldError);
 			}
