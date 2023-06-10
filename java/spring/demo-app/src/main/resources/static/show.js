@@ -194,8 +194,8 @@ function toggleProgressEditor(event)
 				'</textarea>' +
 			'</div>' +
 			'<div class="flexItem">' +
-			'<input type="button" value="Update" onclick="updateProgress(event, ' + id + ')"><br><br>' +
-			'<input type="button" value="Delete" onclick="deleteProgress(event, ' + id + ')">' +
+			'<input class="customButton1" type="button" value="Update" onclick="updateProgress(event, ' + id + ')"><br><br>' +
+			'<input class="customButton1" type="button" value="Delete" onclick="deleteProgress(event, ' + id + ')">' +
 			'</div>' +
 		'</div>';
 		let e = text.firstElementChild;
