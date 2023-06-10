@@ -19,20 +19,20 @@
   <tbody>
     <tr>
       <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
-      <td><textarea name="title" id="title" maxlength="210" rows="4" cols="50" th:field="*{title}"></textarea></td>
+      <td><textarea name="title" id="title" maxlength="210" rows="4" cols="50" th:field="*{title}" class="customInput2"></textarea></td>
       <td><div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color: red"></div></td>
     </tr>
 
     <tr>
       <td><label for="priority">[[${wordList.tableWord[2]}]]</label></td>
-      <td><input type="number" name="priority" id="priority" min="1" max="9" th:field="*{priority}"></td>
+      <td><input type="number" name="priority" id="priority" min="1" max="9" th:field="*{priority}" class="customInput1"></td>
       <td><div th:if="${#fields.hasErrors('priority')}" th:errors="*{priority}" style="color: red"></div></td>
     </tr>
 
     <tr>
       <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
       <td>
-        <select name="status" id="status">
+        <select name="status" id="status" class="customInput1">
           <option value="1" th:selected="*{status == 1}">[[${wordList.statusWord[1]}]]</option>
           <option value="2" th:selected="*{status == 2}">[[${wordList.statusWord[2]}]]</option>
           <option value="3" th:selected="*{status == 3}">[[${wordList.statusWord[3]}]]</option>
@@ -46,7 +46,7 @@
     <tr>
       <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
       <td>
-        <select name="category" id="category">
+        <select name="category" id="category" class="customInput1">
           <option value="1" th:selected="*{category == 1}">[[${wordList.categoryWord[1]}]]</option>
           <option value="2" th:selected="*{category == 2}">[[${wordList.categoryWord[2]}]]</option>
           <option value="3" th:selected="*{category == 3}">[[${wordList.categoryWord[3]}]]</option>
@@ -61,13 +61,13 @@
 
     <tr>
       <td><label for="worker">[[${wordList.tableWord[5]}]]</label></td>
-      <td><input name="worker" id="worker" maxlength="35" th:field="*{worker}"></td>
+      <td><input name="worker" id="worker" maxlength="35" th:field="*{worker}" class="customInput1"></td>
       <td><div th:if="${#fields.hasErrors('worker')}" th:errors="*{worker}" style="color: red"></div></td>
     </tr>
 
     <tr>
       <td><label for="deadline">[[${wordList.tableWord[6]}]]</label></td>
-      <td><input type="date" name="deadline" id="deadline" th:value="*{deadline}"></td>
+      <td><input type="date" name="deadline" id="deadline" th:value="*{deadline}" class="customInput1"></td>
       <td><div th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}" style="color: red"></div></td>
     </tr>
 

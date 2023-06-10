@@ -18,7 +18,7 @@
     <tr>
       <td><label for="lang">Language</label></td>
       <td>
-        <select name="lang" id="lang">
+        <select name="lang" id="lang" class="customInput1">
           <option value="jp" th:selected="${configForm.lang == 'jp'}">Japanese</option>
           <option value="en" th:selected="${configForm.lang == 'en'}">English</option>
         </select>
@@ -28,7 +28,7 @@
     <tr>
       <td><label for="itemSortOrder">[[${wordList.configWord[0]}]]</label></td>
       <td>
-        <select name="itemSortOrder" id="itemSortOrder">
+        <select name="itemSortOrder" id="itemSortOrder" class="customInput1">
           <option value="0" th:selected="${configForm.itemSortOrder == 0}">[[${wordList.tableWord[0]}]]</option>
           <option value="1" th:selected="${configForm.itemSortOrder == 1}">[[${wordList.tableWord[1]}]]</option>
           <option value="2" th:selected="${configForm.itemSortOrder == 2}">[[${wordList.tableWord[2]}]]</option>
@@ -42,7 +42,7 @@
 
     <tr>
       <td><label for="value2">value2</label></td>
-      <td><input name="value2" id="value2" maxlength="30"></td>
+      <td><input name="value2" id="value2" maxlength="30" class="customInput1"></td>
     </tr>
 
     <tr>

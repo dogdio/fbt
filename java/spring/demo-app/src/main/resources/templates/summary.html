@@ -20,7 +20,7 @@
         <tbody>
         <tr>
           <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
-          <td><select name="status" id="status" onchange="setStatus(event)">
+          <td><select name="status" id="status" onchange="setStatus(event)" class="customInput1">
             <option value="0" th:selected="${configData.status == 0}">[[${wordList.statusWord[0]}]]</option>
             <option value="1" th:selected="${configData.status == 1}">[[${wordList.statusWord[1]}]]</option>
             <option value="2" th:selected="${configData.status == 2}">[[${wordList.statusWord[2]}]]</option>
@@ -31,7 +31,7 @@
 
         <tr>
           <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
-          <td><select name="category" id="category">
+          <td><select name="category" id="category" class="customInput1">
             <option value="0" th:selected="${configData.category == 0}">[[${wordList.categoryWord[0]}]]</option>
             <option value="1" th:selected="${configData.category == 1}">[[${wordList.categoryWord[1]}]]</option>
             <option value="2" th:selected="${configData.category == 2}">[[${wordList.categoryWord[2]}]]</option>
@@ -50,20 +50,26 @@
         <tbody>
         <tr>
           <td><label for="worker">[[${wordList.tableWord[5]}]]</label></td>
-          <td><input name="worker" id="worker" maxlength="30" th:value="${configData.worker}"></td>
+          <td><input name="worker" id="worker" maxlength="30" th:value="${configData.worker}" class="customInput1"></td>
         </tr>
 
         <tr>
           <td><label for="deadline">[[${wordList.tableWord[6]}]]</label></td>
-          <td><input type="date" name="startDate" id="startDate" maxlength="10" th:value="${configData.startDate}" style="margin-right: 6px;">～
-              <input type="date" name="stopDate" id="stopDate" maxlength="10" th:value="${configData.stopDate}"></td>
+          <td><input type="date" name="startDate" id="startDate" maxlength="10" th:value="${configData.startDate}" class="customInput1" style="margin-right: 6px;">～</td>
+          <td><input type="date" name="stopDate" id="stopDate" maxlength="10" th:value="${configData.stopDate}" class="customInput1"></td>
         </tr>
         </tbody>
         </table>
       </div>
 
       <div class="flexItem" >
-          <input class="customButton1" type="submit" value="Query">
+        <table>
+        <tbody>
+        <tr>
+          <td><input class="customButton1" type="submit" value="Query"></td>
+        </tr>
+        </tbody>
+        </table>
       </div>
     </div>
     </form>

@@ -126,7 +126,7 @@ hr {
 }
 
 .customButton1 {
-  width: 90px;
+  width: 170px;
   padding-top: 3px;
   padding-bottom: 3px;
   padding-left: 25px;
@@ -142,6 +142,24 @@ hr {
   cursor: pointer;
 }
 
+.customInput1 {
+  box-sizing: border-box;
+  width: 170px;
+  padding: 2px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  box-shadow: rgba(0,0,0,0.1) 0 2px 2px;
+  text-align: center;
+}
+
+.customInput2 {
+  box-sizing: border-box;
+  width: 320px;
+  padding: 2px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  box-shadow: rgba(0,0,0,0.1) 0 2px 2px;
+}
 
 .itemTableHead {
   background-color: #ccddcc; 
