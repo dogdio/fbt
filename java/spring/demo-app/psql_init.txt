@@ -4,3 +4,13 @@ drop table progress_data;
 create table regist_data (id serial primary key, title character varying(200) not null, priority integer, status integer, category integer, worker character varying(30), deadline date);
 create table progress_data (id serial primary key, item_id integer, progress_id integer, contents text, date character varying(19));
 
+create table account_data
+(
+  id text primary key,
+  pass text,
+  role character varying(8),
+  lang character varying(4),
+  item_sort_order integer,
+  progress_sort_order integer
+);
+

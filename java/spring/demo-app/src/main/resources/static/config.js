@@ -3,13 +3,18 @@ document.getElementById("writeConfig").addEventListener("click", (event) => {
 	let v0 = document.getElementById('lang').value;
 	let v1 = document.getElementById('itemSortOrder').value;
 	let v2 = document.getElementById('value2').value;
+	let token = document.getElementById('csrfToken').value;
+	console.log(token);
 
 	var url = 'writeConfig';
 	var data = { lang: v0, itemSortOrder: v1, value2: v2, reload: false };
 
 	fetch(url, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRF-Token': token
+		},
 		body: JSON.stringify(data)
 	})
 	.then((resp) => resp.json())

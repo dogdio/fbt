@@ -75,6 +75,8 @@
       <td></td>
       <td><input class="customButton1" type="submit" value="Regist" id="do_regist"></td>
     </tr>
+
+    <input name="_csrf" type="hidden" id="csrfToken" th:value="${_csrf.token}">
   </tbody>
   </table>
   </div>

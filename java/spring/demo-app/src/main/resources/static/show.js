@@ -74,10 +74,14 @@ function writeItem()
 		worker: document.getElementById('worker').value,
 		deadline: document.getElementById('deadline').value,
 	};
+	let token = document.getElementById('csrfToken').value;
 
 	fetch(url, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRF-Token': token
+		},
 		body: JSON.stringify(req)
 	})
 	.then((resp) => resp.json())
@@ -109,10 +113,14 @@ function writeProgress()
 		id: itemId,
 		contents: LFtoBR(document.getElementById('progress').value),
 	};
+	let token = document.getElementById('csrfToken').value;
 
 	fetch(url, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRF-Token': token
+		},
 		body: JSON.stringify(req)
 	})
 	.then((resp) => resp.json())
@@ -128,10 +136,14 @@ function deleteProgress(event, id)
 		id: id,
 		contents: "Delete",
 	};
+	let token = document.getElementById('csrfToken').value;
 
 	fetch(url, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRF-Token': token
+		},
 		body: JSON.stringify(req)
 	})
 	.then((resp) => resp.json())
@@ -151,10 +163,14 @@ function updateProgress(event, id)
 		id: id,
 		contents: LFtoBR(document.getElementById('progressEditor').value),
 	};
+	let token = document.getElementById('csrfToken').value;
 
 	fetch(url, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRF-Token': token
+		},
 		body: JSON.stringify(req)
 	})
 	.then((resp) => resp.json())
