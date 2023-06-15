@@ -78,43 +78,34 @@ public class ActionItem {
 	@GetMapping("new_item")
 	public String newItem(Model model)
 	{
-		RegistForm rf = new RegistForm(-1, "new item", Constants.PRIORITY_MIN, Constants.STATUS_MIN+1,
-										Constants.CATEGORY_MIN+1, "hoge", "");
+		RegistData rf = new RegistData(-1, "new item", Constants.PRIORITY_MIN, Constants.STATUS_MIN+1,
+										Constants.CATEGORY_MIN+1, "hoge", LocalDate.now());
 
-		model.addAttribute("registForm", rf);
+		model.addAttribute("registData", rf);
 		model.addAttribute("wordList", wordList);
 		return "new_item";
 	}
 
 	@PostMapping("regist")
-	public String regist(@Validated RegistForm arg, BindingResult result, Model model)
+	public String regist(@Validated RegistData arg, BindingResult result, Model model)
 	{
 		System.out.println("Args| " +
 			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
 			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
 		);
 		Integer id = -1;
-		LocalDate deadline = null;
-
-		if(arg.getDeadline() != null && arg.getDeadline().length() != 0) {
-			deadline = Utils.strToLocalDate(arg.getDeadline());
-			if(deadline == null) {
-				FieldError fieldError = new FieldError("arg", "deadline", "must be: yyyy-mm-dd");
-				result.addError(fieldError);
-			}
-		}
 
 		if (result.hasErrors()) {
 			System.out.println("<<<<<<<<<<<<< Input Error");
-			model.addAttribute("registForm", arg);
+			model.addAttribute("registData", arg);
 			model.addAttribute("wordList", wordList);
 			return "new_item";
 		}
 		else {
-			RegistData rd = new RegistData(null, arg.getTitle(), arg.getPriority(), arg.getStatus(),
-											arg.getCategory(), arg.getWorker(), deadline);
-			System.out.println("Date " + deadline);
-			id = itemServ.save(rd);
+//			RegistData rd = new RegistData(null, arg.getTitle(), arg.getPriority(), arg.getStatus(),
+//											arg.getCategory(), arg.getWorker(), arg.getDeadline());
+			arg.setId(null);
+			id = itemServ.save(arg);
 		}
 
 		// HTML内のinline Javascriptにidを埋め込む
