@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head> 
   <title th:object="${wordList}">[[${wordList.titleSummary}]]</title>
   <link rel="stylesheet" href="style1.css">
@@ -7,7 +7,10 @@
 
 <body>
   <header>
-    <h1 th:object="${wordList}">[[${wordList.titleSummary}]]</h1>
+    <div style="display: flex;">
+      <div><h1 th:object="${wordList}">[[${wordList.titleSummary}]]</h1></div>
+      <div th:replace="~{header :: UserInfo }"></div>
+    </div>
   </header>
 
   <h3>Query</h3><div class="h3Line"></div>

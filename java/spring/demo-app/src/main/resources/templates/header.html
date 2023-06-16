@@ -1,0 +1,16 @@
+
+<div th:fragment="UserInfo"
+     style="position: absolute; right: 10px; display: flex; padding-top: 15px;">
+  <div style="padding: 4px 8px 0 0;">
+    <div style="text-shadow: rgba(0,0,0,0.3) 2px 2px 2px;">
+      <b><div sec:authentication="name"></div></b>
+    </div>
+  </div>
+
+  <div>
+    <form method="post" action="/logout">
+      <input name="_csrf" type="hidden" id="csrfToken" th:value="${_csrf.token}">
+      <button type="submit" class="customButton2">logout</button>
+    </form>
+  </div>
+</div>
