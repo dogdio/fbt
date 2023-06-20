@@ -79,6 +79,31 @@ h3 {
   width: 100%;
 }
 
+.tabMenu {
+  display: inline-block;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  color: #999999;
+  background: #dddddd;
+  border-radius: 10px 10px 0 0;
+  border: 1px solid #cccccc;
+  margin: 15px 0 0 0;
+  font-size: 18px;
+  font: bold;
+}
+.tabMenu:hover {
+  background: #f0f0f0;
+  cursor: pointer;
+}
+.tabMenu.selected {
+  background: #eee8aa;
+  border: 1px solid #ddd799;
+  color: #010101;
+}
+
+
 /* URLを統一 */
 a {
   color: #006400;

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import sample.demo.form.AccountData;
 import sample.demo.form.Constants;
@@ -74,4 +75,12 @@ public class AccountServiceImpl implements AccountService {
 		}
 		return details;
 	}
+
+	@Override
+	public String encryptPassword(String pass)
+	{
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
+		return encoder.encode(pass);
+	}
+
 }

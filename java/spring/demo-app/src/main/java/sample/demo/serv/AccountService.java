@@ -12,4 +12,5 @@ public interface AccountService {
 	boolean isExists(String id);
 	AccountData findById(String id);
 	List<UserDetails> getUserDetails();
+	String encryptPassword(String pass);
 }

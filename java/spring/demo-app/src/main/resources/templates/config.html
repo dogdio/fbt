@@ -13,10 +13,11 @@
     </div>
   </header>
 
-  <h2>システム設定</h2><div class="h2Line"></div><div class="blankLine"></div>
+  <b class="tabMenu" id="tabSystem">システム</b><b class="tabMenu" id="tabPassword">パスワード</b><b sec:authorize="hasRole('ROLE_ADMIN')" class="tabMenu" id="tabAdmin">ユーザー管理</b>
+  <div class="h2Line"></div><div class="blankLine"></div>
 
   <div class="customTable1">
-  <table th:object="${configForm}">
+  <table th:object="${configForm}" id="configSystem" class="dynamicArea">
   <tbody>
     <tr>
       <td><label for="lang">Language</label></td>
@@ -55,6 +56,58 @@
   </tbody>
   </table>
   </div>
+
+  <form action="writeConfigPassword" method="post" th:object="${configPassword}">
+  <div class="customTable1">
+  <table id="configPassword" class="dynamicArea">
+  <tbody>
+    <tr>
+      <td><label for="newPassword1">New Password</label></td>
+      <td><input type="password" name="newPassword1" id="newPassword1" minlength="8" maxlength="30"
+                 class="customInput1" th:field="*{newPassword1}"></td>
+      <td><div th:if="${#fields.hasErrors('newPassword1')}" th:errors="*{newPassword1}" style="color: red"></div></td>
+    </tr>
+
+    <tr>
+      <td><label for="newPassword2">retype</label></td>
+      <td><input type="password" name="newPassword2" id="newPassword2" minlength="8" maxlength="30"
+                 class="customInput1" th:field="*{newPassword2}"></td>
+      <td><div th:if="${#fields.hasErrors('newPassword2')}" th:errors="*{newPassword2}" style="color: red"></div></td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td><input class="customButton1" type="submit" value="Update"></td>
+    </tr>
+
+    <input name="_csrf" type="hidden" id="csrfToken" th:value="${_csrf.token}">
+  </tbody>
+  </table>
+  </div>
+  </form>
+
+  <div class="customTable1">
+  <table th:object="${configForm}" id="configAdmin"  class="dynamicArea">
+  <tbody>
+    <tr>
+      <td><label for="value5">value5</label></td>
+      <td><input name="value5" id="value5" maxlength="30" class="customInput1"></td>
+    </tr>
+
+    <tr>
+      <td><label for="value6">value6</label></td>
+      <td><input name="value6" id="value6" maxlength="30" class="customInput1"></td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td><input class="customButton1" type="button" value="Update" id="writeConfigAdmin"></td>
+    </tr>
+  </tbody>
+  </table>
+  </div>
+
+  <input type="hidden" id="selectedTab" th:value="${selectedTab}">
 
   <hr>
   <!-- "file name :: fragment name" -->

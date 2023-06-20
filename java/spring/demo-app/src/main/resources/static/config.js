@@ -35,3 +35,59 @@ window.addEventListener('pageshow', function(event) {
 	}
 });
 
+function selectTab(tab, menu)
+{
+	tab.classList.add("selected");
+
+	menu.style.display = 'block';
+	menu.classList.add("active");
+	menu.classList.remove("inactive");
+}
+
+function unselectTab(tab, menu)
+{
+	tab.classList.remove("selected");
+
+	menu.style.display = 'none';
+	menu.classList.remove("active");
+	menu.classList.add("inactive");
+}
+
+let tabToMenu = new Map([
+	['tabSystem',   'configSystem'],
+	['tabPassword', 'configPassword'],
+	['tabAdmin',    'configAdmin'],
+]);
+
+function getMenu(id)
+{
+	return document.getElementById(tabToMenu.get(id));
+}
+
+document.querySelectorAll(".tabMenu").forEach(function(tab) {
+	tab.addEventListener("click", tabSwitch);
+});
+
+function tabSwitch(event)
+{
+	let selected = event.target;
+
+	document.querySelectorAll(".tabMenu").forEach(function(tab) {
+		let menu = getMenu(tab.id);
+
+		if(selected == tab) {
+			selectTab(tab, menu);
+		}
+		else {
+			unselectTab(tab, menu);
+		}
+	});
+}
+
+window.addEventListener("load", () => {
+	let id = document.getElementById('selectedTab').value;
+	let tab = document.getElementById(id);
+	let menu = getMenu(tab.id);
+	selectTab(tab, menu);
+});
+

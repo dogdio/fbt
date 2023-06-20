@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,8 @@ public class ActionItem {
 	// default: japanese
 	private WordListIF wordList = new WordListJp();
 	private ConfigData config = new ConfigData(Constants.STATUS_MIN, Constants.CATEGORY_MIN, "",
-		LocalDate.now(), LocalDate.now().plusMonths(1), Constants.LANG_JP, Constants.ITEM_SORT_DEADLINE);
+		LocalDate.now(), LocalDate.now().plusMonths(1), Constants.LANG_JP, Constants.ITEM_SORT_DEADLINE,
+		"");
 	private boolean isLoad = false;
 
 	@Autowired private ItemService itemServ;
@@ -49,6 +51,7 @@ public class ActionItem {
 		if(ad != null) {
 			ad.setLang(config.getLang());
 			ad.setItemSortOrder(config.getItemSortOrder());
+			ad.setPass(config.getPass());
 			accountServ.save(ad);
 		}
 	}
@@ -172,6 +175,11 @@ public class ActionItem {
 	{
 		loadConfig(detail.getUsername());
 		model.addAttribute("wordList", wordList);
+		model.addAttribute("configPassword", new ConfigPassword(
+			"", ""
+		));
+		if(model.getAttribute("selectedTab") == null)
+			model.addAttribute("selectedTab", "tabSystem");
 
 		arg.setLang(config.getLang());
 		arg.setItemSortOrder(config.getItemSortOrder());
@@ -208,6 +216,42 @@ public class ActionItem {
 		List<ConfigForm> ret = new ArrayList<>();
 		ret.add(arg);
 		return ret;
+	}
+
+	@PostMapping("writeConfigPassword")
+	public String writeConfigPassword(@Validated ConfigPassword arg, BindingResult result,
+		Model model, RedirectAttributes attr,
+		@AuthenticationPrincipal UserDetails detail)
+
+	{
+		loadConfig(detail.getUsername());
+
+		System.out.println("pass1=" + arg.getNewPassword1());
+		System.out.println("pass2=" + arg.getNewPassword2());
+
+		model.addAttribute("wordList", wordList);
+		model.addAttribute("configPassword", arg);
+		model.addAttribute("configForm", new ConfigForm(
+			config.getLang(), config.getItemSortOrder(), "", false
+		));
+
+		if(!arg.getNewPassword1().equals(arg.getNewPassword2())) {
+			FieldError fieldError = new FieldError("arg", "newPassword2", "unmatch password");
+			result.addError(fieldError);
+		}
+		if (result.hasErrors()) {
+			System.out.println("<<<<<<<<<<<<< Input Error");
+			model.addAttribute("selectedTab", "tabPassword");
+			return "config";
+		}
+		else {
+			String enc = accountServ.encryptPassword(arg.getNewPassword1());
+			System.out.println(enc);
+			config.setPass(enc);
+			//saveConfig(detail.getUsername());
+		}
+		attr.addFlashAttribute("selectedTab", "tabPassword");
+		return "redirect:/config";
 	}
 
 	@GetMapping("/show/{itemId}")
