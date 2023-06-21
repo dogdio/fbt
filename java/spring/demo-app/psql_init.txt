@@ -1,12 +1,14 @@
 drop table regist_data;
 drop table progress_data;
+drop table account_data;
 
 create table regist_data (id serial primary key, title character varying(200) not null, priority integer, status integer, category integer, worker character varying(30), deadline date);
 create table progress_data (id serial primary key, item_id integer, progress_id integer, contents text, date character varying(19));
 
 create table account_data
 (
-  id text NOT NULL,
+  id serial primary key,
+  name text NOT NULL,
   pass text NOT NULL,
   role character varying(12) NOT NULL,
   enabled BOOLEAN NOT NULL,
@@ -15,5 +17,5 @@ create table account_data
   item_sort_order integer,
   progress_sort_order integer,
 
-  PRIMARY KEY (id)
+  unique(name)
 );

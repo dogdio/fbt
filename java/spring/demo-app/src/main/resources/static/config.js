@@ -89,5 +89,56 @@ window.addEventListener("load", () => {
 	let tab = document.getElementById(id);
 	let menu = getMenu(tab.id);
 	selectTab(tab, menu);
+
+	changeErrItemColor('configPassword');
+	changeErrItemColor('configAdmin');
 });
+
+function changeErrItemColor(tableName)
+{
+	let table = document.getElementById(tableName);
+
+	for (let r = 0; r < table.rows.length; r++) {
+		console.log(table.rows[r].cells[2]);
+		let td0 = table.rows[r].cells[0];
+		let td1 = table.rows[r].cells[1];
+		let td2 = table.rows[r].cells[2];
+
+		if(td0.innerHTML.length != 0) {
+			let err = td2.firstElementChild;
+			//console.log(err);
+			if(err != null) {
+				if(err.id == "resultError")
+					td1.firstElementChild.style.background = "#ffe0e0";
+				if(err.id == "resultFind" || err.id == "resultPassword" 
+					|| err.id == "resultCreate" || err.id == "resultEnabled")
+					td1.firstElementChild.style.background = "#e0ffe0";
+				if(err.id == "resultDelete")
+					td1.firstElementChild.style.background = "#ffdab9";
+			}
+			else {
+				td1.firstElementChild.style.background = "#ffffff";
+			}
+		}
+	}
+}
+
+function deleteConfirm()
+{
+	let m = document.getElementById("modal2");
+	let name = document.getElementById("username").value;
+	let msg = document.getElementById("deleteUserName");
+
+	msg.innerHTML = "[" + name + "]";
+	m.style.display = "block";
+}
+
+function deleteConfirmAction(answer)
+{
+	let m = document.getElementById("modal2");
+	m.style.display = "none";
+
+	if (answer)
+		document.getElementById("deleteButton").click();
+}
 

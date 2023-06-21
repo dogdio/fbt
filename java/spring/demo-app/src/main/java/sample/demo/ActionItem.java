@@ -36,6 +36,7 @@ public class ActionItem {
 		LocalDate.now(), LocalDate.now().plusMonths(1), Constants.LANG_JP, Constants.ITEM_SORT_DEADLINE,
 		"");
 	private boolean isLoad = false;
+	private final static String defaultPass = "password";
 
 	@Autowired private ItemService itemServ;
 	@Autowired private ProgressService progressServ;
@@ -45,9 +46,62 @@ public class ActionItem {
 		System.out.println("<<<<< ActionItem Init");
 	}
 
+	private boolean adminAction(ConfigAdmin arg, BindingResult result,
+		Model model, RedirectAttributes attr)
+	{
+		AccountData ad = accountServ.findByName(arg.getUsername());
+		boolean keepURL = false;
+
+		if(arg.getAction().equals("Find")) {
+			if(ad == null) {
+				result.addError(new FieldError("arg", "username", "not found"));
+			}
+			else {
+				model.addAttribute("configResult", "Find");
+				arg.setPasswordReset(false);
+				arg.setEnabled(ad.getEnabled());
+			}
+			keepURL = true;
+		}
+
+		if(arg.getAction().equals("Update")) {
+			if(ad == null) {
+				ad = new AccountData(null, arg.getUsername(), accountServ.encryptPassword(defaultPass),
+						"ROLE_USER", true, "jp", 0, 0);
+				attr.addFlashAttribute("configResult", "Create");
+			}
+			else {
+				if(arg.getPasswordReset()) {
+					String enc = accountServ.encryptPassword(defaultPass);
+					ad.setPass(enc);
+					attr.addFlashAttribute("configResult", "Password");
+				}
+				if(arg.getEnabled() != ad.getEnabled()) {
+					ad.setEnabled(arg.getEnabled());
+					attr.addFlashAttribute("configResult2", "Enabled");
+				}
+			}
+			accountServ.save(ad);
+		}
+
+		if(arg.getAction().equals("Delete")) {
+			if(ad == null) {
+				result.addError(new FieldError("arg", "username", "not found"));
+			}
+			else {
+				System.out.println("<<<<< delete: " + ad.getId() + ", " + ad.getName());
+				accountServ.deleteById(ad.getId());
+				attr.addFlashAttribute("configResult", "Delete");
+				arg.setPasswordReset(false);
+				arg.setEnabled(false);
+			}
+		}
+		return keepURL;
+	}
+
 	private void saveConfig(String name)
 	{
-		AccountData ad = accountServ.findById(name);
+		AccountData ad = accountServ.findByName(name);
 		if(ad != null) {
 			ad.setLang(config.getLang());
 			ad.setItemSortOrder(config.getItemSortOrder());
@@ -61,7 +115,7 @@ public class ActionItem {
 		if(isLoad)
 			return;
 
-		AccountData ad = accountServ.findById(name);
+		AccountData ad = accountServ.findByName(name);
 		if(ad != null) {
 			config.setLang(ad.getLang());
 			config.setItemSortOrder(ad.getItemSortOrder());
@@ -175,10 +229,13 @@ public class ActionItem {
 							@AuthenticationPrincipal UserDetails detail)
 	{
 		loadConfig(detail.getUsername());
+
 		model.addAttribute("wordList", wordList);
-		model.addAttribute("configPassword", new ConfigPassword(
-			"", ""
-		));
+		model.addAttribute("configPassword", new ConfigPassword("", ""));
+
+		if(model.getAttribute("configAdmin") == null)
+			model.addAttribute("configAdmin", new ConfigAdmin("", false, true, ""));
+
 		if(model.getAttribute("selectedTab") == null)
 			model.addAttribute("selectedTab", "tabSystem");
 
@@ -223,7 +280,6 @@ public class ActionItem {
 	public String writeConfigPassword(@Validated ConfigPassword arg, BindingResult result,
 		Model model, RedirectAttributes attr,
 		@AuthenticationPrincipal UserDetails detail)
-
 	{
 		loadConfig(detail.getUsername());
 
@@ -235,6 +291,7 @@ public class ActionItem {
 		model.addAttribute("configForm", new ConfigForm(
 			config.getLang(), config.getItemSortOrder(), "", false
 		));
+		model.addAttribute("configAdmin", new ConfigAdmin("", false, true, ""));
 
 		if(!arg.getNewPassword1().equals(arg.getNewPassword2())) {
 			FieldError fieldError = new FieldError("arg", "newPassword2", "unmatch password");
@@ -252,6 +309,37 @@ public class ActionItem {
 		saveConfig(detail.getUsername());
 
 		attr.addFlashAttribute("selectedTab", "tabPassword");
+		return "redirect:/config";
+	}
+
+	@PostMapping("/admin/updateUser")
+	public String updateUser(@Validated ConfigAdmin arg, BindingResult result,
+		Model model, RedirectAttributes attr,
+		@AuthenticationPrincipal UserDetails detail)
+	{
+		loadConfig(detail.getUsername());
+		System.out.println("Name   : " + arg.getUsername());
+		System.out.println("Reset  : " + arg.getPasswordReset());
+		System.out.println("Enabled: " + arg.getEnabled());
+		System.out.println("Action : " + arg.getAction());
+		boolean keepURL = false;
+
+		if (!result.hasErrors())
+			keepURL = adminAction(arg, result, model, attr);
+
+		if (result.hasErrors() || keepURL) {
+			model.addAttribute("wordList", wordList);
+			model.addAttribute("configForm", new ConfigForm(
+				config.getLang(), config.getItemSortOrder(), "", false
+			));
+			model.addAttribute("configPassword", new ConfigPassword("", ""));
+			model.addAttribute("configAdmin", arg);
+			model.addAttribute("selectedTab", "tabAdmin");
+			return "config";
+		}
+
+		attr.addFlashAttribute("configAdmin", arg);
+		attr.addFlashAttribute("selectedTab", "tabAdmin");
 		return "redirect:/config";
 	}
 

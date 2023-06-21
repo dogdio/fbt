@@ -14,3 +14,14 @@
     </div>
   </div>
 </div>
+
+<div th:fragment="deleteDialog2" th:object="${wordList}">
+  <div id="modal2" class="modal">
+    <div class="modalDialog">
+      <b id="deleteUserName" style="margin-right: 10px;"></b>
+      <b>[[${wordList.dialogWord[0]}]]</b><br>
+      <button onclick="deleteConfirmAction(true)">Yes</button>
+      <button onclick="deleteConfirmAction(false)">No</button>
+    </div>
+  </div>
+</div>

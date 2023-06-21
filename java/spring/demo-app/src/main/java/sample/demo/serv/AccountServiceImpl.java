@@ -31,14 +31,14 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public void deleteById(String id)
+	public void deleteById(Integer id)
 	{
 		System.out.println("[Account] delete=" + id);
 		repository.deleteById(id);
 	}
 
 	@Override
-	public boolean isExists(String id)
+	public boolean isExists(Integer id)
 	{
 		boolean ret = repository.existsById(id);
 		System.out.println("[Account] " + id + " isExists=" + ret);
@@ -46,15 +46,12 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public AccountData findById(String id)
+	public AccountData findByName(String name)
 	{
-		System.out.println("[Account] find id=" + id);
+		System.out.println("[Account] find id=" + name);
 
-		Optional<AccountData> ad = repository.findById(id);
-		if(ad.isPresent())
-			return ad.get();
-		else
-			return null;
+		AccountData ad = repository.findByName(name);
+		return ad;
 	}
 
 	@Override

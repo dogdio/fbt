@@ -48,8 +48,8 @@ public class SecurityConfig {
 
 		auth.jdbcAuthentication()
 			.dataSource(dataSource)
-			.usersByUsernameQuery("SELECT id, pass, enabled FROM account_data WHERE id = ?")
-			.authoritiesByUsernameQuery("SELECT id, role FROM account_data WHERE id = ?")
+			.usersByUsernameQuery("SELECT name, pass, enabled FROM account_data WHERE name = ?")
+			.authoritiesByUsernameQuery("SELECT name, role FROM account_data WHERE name = ?")
 			.passwordEncoder(accountServ.getEncrypter());
 
 		return auth.build();

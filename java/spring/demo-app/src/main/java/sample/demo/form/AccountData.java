@@ -10,7 +10,9 @@ import sample.demo.form.Constants;
 @Data
 public class AccountData {
 	@Id
-	private String id;
+	private Integer id;
+
+	private String name;
 	private String pass;
 	private String role;
 	private Boolean enabled;

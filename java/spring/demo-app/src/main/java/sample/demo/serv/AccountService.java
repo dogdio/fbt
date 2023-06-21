@@ -9,9 +9,9 @@ import sample.demo.form.AccountData;
 public interface AccountService {
 
 	boolean save(AccountData data);
-	void deleteById(String id);
-	boolean isExists(String id);
-	AccountData findById(String id);
+	void deleteById(Integer id);
+	boolean isExists(Integer id);
+	AccountData findByName(String name);
 	String encryptPassword(String pass);
 	BCryptPasswordEncoder getEncrypter();
 }

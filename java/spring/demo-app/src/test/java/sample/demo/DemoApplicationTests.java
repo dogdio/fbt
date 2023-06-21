@@ -23,18 +23,15 @@ class DemoApplicationTests {
 
 	@Autowired private AccountService accountServ;
 
+
 	@Test
 	void accountTest() {
-		List<UserDetails> details = accountServ.getUserDetails();
-
-		for(UserDetails detail : details) {
-			System.out.println(detail);
-		}
-
-		System.out.println(">>>> admin");
-		System.out.println(accountServ.findById("admin"));
+		System.out.println(">>>> admin2");
+		AccountData ad = accountServ.findByName("admin2");
+		System.out.println(ad);
 
 		System.out.println("\n>>>> hoge");
-		System.out.println(accountServ.findById("hoge"));
+		System.out.println(accountServ.findByName("hoge"));
 	}
+
 }
