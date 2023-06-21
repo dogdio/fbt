@@ -1,8 +1,6 @@
 package sample.demo.serv;
 
 import java.util.Optional;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,27 +58,15 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public List<UserDetails> getUserDetails()
-	{
-		List<UserDetails> details = new ArrayList<UserDetails>();
-		Iterable<AccountData> adList = repository.findAll();
-
-		for(AccountData ad : adList) {
-			UserDetails user = User.builder()
-									.username(ad.getId())
-									.password("{bcrypt}" + ad.getPass())
-									.roles(ad.getRole())
-									.build();
-			details.add(user);
-		}
-		return details;
-	}
-
-	@Override
 	public String encryptPassword(String pass)
 	{
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
+		BCryptPasswordEncoder encoder = getEncrypter();
 		return encoder.encode(pass);
 	}
 
+	@Override
+	public BCryptPasswordEncoder getEncrypter()
+	{
+		return new BCryptPasswordEncoder(10);
+	}
 }

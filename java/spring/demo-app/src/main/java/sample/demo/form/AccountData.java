@@ -13,6 +13,7 @@ public class AccountData {
 	private String id;
 	private String pass;
 	private String role;
+	private Boolean enabled;
 
 	private String lang;
 	private Integer itemSortOrder;

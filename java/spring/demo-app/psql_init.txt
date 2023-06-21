@@ -6,11 +6,14 @@ create table progress_data (id serial primary key, item_id integer, progress_id 
 
 create table account_data
 (
-  id text primary key,
-  pass text,
-  role character varying(8),
+  id text NOT NULL,
+  pass text NOT NULL,
+  role character varying(12) NOT NULL,
+  enabled BOOLEAN NOT NULL,
+
   lang character varying(4),
   item_sort_order integer,
-  progress_sort_order integer
-);
+  progress_sort_order integer,
 
+  PRIMARY KEY (id)
+);

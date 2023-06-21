@@ -65,6 +65,7 @@ public class ActionItem {
 		if(ad != null) {
 			config.setLang(ad.getLang());
 			config.setItemSortOrder(ad.getItemSortOrder());
+			config.setPass(ad.getPass());
 
 			if(config.getLang().equals(Constants.LANG_JP))
 				wordList = new WordListJp();
@@ -85,7 +86,7 @@ public class ActionItem {
 	public String index(@AuthenticationPrincipal UserDetails detail)
 	{
 		loadConfig(detail.getUsername());
-		System.out.println("[login] OK: " + detail.getUsername());
+		System.out.println("[login] OK: " + detail.getUsername() + ", " + detail.getAuthorities());
 		return "redirect:/summary";
 	}
 
@@ -244,12 +245,12 @@ public class ActionItem {
 			model.addAttribute("selectedTab", "tabPassword");
 			return "config";
 		}
-		else {
-			String enc = accountServ.encryptPassword(arg.getNewPassword1());
-			System.out.println(enc);
-			config.setPass(enc);
-			//saveConfig(detail.getUsername());
-		}
+		
+		String enc = accountServ.encryptPassword(arg.getNewPassword1());
+		System.out.println(enc);
+		config.setPass(enc);
+		saveConfig(detail.getUsername());
+
 		attr.addFlashAttribute("selectedTab", "tabPassword");
 		return "redirect:/config";
 	}
