@@ -2,7 +2,7 @@
 <html xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head> 
   <title th:object="${wordList}">[[${wordList.titleConfig}]]</title>
-  <link rel="stylesheet" href="/style1.css">
+  <link rel="stylesheet" href="style1.css">
 </head>
 
 <body>
@@ -86,66 +86,62 @@
   </div>
   </form>
 
-  <form action="/admin/updateUser" method="post" id="formConfigAdmin" th:object="${configAdmin}" sec:authorize="hasRole('ROLE_ADMIN')">
+  <form id="formConfigAdmin" th:object="${configAdmin}" sec:authorize="hasRole('ROLE_ADMIN')">
   <div class="customTable1">
   <table id="configAdmin"  class="dynamicArea">
   <tbody>
     <tr>
       <td><label for="username">Username</label></td>
       <td><input name="username" id="username" class="customInput1" th:value="${configAdmin.username}" ></td>
-      <td>
-        <div id="resultError"  th:if="${#fields.hasErrors('username')}" th:errors="*{username}" style="color: red"></div>
-        <div id="resultFind"   th:if="${configResult} == 'Find'" style="color: green">found</div>
-        <div id="resultDelete" th:if="${configResult} == 'Delete'" style="color: orange">deleted</div>
-        <div id="resultCreate" th:if="${configResult} == 'Create'" style="color: green">created</div>
-      </td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td><input class="customButton1" type="button" value="Find" onclick="configAdminButton('Find')"></td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td><input class="customButton1" type="button" value="Create" onclick="configAdminButton('Create')"></td>
+      <td></td>
     </tr>
 
     <tr>
       <td><label for="passwordReset">Password Reset</label></td>
       <td>
         <select name="passwordReset" id="passwordReset" class="customInput1">
-          <option value="1" th:selected="${configAdmin.passwordReset == true}">yes</option>
-          <option value="0" th:selected="${configAdmin.passwordReset == false}">no</option>
+          <option value="true" th:selected="${configAdmin.passwordReset == true}">yes</option>
+          <option value="false" th:selected="${configAdmin.passwordReset == false}">no</option>
         </select>
       </td>
-      <td>
-        <div th:if="${#fields.hasErrors('passwordReset')}" th:errors="*{passwordReset}" style="color: red"></div>
-        <div id="resultPassword" th:if="${configResult} == 'Password'" style="color: green">update</div>
-      </td>
+      <td></td>
     </tr>
 
     <tr>
       <td><label for="enabled">Enabled</label></td>
       <td>
         <select name="enabled" id="enabled" class="customInput1">
-          <option value="1" th:selected="${configAdmin.enabled == true}">on</option>
-          <option value="0" th:selected="${configAdmin.enabled == false}">off</option>
+          <option value="true" th:selected="${configAdmin.enabled == true}">on</option>
+          <option value="false" th:selected="${configAdmin.enabled == false}">off</option>
         </select>
       </td>
-      <td>
-        <div th:if="${#fields.hasErrors('enabled')}" th:errors="*{enabled}" style="color: red"></div>
-        <div id="resultEnabled" th:if="${configResult2} == 'Enabled'" style="color: green">update</div>
-      </td>
+      <td></td>
     </tr>
 
     <tr>
       <td></td>
-      <td><input class="customButton1" type="submit" name="action" value="Find"></td>
-    </tr>
-
-    <tr>
+      <td><input class="customButton1" type="button" value="Update" onclick="configAdminButton('Update')"></td>
       <td></td>
-      <td><input class="customButton1" type="submit" name="action" value="Update"></td>
     </tr>
 
     <tr>
       <td></td>
       <td><input class="customButton1" type="button" value="Delete" onclick="deleteConfirm()"></td>
-      <td><input id="deleteButton" type="submit" name="action" value="Delete" style="display: none;"></td>
+      <td></td>
     </tr>
 
-    <input name="_csrf" type="hidden" id="csrfToken" th:value="${_csrf.token}">
   </tbody>
   </table>
   </div>
@@ -158,7 +154,7 @@
   <div th:insert="~{footer :: links}"></div>
   <div th:insert="~{footer :: deleteDialog2}"></div>
 
-  <script src="/config.js"></script>
+  <script src="config.js"></script>
 </body>
 </html>
 

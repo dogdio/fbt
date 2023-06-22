@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -46,57 +47,102 @@ public class ActionItem {
 		System.out.println("<<<<< ActionItem Init");
 	}
 
-	private boolean adminAction(ConfigAdmin arg, BindingResult result,
-		Model model, RedirectAttributes attr)
+	private List<JsonResult> bindingResultToJson(BindingResult result, List<JsonResult> json)
+	{
+		List<ObjectError> errors = result.getAllErrors();
+		for(ObjectError err : errors) {
+			if(err instanceof FieldError) {
+				FieldError fieldErr = (FieldError)err;
+				json.add(new JsonResult(fieldErr.getField(), err.getDefaultMessage(), "ERR"));
+			}
+		}
+		return json;
+	}
+
+	private List<JsonResult> deleteUser(ConfigAdmin arg, List<JsonResult> json)
 	{
 		AccountData ad = accountServ.findByName(arg.getUsername());
-		boolean keepURL = false;
 
-		if(arg.getAction().equals("Find")) {
-			if(ad == null) {
-				result.addError(new FieldError("arg", "username", "not found"));
-			}
-			else {
-				model.addAttribute("configResult", "Find");
-				arg.setPasswordReset(false);
-				arg.setEnabled(ad.getEnabled());
-			}
-			keepURL = true;
+		if(ad == null) {
+			json.add(new JsonResult("username", "not found", "ERR"));
 		}
+		else {
+			System.out.println("<<<<< delete: " + ad.getId() + ", " + ad.getName());
+			accountServ.deleteById(ad.getId());
+			json.add(new JsonResult("username", "deleted", "WARN"));
+		}
+		return json;
+	}
 
-		if(arg.getAction().equals("Update")) {
-			if(ad == null) {
-				ad = new AccountData(null, arg.getUsername(), accountServ.encryptPassword(defaultPass),
-						"ROLE_USER", true, "jp", 0, 0);
-				attr.addFlashAttribute("configResult", "Create");
+	private List<JsonResult> updateUser(ConfigAdmin arg, List<JsonResult> json)
+	{
+		AccountData ad = accountServ.findByName(arg.getUsername());
+
+		if(ad == null) {
+			json.add(new JsonResult("username", "not found", "ERR"));
+		}
+		else {
+			boolean update = false;
+			if(arg.getPasswordReset()) {
+				String enc = accountServ.encryptPassword(defaultPass);
+				ad.setPass(enc);
+				json.add(new JsonResult("passwordReset", "updated", "INFO"));
+				update = true;
 			}
-			else {
-				if(arg.getPasswordReset()) {
-					String enc = accountServ.encryptPassword(defaultPass);
-					ad.setPass(enc);
-					attr.addFlashAttribute("configResult", "Password");
-				}
-				if(arg.getEnabled() != ad.getEnabled()) {
-					ad.setEnabled(arg.getEnabled());
-					attr.addFlashAttribute("configResult2", "Enabled");
-				}
+			if(arg.getEnabled() != ad.getEnabled()) {
+				ad.setEnabled(arg.getEnabled());
+				json.add(new JsonResult("enabled", "updated", "INFO"));
+				update = true;
 			}
+			if(update)
+				accountServ.save(ad);
+		}
+		return json;
+	}
+
+	private List<JsonResult> createUser(ConfigAdmin arg, List<JsonResult> json)
+	{
+		AccountData ad = accountServ.findByName(arg.getUsername());
+
+		if(ad == null) {
+			ad = new AccountData(null, arg.getUsername(), accountServ.encryptPassword(defaultPass),
+					"ROLE_USER", true, "jp", 0, 0);
+			json.add(new JsonResult("username", "created", "INFO"));
 			accountServ.save(ad);
 		}
-
-		if(arg.getAction().equals("Delete")) {
-			if(ad == null) {
-				result.addError(new FieldError("arg", "username", "not found"));
-			}
-			else {
-				System.out.println("<<<<< delete: " + ad.getId() + ", " + ad.getName());
-				accountServ.deleteById(ad.getId());
-				attr.addFlashAttribute("configResult", "Delete");
-				arg.setPasswordReset(false);
-				arg.setEnabled(false);
-			}
+		else {
+			json.add(new JsonResult("username", "already exists", "ERR"));
 		}
-		return keepURL;
+		return json;
+	}
+
+	private List<JsonResult> findUser(ConfigAdmin arg, List<JsonResult> json)
+	{
+		AccountData ad = accountServ.findByName(arg.getUsername());
+
+		if(ad == null) {
+			json.add(new JsonResult("username", "not found", "ERR"));
+		}
+		else {
+			String s = ad.getEnabled() ? "(enabled)" : "(disabled)";
+			json.add(new JsonResult("username", "found " + s, "INFO"));
+		}
+		return json;
+	}
+
+	private List<JsonResult> userAdminAction(ConfigAdmin arg, List<JsonResult> json)
+	{
+		if(arg.getAction().equals("Find"))
+			return findUser(arg, json);
+		else if(arg.getAction().equals("Create"))
+			return createUser(arg, json);
+		else if(arg.getAction().equals("Update"))
+			return updateUser(arg, json);
+		else if(arg.getAction().equals("Delete"))
+			return deleteUser(arg, json);
+
+		json.add(new JsonResult("action", "not found", "ERR"));
+		return json;
 	}
 
 	private void saveConfig(String name)
@@ -312,35 +358,23 @@ public class ActionItem {
 		return "redirect:/config";
 	}
 
-	@PostMapping("/admin/updateUser")
-	public String updateUser(@Validated ConfigAdmin arg, BindingResult result,
-		Model model, RedirectAttributes attr,
-		@AuthenticationPrincipal UserDetails detail)
+	@PostMapping("/admin/userAdmin")
+	@ResponseBody
+	public List<JsonResult> adminUserAdmin(@RequestBody @Validated ConfigAdmin arg, 
+		BindingResult result, @AuthenticationPrincipal UserDetails detail)
 	{
+		List<JsonResult> ret = new ArrayList<>();
+
 		loadConfig(detail.getUsername());
 		System.out.println("Name   : " + arg.getUsername());
 		System.out.println("Reset  : " + arg.getPasswordReset());
 		System.out.println("Enabled: " + arg.getEnabled());
 		System.out.println("Action : " + arg.getAction());
-		boolean keepURL = false;
 
-		if (!result.hasErrors())
-			keepURL = adminAction(arg, result, model, attr);
+		if(result.hasErrors())
+			return bindingResultToJson(result, ret);
 
-		if (result.hasErrors() || keepURL) {
-			model.addAttribute("wordList", wordList);
-			model.addAttribute("configForm", new ConfigForm(
-				config.getLang(), config.getItemSortOrder(), "", false
-			));
-			model.addAttribute("configPassword", new ConfigPassword("", ""));
-			model.addAttribute("configAdmin", arg);
-			model.addAttribute("selectedTab", "tabAdmin");
-			return "config";
-		}
-
-		attr.addFlashAttribute("configAdmin", arg);
-		attr.addFlashAttribute("selectedTab", "tabAdmin");
-		return "redirect:/config";
+		return userAdminAction(arg, ret);
 	}
 
 	@GetMapping("/show/{itemId}")
