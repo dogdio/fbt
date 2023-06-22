@@ -86,18 +86,16 @@
         <input type="checkbox" id="st3" class="customCheckBox2" checked onclick="itemFilter(event, 3, 3)"><label for="st3" class="customCheckBoxL2">[[${wordList.statusWord[3]}]]</label>
         <input type="checkbox" id="st4" class="customCheckBox2" checked onclick="itemFilter(event, 3, 4)"><label for="st4" class="customCheckBoxL2">[[${wordList.statusWord[4]}]]</label>
       </div>
-      <div style="margin-bottom: 5px;"> </div>
-      <div th:if="${configData.category} == 0">
 
+      <div style="margin-bottom: 5px;"> </div>
+
+      <div th:if="${configData.category} == 0">
         <input type="checkbox" id="cate1" class="customCheckBox2" checked onclick="itemFilter(event, 4, 1)"> <label for="cate1" class="customCheckBoxL2">[[${wordList.categoryWord[1]}]]</label>
         <input type="checkbox" id="cate2" class="customCheckBox2" checked onclick="itemFilter(event, 4, 2)"> <label for="cate2" class="customCheckBoxL2">[[${wordList.categoryWord[2]}]]</label>
         <input type="checkbox" id="cate3" class="customCheckBox2" checked onclick="itemFilter(event, 4, 3)"> <label for="cate3" class="customCheckBoxL2">[[${wordList.categoryWord[3]}]]</label>
         <input type="checkbox" id="cate4" class="customCheckBox2" checked onclick="itemFilter(event, 4, 4)"> <label for="cate4" class="customCheckBoxL2">[[${wordList.categoryWord[4]}]]</label>
         <input type="checkbox" id="cate5" class="customCheckBox2" checked onclick="itemFilter(event, 4, 5)"> <label for="cate5" class="customCheckBoxL2">[[${wordList.categoryWord[5]}]]</label>
         <input type="checkbox" id="cate6" class="customCheckBox2" checked onclick="itemFilter(event, 4, 6)"> <label for="cate6" class="customCheckBoxL2">[[${wordList.categoryWord[6]}]]</label>
-
-
-
       </div>
     </div>
   </div>

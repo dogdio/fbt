@@ -74,21 +74,8 @@ function writeItem()
 		worker: document.getElementById('worker').value,
 		deadline: document.getElementById('deadline').value,
 	};
-	let token = document.getElementById('csrfToken').value;
 
-	fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-CSRF-Token': token
-		},
-		body: JSON.stringify(req)
-	})
-	.then((resp) => resp.json())
-	.then((json) => {
-		let data = json[0];
-		console.log(data);
-
+	postJson(url, req).then(json => {
 		if(inputData.title != data.title) {
 			window.location.reload();
 		}
@@ -113,18 +100,8 @@ function writeProgress()
 		id: itemId,
 		contents: LFtoBR(document.getElementById('progress').value),
 	};
-	let token = document.getElementById('csrfToken').value;
 
-	fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-CSRF-Token': token
-		},
-		body: JSON.stringify(req)
-	})
-	.then((resp) => resp.json())
-	.then((json) => {
+	postJson(url, req).then(json => {
 		window.location.reload();
 	});
 }
@@ -136,21 +113,10 @@ function deleteProgress(event, id)
 		id: id,
 		contents: "Delete",
 	};
-	let token = document.getElementById('csrfToken').value;
 
-	fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-CSRF-Token': token
-		},
-		body: JSON.stringify(req)
-	})
-	.then((resp) => resp.json())
-	.then((json) => {
+	postJson(url, req).then(json => {
 		window.location.reload();
 	});
-
 }
 
 function updateProgress(event, id)
@@ -163,21 +129,10 @@ function updateProgress(event, id)
 		id: id,
 		contents: LFtoBR(document.getElementById('progressEditor').value),
 	};
-	let token = document.getElementById('csrfToken').value;
 
-	fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-CSRF-Token': token
-		},
-		body: JSON.stringify(req)
-	})
-	.then((resp) => resp.json())
-	.then((json) => {
+	postJson(url, req).then(json => {
 		window.location.reload();
 	});
-
 }
 
 let textSave = "";
