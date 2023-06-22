@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import sample.demo.form.ProgressData;
+import sample.demo.form.Constants;
 import sample.demo.repo.ProgressRepository;
 
 @Service
@@ -16,9 +17,12 @@ public class ProgressServiceImpl implements ProgressService {
 	ProgressRepository repository;
 
 	@Override
-	public List<ProgressData> findAll(Integer itemId) // + FIXME: reverse
+	public List<ProgressData> findAll(Integer itemId, Integer sort)
 	{
-		return repository.getData(itemId);
+		if(sort == Constants.PROG_SORT_NEW)
+			return repository.getDataDesc(itemId);
+		else
+			return repository.getDataAsc(itemId);
 	}
 
 	@Override
@@ -69,7 +73,7 @@ public class ProgressServiceImpl implements ProgressService {
 	@Override
 	public int generateProgressId(Integer itemId)
 	{
-		List<ProgressData> pdList = repository.getData(itemId);
+		List<ProgressData> pdList = repository.getDataAsc(itemId);
 
 		if(pdList.size() == 0)
 			return 1;

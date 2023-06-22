@@ -35,7 +35,7 @@ public class ActionItem {
 	private WordListIF wordList = new WordListJp();
 	private ConfigData config = new ConfigData(Constants.STATUS_MIN, Constants.CATEGORY_MIN, "",
 		LocalDate.now(), LocalDate.now().plusMonths(1), Constants.LANG_JP, Constants.ITEM_SORT_DEADLINE,
-		"");
+		Constants.PROG_SORT_NEW, "");
 	private boolean isLoad = false;
 	private final static String defaultPass = "password";
 
@@ -151,6 +151,7 @@ public class ActionItem {
 		if(ad != null) {
 			ad.setLang(config.getLang());
 			ad.setItemSortOrder(config.getItemSortOrder());
+			ad.setProgressSortOrder(config.getProgressSortOrder());
 			ad.setPass(config.getPass());
 			accountServ.save(ad);
 		}
@@ -165,6 +166,7 @@ public class ActionItem {
 		if(ad != null) {
 			config.setLang(ad.getLang());
 			config.setItemSortOrder(ad.getItemSortOrder());
+			config.setProgressSortOrder(ad.getProgressSortOrder());
 			config.setPass(ad.getPass());
 
 			if(config.getLang().equals(Constants.LANG_JP))
@@ -271,33 +273,37 @@ public class ActionItem {
 	}
 
 	@GetMapping("config")
-	public String readConfig(ConfigForm arg, Model model,
+	public String readConfig(ConfigSystem arg, Model model,
 							@AuthenticationPrincipal UserDetails detail)
 	{
 		loadConfig(detail.getUsername());
 
 		model.addAttribute("wordList", wordList);
 		model.addAttribute("configPassword", new ConfigPassword("", ""));
-
-		if(model.getAttribute("configAdmin") == null)
-			model.addAttribute("configAdmin", new ConfigAdmin("", false, true, ""));
-
-		if(model.getAttribute("selectedTab") == null)
-			model.addAttribute("selectedTab", "tabSystem");
+		model.addAttribute("configAdmin", new ConfigAdmin("", false, true, ""));
 
 		arg.setLang(config.getLang());
 		arg.setItemSortOrder(config.getItemSortOrder());
+		arg.setProgressSortOrder(config.getProgressSortOrder());
 
 		return "config";
 	}
 
-	// JSONを受信して、JSONを返す(Thymeleafを使わない)
-	@PostMapping("writeConfig")
+	@PostMapping("/configSystem")
 	@ResponseBody
-	public List<ConfigForm> writeConfig(@RequestBody ConfigForm arg,
-							@AuthenticationPrincipal UserDetails detail)
+	public List<JsonResult> configSystem(@RequestBody @Validated ConfigSystem arg,
+		BindingResult result, @AuthenticationPrincipal UserDetails detail)
 	{
+		List<JsonResult> ret = new ArrayList<>();
+		boolean update = false;
+
 		loadConfig(detail.getUsername());
+		System.out.println("LANG=" + arg.getLang());
+		System.out.println("ItemSort=" + arg.getItemSortOrder());
+		System.out.println("ProgSort=" + arg.getProgressSortOrder());
+
+		if(result.hasErrors())
+			return bindingResultToJson(result, ret);
 
 		if(!config.getLang().equals(arg.getLang())) {
 			config.setLang(arg.getLang());
@@ -307,60 +313,58 @@ public class ActionItem {
 			else if(config.getLang().equals(Constants.LANG_EN))
 				wordList = new WordListEn();
 
-			arg.setReload(true);
+			ret.add(new JsonResult("lang", "updated", "INFO"));
+			update = true;
 		}
 
-		config.setItemSortOrder(arg.getItemSortOrder());
+		if(config.getItemSortOrder() != arg.getItemSortOrder()) {
+			config.setItemSortOrder(arg.getItemSortOrder());
+			ret.add(new JsonResult("itemSortOrder", "updated", "INFO"));
+			update = true;
+		}
+		if(config.getProgressSortOrder() != arg.getProgressSortOrder()) {
+			config.setProgressSortOrder(arg.getProgressSortOrder());
+			ret.add(new JsonResult("progressSortOrder", "updated", "INFO"));
+			update = true;
+		}
 
-		saveConfig(detail.getUsername());
+		if(update)
+			saveConfig(detail.getUsername());
 
-		System.out.println("LANG=" + arg.getLang() + ", Reload=" + arg.getReload());
-		System.out.println("ItemSort=" + arg.getItemSortOrder());
-
-		List<ConfigForm> ret = new ArrayList<>();
-		ret.add(arg);
 		return ret;
 	}
 
-	@PostMapping("writeConfigPassword")
-	public String writeConfigPassword(@Validated ConfigPassword arg, BindingResult result,
-		Model model, RedirectAttributes attr,
-		@AuthenticationPrincipal UserDetails detail)
+	@PostMapping("/configPassword")
+	@ResponseBody
+	public List<JsonResult> configPassword(@RequestBody @Validated ConfigPassword arg,
+		BindingResult result, @AuthenticationPrincipal UserDetails detail)
 	{
-		loadConfig(detail.getUsername());
+		List<JsonResult> ret = new ArrayList<>();
 
+		loadConfig(detail.getUsername());
 		System.out.println("pass1=" + arg.getNewPassword1());
 		System.out.println("pass2=" + arg.getNewPassword2());
 
-		model.addAttribute("wordList", wordList);
-		model.addAttribute("configPassword", arg);
-		model.addAttribute("configForm", new ConfigForm(
-			config.getLang(), config.getItemSortOrder(), "", false
-		));
-		model.addAttribute("configAdmin", new ConfigAdmin("", false, true, ""));
+		if(result.hasErrors())
+			return bindingResultToJson(result, ret);
 
 		if(!arg.getNewPassword1().equals(arg.getNewPassword2())) {
-			FieldError fieldError = new FieldError("arg", "newPassword2", "unmatch password");
-			result.addError(fieldError);
-		}
-		if (result.hasErrors()) {
-			System.out.println("<<<<<<<<<<<<< Input Error");
-			model.addAttribute("selectedTab", "tabPassword");
-			return "config";
+			ret.add(new JsonResult("newPassword2", "unmatch password", "ERR"));
+			return ret;
 		}
 		
 		String enc = accountServ.encryptPassword(arg.getNewPassword1());
 		System.out.println(enc);
 		config.setPass(enc);
 		saveConfig(detail.getUsername());
+		ret.add(new JsonResult("newPassword2", "updated", "INFO"));
 
-		attr.addFlashAttribute("selectedTab", "tabPassword");
-		return "redirect:/config";
+		return ret;
 	}
 
 	@PostMapping("/admin/userAdmin")
 	@ResponseBody
-	public List<JsonResult> adminUserAdmin(@RequestBody @Validated ConfigAdmin arg, 
+	public List<JsonResult> adminUserAdmin(@RequestBody @Validated ConfigAdmin arg,
 		BindingResult result, @AuthenticationPrincipal UserDetails detail)
 	{
 		List<JsonResult> ret = new ArrayList<>();
@@ -393,7 +397,7 @@ public class ActionItem {
 		model.addAttribute("titleShow", "#" + rd.getId() + ", " + rd.getTitle());
 		model.addAttribute("itemId", rd.getId());
 		model.addAttribute("registData", rd);
-		model.addAttribute("progressList", progressServ.findAll(itemId));
+		model.addAttribute("progressList", progressServ.findAll(itemId, config.getProgressSortOrder()));
 		model.addAttribute("wordList", wordList);
 
 		return "show";

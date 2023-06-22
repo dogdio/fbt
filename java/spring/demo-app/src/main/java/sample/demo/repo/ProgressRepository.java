@@ -11,8 +11,11 @@ import sample.demo.form.ProgressData;
 // table, field名は、abcXyz --> abc_xyz に変換される
 public interface ProgressRepository extends CrudRepository<ProgressData, Integer>
 {
-	@Query("SELECT * FROM progress_data p WHERE p.item_id = :itemId ORDER BY progress_id")
-	List<ProgressData> getData(@Param("itemId") int itemId);
+	@Query("SELECT * FROM progress_data p WHERE p.item_id = :itemId ORDER BY progress_id asc")
+	List<ProgressData> getDataAsc(@Param("itemId") int itemId);
+
+	@Query("SELECT * FROM progress_data p WHERE p.item_id = :itemId ORDER BY progress_id desc")
+	List<ProgressData> getDataDesc(@Param("itemId") int itemId);
 
 	@Query("SELECT p.id FROM progress_data p WHERE p.item_id = :itemId")
 	Iterable<Integer> getId(@Param("itemId") int itemId);

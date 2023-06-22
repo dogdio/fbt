@@ -7,6 +7,7 @@ public interface WordListIF {
 	public final String linkWord[] = {};
 	public final String dialogWord[] = {};
 	public final String configWord[] = {};
+	public final String sortWord[] = {};
 
 	public final String titleSummary = "";
 	public final String titleConfig = "";

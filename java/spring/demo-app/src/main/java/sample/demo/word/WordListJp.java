@@ -6,7 +6,8 @@ public class WordListJp implements WordListIF {
 	public final String categoryWord[] = { "-", "新機能作成", "バグ対応", "リファクタリング", "教育/学習", "分析/振り返り", "その他" };
 	public final String linkWord[] = {"新規登録", "一覧", "設定" };
 	public final String dialogWord[] = {"削除しますか？"};
-	public final String configWord[] = {"アイテム ソート順序"};
+	public final String configWord[] = {"アイテム ソート順序", "進捗 ソート順序"};
+	public final String sortWord[] = { "新しい順", "古い順" };
 
 	public final String titleSummary = "アクションアイテム 一覧";
 	public final String titleConfig = "設定";

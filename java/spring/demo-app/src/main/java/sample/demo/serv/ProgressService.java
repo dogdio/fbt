@@ -5,7 +5,7 @@ import sample.demo.form.ProgressData;
 
 public interface ProgressService {
 
-	List<ProgressData> findAll(Integer itemId);
+	List<ProgressData> findAll(Integer itemId, Integer sort);
 	Integer save(ProgressData data);
 	void deleteById(Integer id);
 	void deleteAllByItemId(Integer itemId);

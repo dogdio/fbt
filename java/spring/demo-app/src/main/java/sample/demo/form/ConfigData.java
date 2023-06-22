@@ -14,6 +14,7 @@ public class ConfigData {
 
 	private String lang;
 	private Integer itemSortOrder;
+	private Integer progressSortOrder;
 
 	private String pass;
 }

@@ -6,7 +6,8 @@ public class WordListEn implements WordListIF {
 	public final String categoryWord[] = { "-", "new feature", "bug fix", "refactor", "study", "retrospective", "etc" };
 	public final String linkWord[] = {"new item", "summary", "config" };
 	public final String dialogWord[] = {"Delete this ?"};
-	public final String configWord[] = {"Item Sort Order"};
+	public final String configWord[] = {"Item Sort Order", "Progress Sort Order"};
+	public final String sortWord[] = { "newest first", "oldest first" };
 
 	public final String titleSummary = "Action Item Summary";
 	public final String titleConfig = "Config";

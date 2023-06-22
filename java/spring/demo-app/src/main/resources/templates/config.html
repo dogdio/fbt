@@ -16,48 +16,59 @@
   <b class="tabMenu" id="tabSystem">システム</b><b class="tabMenu" id="tabPassword">パスワード</b><b sec:authorize="hasRole('ROLE_ADMIN')" class="tabMenu" id="tabAdmin">ユーザー管理</b>
   <div class="h2Line"></div><div class="blankLine"></div>
 
+  <form th:object="${configSystem}">
   <div class="customTable1">
-  <table th:object="${configForm}" id="configSystem" class="dynamicArea">
+  <table th:object="${configSystem}" id="configSystem" class="dynamicArea">
   <tbody>
     <tr>
       <td><label for="lang">Language</label></td>
       <td>
         <select name="lang" id="lang" class="customInput1">
-          <option value="jp" th:selected="${configForm.lang == 'jp'}">Japanese</option>
-          <option value="en" th:selected="${configForm.lang == 'en'}">English</option>
+          <option value="jp" th:selected="${configSystem.lang == 'jp'}">Japanese</option>
+          <option value="en" th:selected="${configSystem.lang == 'en'}">English</option>
         </select>
       </td>
+      <td></td>
     </tr>
 
     <tr>
       <td><label for="itemSortOrder">[[${wordList.configWord[0]}]]</label></td>
       <td>
         <select name="itemSortOrder" id="itemSortOrder" class="customInput1">
-          <option value="0" th:selected="${configForm.itemSortOrder == 0}">[[${wordList.tableWord[0]}]]</option>
-          <option value="1" th:selected="${configForm.itemSortOrder == 1}">[[${wordList.tableWord[1]}]]</option>
-          <option value="2" th:selected="${configForm.itemSortOrder == 2}">[[${wordList.tableWord[2]}]]</option>
-          <option value="3" th:selected="${configForm.itemSortOrder == 3}">[[${wordList.tableWord[3]}]]</option>
-          <option value="4" th:selected="${configForm.itemSortOrder == 4}">[[${wordList.tableWord[4]}]]</option>
-          <option value="5" th:selected="${configForm.itemSortOrder == 5}">[[${wordList.tableWord[5]}]]</option>
-          <option value="6" th:selected="${configForm.itemSortOrder == 6}">[[${wordList.tableWord[6]}]]</option>
+          <option value="0" th:selected="${configSystem.itemSortOrder == 0}">[[${wordList.tableWord[0]}]]</option>
+          <option value="1" th:selected="${configSystem.itemSortOrder == 1}">[[${wordList.tableWord[1]}]]</option>
+          <option value="2" th:selected="${configSystem.itemSortOrder == 2}">[[${wordList.tableWord[2]}]]</option>
+          <option value="3" th:selected="${configSystem.itemSortOrder == 3}">[[${wordList.tableWord[3]}]]</option>
+          <option value="4" th:selected="${configSystem.itemSortOrder == 4}">[[${wordList.tableWord[4]}]]</option>
+          <option value="5" th:selected="${configSystem.itemSortOrder == 5}">[[${wordList.tableWord[5]}]]</option>
+          <option value="6" th:selected="${configSystem.itemSortOrder == 6}">[[${wordList.tableWord[6]}]]</option>
         </select>
       </td>
+      <td></td>
     </tr>
 
     <tr>
-      <td><label for="value2">value2</label></td>
-      <td><input name="value2" id="value2" maxlength="30" class="customInput1"></td>
+      <td><label for="progressSortOrder">[[${wordList.configWord[1]}]]</label></td>
+      <td>
+        <select name="progressSortOrder" id="progressSortOrder" class="customInput1">
+          <option value="0" th:selected="${configSystem.progressSortOrder == 0}">[[${wordList.sortWord[0]}]]</option>
+          <option value="1" th:selected="${configSystem.progressSortOrder == 1}">[[${wordList.sortWord[1]}]]</option>
+        </select>
+      </td>
+      <td></td>
     </tr>
 
     <tr>
       <td></td>
-      <td><input class="customButton1" type="button" value="Update" id="writeConfig"></td>
+      <td><input class="customButton1" type="button" value="Update" onclick="configSystemButton()"></td>
+      <td></td>
     </tr>
   </tbody>
   </table>
   </div>
+  </form>
 
-  <form action="writeConfigPassword" method="post" th:object="${configPassword}">
+  <form th:object="${configPassword}">
   <div class="customTable1">
   <table id="configPassword" class="dynamicArea">
   <tbody>
@@ -65,28 +76,28 @@
       <td><label for="newPassword1">New Password</label></td>
       <td><input type="password" name="newPassword1" id="newPassword1" minlength="8" maxlength="30"
                  class="customInput1" th:field="*{newPassword1}"></td>
-      <td><div th:if="${#fields.hasErrors('newPassword1')}" th:errors="*{newPassword1}" style="color: red"></div></td>
+      <td></td>
     </tr>
 
     <tr>
       <td><label for="newPassword2">retype</label></td>
       <td><input type="password" name="newPassword2" id="newPassword2" minlength="8" maxlength="30"
                  class="customInput1" th:field="*{newPassword2}"></td>
-      <td><div th:if="${#fields.hasErrors('newPassword2')}" th:errors="*{newPassword2}" style="color: red"></div></td>
+      <td></td>
     </tr>
 
     <tr>
       <td></td>
-      <td><input class="customButton1" type="submit" value="Update"></td>
+      <td><input class="customButton1" type="button" value="Update" onclick="configPasswordButton()"></td>
+      <td></td>
     </tr>
 
-    <input name="_csrf" type="hidden" id="csrfToken" th:value="${_csrf.token}">
   </tbody>
   </table>
   </div>
   </form>
 
-  <form id="formConfigAdmin" th:object="${configAdmin}" sec:authorize="hasRole('ROLE_ADMIN')">
+  <form th:object="${configAdmin}" sec:authorize="hasRole('ROLE_ADMIN')">
   <div class="customTable1">
   <table id="configAdmin"  class="dynamicArea">
   <tbody>
@@ -146,8 +157,6 @@
   </table>
   </div>
   </form>
-
-  <input type="hidden" id="selectedTab" th:value="${selectedTab}">
 
   <hr>
   <!-- "file name :: fragment name" -->

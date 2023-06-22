@@ -18,5 +18,8 @@ public class Constants {
 	public static final int ITEM_SORT_CATEGORY = 4;
 	public static final int ITEM_SORT_WORKER = 5;
 	public static final int ITEM_SORT_DEADLINE = 6;
+
+	public static final int PROG_SORT_NEW = 0;
+	public static final int PROG_SORT_OLD = 1;
 }
 

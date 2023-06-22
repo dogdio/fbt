@@ -1,32 +1,3 @@
-
-document.getElementById("writeConfig").addEventListener("click", (event) => {
-	let v0 = document.getElementById('lang').value;
-	let v1 = document.getElementById('itemSortOrder').value;
-	let v2 = document.getElementById('value2').value;
-	let token = document.getElementById('csrfToken').value;
-	console.log(token);
-
-	var url = 'writeConfig';
-	var data = { lang: v0, itemSortOrder: v1, value2: v2, reload: false };
-
-	fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-CSRF-Token': token
-		},
-		body: JSON.stringify(data)
-	})
-	.then((resp) => resp.json())
-	.then((json) => {
-		let config = json[0];
-		console.log(config.lang + ", " + config.reload);
-
-		if(config.reload)
-			window.location.reload();
-	});
-});
-
 window.addEventListener('pageshow', function(event) {
 	console.log("pageshow: " + location.toString());
 
@@ -85,43 +56,12 @@ function tabSwitch(event)
 }
 
 window.addEventListener("load", () => {
-	let id = document.getElementById('selectedTab').value;
+	let id = "tabSystem";
 	let tab = document.getElementById(id);
 	let menu = getMenu(tab.id);
 	selectTab(tab, menu);
 
-//	changeErrItemColor('configPassword');
-//	changeErrItemColor('configAdmin');
 });
-
-function changeErrItemColor(tableName)
-{
-	let table = document.getElementById(tableName);
-
-	for (let r = 0; r < table.rows.length; r++) {
-		console.log(table.rows[r].cells[2]);
-		let td0 = table.rows[r].cells[0];
-		let td1 = table.rows[r].cells[1];
-		let td2 = table.rows[r].cells[2];
-
-		if(td0.innerHTML.length != 0) {
-			let err = td2.firstElementChild;
-			//console.log(err);
-			if(err != null) {
-				if(err.id == "resultError")
-					td1.firstElementChild.style.background = "#ffe0e0";
-				if(err.id == "resultFind" || err.id == "resultPassword" 
-					|| err.id == "resultCreate" || err.id == "resultEnabled")
-					td1.firstElementChild.style.background = "#e0ffe0";
-				if(err.id == "resultDelete")
-					td1.firstElementChild.style.background = "#ffdab9";
-			}
-			else {
-				td1.firstElementChild.style.background = "#ffffff";
-			}
-		}
-	}
-}
 
 function deleteConfirm()
 {
@@ -184,6 +124,64 @@ function updateConfigMenu(tableName, json)
 	}
 }
 
+function postJson(url, data)
+{
+	return fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRF-Token': document.getElementById('csrfToken').value
+		},
+		body: JSON.stringify(data)
+	})
+	.then((resp) => resp.json())
+	.catch(error => {
+		console.log(error);
+	});
+}
+
+function configSystemButton()
+{
+	let url = '/configSystem';
+	let data = {
+		lang:              document.getElementById('lang').value,
+		itemSortOrder:     document.getElementById('itemSortOrder').value,
+		progressSortOrder: document.getElementById('progressSortOrder').value,
+	};
+
+	postJson(url, data).then(json => {
+		for (let info of json)
+			console.log(info);
+
+		updateConfigMenu('configSystem', json);
+
+		for (let info of json) {
+			if(info.key == 'lang' && info.value == 'updated') {
+				setTimeout(function() {
+					window.location.reload();
+				}, 600);
+				break;
+			}
+		}
+	});
+}
+
+function configPasswordButton()
+{
+	let url = '/configPassword';
+	let data = {
+		newPassword1: document.getElementById('newPassword1').value,
+		newPassword2: document.getElementById('newPassword2').value,
+	};
+
+	postJson(url, data).then(json => {
+		for (let info of json)
+			console.log(info);
+
+		updateConfigMenu('configPassword', json);
+	});
+}
+
 function configAdminButton(action)
 {
 	let url = '/admin/userAdmin';
@@ -194,19 +192,10 @@ function configAdminButton(action)
 		action: action
 	};
 
-	fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-CSRF-Token': document.getElementById('csrfToken').value
-		},
-		body: JSON.stringify(data)
-	})
-	.then((resp) => resp.json())
-	.then((json) => {
-		for (let info of json) {
+	postJson(url, data).then(json => {
+		for (let info of json)
 			console.log(info);
-		}
+
 		updateConfigMenu('configAdmin', json);
 	});
 }
