@@ -15,80 +15,26 @@
 
   <h3>登録情報</h3><div class="h3Line"></div><div class="blankLine"></div>
 
-  <form action="regist" method="post" name="registDataName" id="registData" th:object="${registData}">
-
-  <div class="customTable1">
+  <form name="registDataName" id="registData">
+  <div class="customTable1" th:object="${registData}">
   <table id="registTable">
   <tbody>
-    <tr>
-      <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
-      <td><textarea name="title" id="title" maxlength="210" rows="4" cols="50" th:field="*{title}" class="customInput2"></textarea></td>
-      <td><div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color: red"></div></td>
-    </tr>
-
-    <tr>
-      <td><label for="priority">[[${wordList.tableWord[2]}]]</label></td>
-      <td><input type="number" name="priority" id="priority" min="1" max="9" th:field="*{priority}" class="customInput1"></td>
-      <td><div th:if="${#fields.hasErrors('priority')}" th:errors="*{priority}" style="color: red"></div></td>
-    </tr>
-
-    <tr>
-      <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
-      <td>
-        <select name="status" id="status" class="customInput1">
-          <option value="1" th:selected="*{status == 1}">[[${wordList.statusWord[1]}]]</option>
-          <option value="2" th:selected="*{status == 2}">[[${wordList.statusWord[2]}]]</option>
-          <option value="3" th:selected="*{status == 3}">[[${wordList.statusWord[3]}]]</option>
-          <option value="4" th:selected="*{status == 4}">[[${wordList.statusWord[4]}]]</option>
-          <option value="5" th:selected="*{status == 5}">for-error</option><!-- for debug-->
-        </select>
-      </td>
-      <td><div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" style="color: red"></div></td>
-    </tr>
-
-    <tr>
-      <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
-      <td>
-        <select name="category" id="category" class="customInput1">
-          <option value="1" th:selected="*{category == 1}">[[${wordList.categoryWord[1]}]]</option>
-          <option value="2" th:selected="*{category == 2}">[[${wordList.categoryWord[2]}]]</option>
-          <option value="3" th:selected="*{category == 3}">[[${wordList.categoryWord[3]}]]</option>
-          <option value="4" th:selected="*{category == 4}">[[${wordList.categoryWord[4]}]]</option>
-          <option value="5" th:selected="*{category == 5}">[[${wordList.categoryWord[5]}]]</option>
-          <option value="6" th:selected="*{category == 6}">[[${wordList.categoryWord[6]}]]</option>
-          <option value="-1">for-error</option><!-- for debug-->
-        </select>
-      </td>
-      <td><div th:if="${#fields.hasErrors('category')}" th:errors="*{category}" style="color: red"></div></td>
-    </tr>
-
-    <tr>
-      <td><label for="worker">[[${wordList.tableWord[5]}]]</label></td>
-      <td><input name="worker" id="worker" maxlength="35" th:field="*{worker}" class="customInput1"></td>
-      <td><div th:if="${#fields.hasErrors('worker')}" th:errors="*{worker}" style="color: red"></div></td>
-    </tr>
-
-    <tr>
-      <td><label for="deadline">[[${wordList.tableWord[6]}]]</label></td>
-      <td><input type="date" name="deadline" id="deadline" th:value="*{deadline}" class="customInput1"></td>
-      <td><div th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}" style="color: red"></div></td>
-    </tr>
+    <div th:replace="~{main :: registDataFragment}"></div>
 
     <tr>
       <td></td>
-      <td><input class="customButton1" type="submit" value="Regist" id="do_regist"></td>
+      <td><input class="customButton1" type="button" value="Regist" onclick="registItem()"></td>
     </tr>
 
-    <input name="_csrf" type="hidden" id="csrfToken" th:value="${_csrf.token}">
   </tbody>
   </table>
   </div>
-
   </form>
 
   <hr>
   <div th:insert="~{footer :: links}"></div>
 
+  <script src="common.js"></script>
   <script src="new_item.js"></script>
 </body>
 </html>

@@ -18,64 +18,11 @@
     <label for="custom1" class="customCheckBoxL1"></label>
   </h3><div class="h3Line"></div><div class="blankLine"></div>     
 
-
-  <form action="regist" method="post" name="registDataName" id="registData" th:object="${registData}">
-  <div class="customTable1">
+  <form name="registDataName" id="registData">
+  <div class="customTable1" th:object="${registData}">
   <table id="editTable">
   <tbody>
-    <tr style="display: none;" id="titleTr" class="dynamicArea">
-      <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
-      <td><textarea name="title" id="title" maxlength="210" rows="4" cols="50" th:field="*{title}" class="customInput2"></textarea></td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <td><label for="priority">[[${wordList.tableWord[2]}]]</label></td>
-      <td><input type="number" name="priority" id="priority" min="1" max="9" th:field="*{priority}" class="customInput1"></td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
-      <td>
-        <select name="status" id="status" class="customInput1">
-          <option value="1" th:selected="*{status == 1}">[[${wordList.statusWord[1]}]]</option>
-          <option value="2" th:selected="*{status == 2}">[[${wordList.statusWord[2]}]]</option>
-          <option value="3" th:selected="*{status == 3}">[[${wordList.statusWord[3]}]]</option>
-          <option value="4" th:selected="*{status == 4}">[[${wordList.statusWord[4]}]]</option>
-          <option value="5" th:selected="*{status == 5}">for-error</option><!-- for debug-->
-        </select>
-      </td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
-      <td>
-        <select name="category" id="category" class="customInput1">
-          <option value="1" th:selected="*{category == 1}">[[${wordList.categoryWord[1]}]]</option>
-          <option value="2" th:selected="*{category == 2}">[[${wordList.categoryWord[2]}]]</option>
-          <option value="3" th:selected="*{category == 3}">[[${wordList.categoryWord[3]}]]</option>
-          <option value="4" th:selected="*{category == 4}">[[${wordList.categoryWord[4]}]]</option>
-          <option value="5" th:selected="*{category == 5}">[[${wordList.categoryWord[5]}]]</option>
-          <option value="6" th:selected="*{category == 6}">[[${wordList.categoryWord[6]}]]</option>
-          <option value="-1">for-error</option><!-- for debug-->
-        </select>
-      </td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <td><label for="worker">[[${wordList.tableWord[5]}]]</label></td>
-      <td><input name="worker" id="worker" maxlength="35" th:field="*{worker}" class="customInput1"></td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <td><label for="deadline">[[${wordList.tableWord[6]}]]</label></td>
-      <td><input type="date" name="deadline" id="deadline" th:value="*{deadline}" class="customInput1"></td>
-      <td></td>
-    </tr>
+    <div th:replace="~{main :: registDataFragment}"></div>
 
     <tr>
       <td></td>
@@ -93,10 +40,6 @@
   </table>
   </div>
   </form>
-
-
-
-
 
   <h3>進捗記入
     <input type="checkbox" onclick="toggleDynamicArea(event, 'progressWriteArea', 'flex')" id="custom2" class="customCheckBox1">

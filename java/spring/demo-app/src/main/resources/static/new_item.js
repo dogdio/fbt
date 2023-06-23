@@ -1,25 +1,24 @@
-function changeErrItemColor()
+function registItem()
 {
-	let table = document.getElementById('registTable');
+	let url = '/regist';
+	let req = {
+		title: document.getElementById('title').value,
+		priority: document.getElementById('priority').value,
+		status: document.getElementById('status').value,
+		category: document.getElementById('category').value,
+		worker: document.getElementById('worker').value,
+		deadline: document.getElementById('deadline').value,
+	};
 
-	for (let r = 0; r < table.rows.length; r++) {
-		console.log(table.rows[r].cells[2]);
-		let td0 = table.rows[r].cells[0];
-		let td1 = table.rows[r].cells[1];
-		let td2 = table.rows[r].cells[2];
+	postJson(url, req).then(json => {
+		updateInputTable('registTable', json);
 
-		if(td0.innerHTML.length != 0) {
-			if(td2.innerHTML.length != 0) {
-				td1.firstElementChild.style.background = "#ffe0e0";
-			}
-			else {
-				td1.firstElementChild.style.background = "#ffffff";
+		for (let info of json) {
+			if(info.key == 'newItemId' && info.attr == 'EXT') {
+				console.log("####### new item: " + info.value);
+				window.location.replace("/show/" + info.value);
 			}
 		}
-	}
+	});
 }
-
-window.addEventListener("load", () => {
-	changeErrItemColor();
-});
 

@@ -248,26 +248,25 @@ public class ActionItem {
 	}
 
 	@PostMapping("regist")
-	public String regist(@Validated RegistData arg, BindingResult result, Model model)
+	@ResponseBody
+	public List<JsonResult> regist(@RequestBody @Validated RegistData arg,
+		BindingResult result, Model model)
 	{
+		List<JsonResult> ret = new ArrayList<>();
+
 		System.out.println("Args| " +
 			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
 			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
 		);
-		Integer id = -1;
 
-		if (result.hasErrors()) {
-			System.out.println("<<<<<<<<<<<<< Input Error");
-			model.addAttribute("registData", arg);
-			model.addAttribute("wordList", wordList);
-			return "new_item";
-		}
-		else {
-			arg.setId(null);
-			id = itemServ.save(arg);
-		}
+		if(result.hasErrors())
+			return bindingResultToJson(result, ret);
 
-		return "redirect:/show/" + id;
+		arg.setId(null);
+		Integer id = itemServ.save(arg);
+
+		ret.add(new JsonResult("newItemId", id.toString(), "EXT"));
+		return ret;
 	}
 
 	@GetMapping("config")

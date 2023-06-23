@@ -1,0 +1,55 @@
+<div th:fragment="registDataFragment">
+  <tr style="display: table-row;" id="titleTr" class="dynamicArea">
+    <td><label for="title">[[${wordList.tableWord[1]}]]</label></td>
+    <td><textarea name="title" id="title" maxlength="210" rows="4" cols="50" th:field="${registData.title}" class="customInput2"></textarea></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td><label for="priority">[[${wordList.tableWord[2]}]]</label></td>
+    <td><input type="number" name="priority" id="priority" min="1" max="9" th:field="${registData.priority}" class="customInput1"></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td><label for="status">[[${wordList.tableWord[3]}]]</label></td>
+    <td>
+      <select name="status" id="status" class="customInput1">
+        <option value="1" th:selected="${registData.status == 1}">[[${wordList.statusWord[1]}]]</option>
+        <option value="2" th:selected="${registData.status == 2}">[[${wordList.statusWord[2]}]]</option>
+        <option value="3" th:selected="${registData.status == 3}">[[${wordList.statusWord[3]}]]</option>
+        <option value="4" th:selected="${registData.status == 4}">[[${wordList.statusWord[4]}]]</option>
+        <option value="5" th:selected="${registData.status == 5}">for-error</option>
+      </select>
+    </td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td><label for="category">[[${wordList.tableWord[4]}]]</label></td>
+    <td>
+      <select name="category" id="category" class="customInput1">
+        <option value="1" th:selected="${registData.category == 1}">[[${wordList.categoryWord[1]}]]</option>
+        <option value="2" th:selected="${registData.category == 2}">[[${wordList.categoryWord[2]}]]</option>
+        <option value="3" th:selected="${registData.category == 3}">[[${wordList.categoryWord[3]}]]</option>
+        <option value="4" th:selected="${registData.category == 4}">[[${wordList.categoryWord[4]}]]</option>
+        <option value="5" th:selected="${registData.category == 5}">[[${wordList.categoryWord[5]}]]</option>
+        <option value="6" th:selected="${registData.category == 6}">[[${wordList.categoryWord[6]}]]</option>
+      </select>
+    </td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td><label for="worker">[[${wordList.tableWord[5]}]]</label></td>
+    <td><input name="worker" id="worker" maxlength="35" th:field="${registData.worker}" class="customInput1"></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td><label for="deadline">[[${wordList.tableWord[6]}]]</label></td>
+    <td><input type="date" name="deadline" id="deadline" th:value="${registData.deadline}" class="customInput1"></td>
+    <td></td>
+  </tr>
+
+</div>

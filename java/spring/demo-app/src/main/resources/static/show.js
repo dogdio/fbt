@@ -44,6 +44,11 @@ window.addEventListener("load", () => {
 		itemId = m[1];
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+	let e = document.getElementById("titleTr");
+	e.style.display = 'none';
+});
+
 window.addEventListener("keydown", (event) => {
 //	console.log(event);
 
@@ -209,5 +214,4 @@ function toggleDynamicArea(event, id, setting)
 		e.classList.add("inactive");
 	}
 }
-
 
