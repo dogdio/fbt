@@ -24,9 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDateTime;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @SessionScope
 @Controller
@@ -464,9 +462,7 @@ public class ActionItem {
 		System.out.println("Args| " + arg.getId() + ": " + arg.getContents());
 
 		if(itemServ.isExists(arg.getId())) {
-			LocalDateTime date = LocalDateTime.now();
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-			String dateStr = date.format(dtf);
+			String dateStr = Utils.getCurrentDate();
 			System.out.println("Now| " + dateStr);
 
 			int progressId = progressServ.generateProgressId(arg.getId());
