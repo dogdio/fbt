@@ -1,4 +1,5 @@
 package sample.demo.form;
+import java.time.LocalDate;
 import lombok.Data;
 import lombok.AllArgsConstructor;
 
@@ -8,7 +9,7 @@ public class QueryForm {
 	private Integer status;
 	private Integer category;
 	private String worker;
-	private String startDate;
-	private String stopDate;
+	private LocalDate startDate;
+	private LocalDate stopDate;
 }
 

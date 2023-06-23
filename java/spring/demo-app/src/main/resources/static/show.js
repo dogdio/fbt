@@ -76,10 +76,13 @@ function writeItem()
 	};
 
 	postJson(url, req).then(json => {
-		if(inputData.title != data.title) {
-			window.location.reload();
+		if(inputData.title != req.title) {
+			setTimeout(function() {
+				window.location.reload();
+			}, 600);
 		}
-		inputData = data;
+		updateInputTable('editTable', json);
+		inputData = req;
 	});
 }
 

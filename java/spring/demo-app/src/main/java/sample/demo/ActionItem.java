@@ -208,12 +208,10 @@ public class ActionItem {
 		if(arg.getWorker() != null)
 			config.setWorker(arg.getWorker());
 
-		LocalDate date = Utils.strToLocalDate(arg.getStartDate());
-		if(date != null)
-			config.setStartDate(date);
-		date = Utils.strToLocalDate(arg.getStopDate());
-		if(date != null)
-			config.setStopDate(date);
+		if(arg.getStartDate() != null)
+			config.setStartDate(arg.getStartDate());
+		if(arg.getStopDate() != null)
+			config.setStopDate(arg.getStopDate());
 
 		Iterable<RegistData> rdList  = itemServ.findAll(config);
 
@@ -382,9 +380,12 @@ public class ActionItem {
 	}
 
 	@GetMapping("/show/{itemId}")
-	public String show(@PathVariable Integer itemId, Model model)
+	public String show(@PathVariable Integer itemId, Model model,
+		@AuthenticationPrincipal UserDetails detail)
 	{
 		RegistData rd = itemServ.findById(itemId);
+
+		loadConfig(detail.getUsername());
 
 		System.out.println("[show] " + rd.getId() + ": " +
 			rd.getTitle() + "," + rd.getPriority() + "," + rd.getStatus() + "," +
@@ -405,23 +406,55 @@ public class ActionItem {
 
 	@PostMapping("writeItem")
 	@ResponseBody
-	public List<RegistData> writeItem(@RequestBody RegistData arg)
+	public List<JsonResult> writeItem(@RequestBody @Validated RegistData arg, BindingResult result)
 	{
+		List<JsonResult> ret = new ArrayList<>();
+		boolean update = false;
+
 		System.out.println("[writeItem] " + arg.getId() + ": " +
 			arg.getTitle() + "," + arg.getPriority() + "," + arg.getStatus() + "," +
 			arg.getCategory() + "," + arg.getWorker() + "," + arg.getDeadline()
 		);
+		if(result.hasErrors())
+			return bindingResultToJson(result, ret);
 
 		if(itemServ.isExists(arg.getId())) {
-			RegistData rd = new RegistData(
-				arg.getId(), arg.getTitle(), arg.getPriority(), arg.getStatus(),
-				arg.getCategory(), arg.getWorker(), arg.getDeadline()
-			);
-			itemServ.save(rd);
-		}
+			RegistData rd = itemServ.findById(arg.getId());
 
-		List<RegistData> ret = new ArrayList<>();
-		ret.add(arg);
+			if(!rd.getTitle().equals(arg.getTitle())) {
+				rd.setTitle(arg.getTitle());
+				ret.add(new JsonResult("title", "updated", "INFO"));
+				update = true;
+			}
+			if(rd.getPriority() != arg.getPriority()) {
+				rd.setPriority(arg.getPriority());
+				ret.add(new JsonResult("priority", "updated", "INFO"));
+				update = true;
+			}
+			if(rd.getStatus() != arg.getStatus()) {
+				rd.setStatus(arg.getStatus());
+				ret.add(new JsonResult("status", "updated", "INFO"));
+				update = true;
+			}
+			if(rd.getCategory() != arg.getCategory()) {
+				rd.setCategory(arg.getCategory());
+				ret.add(new JsonResult("category", "updated", "INFO"));
+				update = true;
+			}
+			if(!rd.getWorker().equals(arg.getWorker())) {
+				rd.setWorker(arg.getWorker());
+				ret.add(new JsonResult("worker", "updated", "INFO"));
+				update = true;
+			}
+			if(!rd.getDeadline().isEqual(arg.getDeadline())) {
+				rd.setDeadline(arg.getDeadline());
+				ret.add(new JsonResult("deadline", "updated", "INFO"));
+				update = true;
+			}
+
+			if(update)
+				itemServ.save(rd);
+		}
 		return ret;
 	}
 
