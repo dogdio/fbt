@@ -65,21 +65,13 @@ window.addEventListener("load", () => {
 
 function deleteConfirm()
 {
-	let m = document.getElementById("modal2");
 	let name = document.getElementById("username").value;
-	let msg = document.getElementById("deleteUserName");
+	let msg = document.getElementById("modalDialogMsg").value;
 
-	msg.innerHTML = "[" + name + "]";
-	m.style.display = "block";
-}
-
-function deleteConfirmAction(answer) // called by modal2
-{
-	let m = document.getElementById("modal2");
-	m.style.display = "none";
-
-	if (answer)
-		configAdminButton('Delete');
+	createConfirmDialog(event, name, msg, function(answer) {
+		if(answer)
+			configAdminButton('Delete');
+	});
 }
 
 function configSystemButton()
