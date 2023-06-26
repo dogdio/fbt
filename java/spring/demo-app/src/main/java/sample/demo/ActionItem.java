@@ -476,19 +476,18 @@ public class ActionItem {
 		return ret;
 	}
 
-	@PostMapping("/deleteProgress/{itemId}")
+	@PostMapping("/deleteProgress/{keyId}")
 	@ResponseBody
-	public List<ProgressForm>
-	deleteProgress(@RequestBody ProgressForm arg, @PathVariable Integer itemId)
+	public List<JsonResult> deleteProgress(@PathVariable Integer keyId)
 	{
-		System.out.println("### Delete key: " + arg.getId() +
-			", item=" + itemId + ", " + arg.getContents());
+		List<JsonResult> ret = new ArrayList<>();
+		System.out.println("### Delete key: " + keyId);
 
-		if(progressServ.isExists(arg.getId()))
-			progressServ.deleteById(arg.getId());
+		if(progressServ.isExists(keyId)) {
+			progressServ.deleteById(keyId);
+			ret.add(new JsonResult("deleted", keyId.toString(), "EXT"));
+		}
 
-		List<ProgressForm> ret = new ArrayList<>();
-		ret.add(arg);
 		return ret;
 	}
 
@@ -511,15 +510,20 @@ public class ActionItem {
 		return ret;
 	}
 
-	@GetMapping("/delete/{itemId}")
-	public String delete(@PathVariable Integer itemId, Model model)
+	@PostMapping("/delete/{itemId}")
+	@ResponseBody
+	public List<JsonResult> delete(@PathVariable Integer itemId)
 	{
+		List<JsonResult> ret = new ArrayList<>();
+		System.out.println("### Delete item: " + itemId);
+
 		if(itemServ.isExists(itemId)) {
 			itemServ.deleteById(itemId);
 			progressServ.deleteAllByItemId(itemId);
+			ret.add(new JsonResult("deleted", itemId.toString(), "EXT"));
 		}
 
-		return "redirect:/summary";
+		return ret;
 	}
 
 	@GetMapping("/dump/{itemId}")

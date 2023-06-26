@@ -1,20 +1,45 @@
-let deleteId;
-function deleteConfirm()
+function deleteItemConfirm(event)
 {
-	let m = document.getElementById("modal");
-	m.style.display = "block";
-	deleteId = itemId;
+	let item = document.getElementById("title").value;
+	let msg = document.getElementById("modalDialogMsg").value;
+
+	createConfirmDialog(event, item, msg, function(answer) {
+		console.log(">>>>>" + answer + ", " + itemId);
+
+		let url = '/delete/' + itemId;
+		let req = '';
+
+		postJson(url, req).then(json => {
+			for (let info of json) {
+				if(info.key == 'deleted' && info.value == itemId && info.attr == 'EXT')
+					window.location.replace("/summary");
+			}
+		});
+	});
 }
 
-function deleteConfirmAction(answer)
+function deleteProgressConfirm(event, keyId, msgId)
 {
-	let m = document.getElementById("modal");
-	m.style.display = "none";
+	let msg = document.getElementById("modalDialogMsg").value;
+	console.log(event);
+	console.log("### Y " + event.clientY);
+	console.log("### X " + event.clientX);
 
-	if (answer) {
-		console.log("####### delete" + deleteId);
-		location.href = "/delete/" + deleteId;
-	}
+	createConfirmDialog(event, msgId, msg, function(answer) {
+		console.log("### confirm: " + answer);
+
+		if(answer) {
+			let url = '/deleteProgress/' + keyId;
+			let req = '';
+
+			postJson(url, req).then(json => {
+				for (let info of json) {
+					if(info.key == 'deleted' && info.value == keyId && info.attr == 'EXT')
+						window.location.reload();
+				}
+			});
+		}
+	});
 }
 
 let inputData = {
@@ -47,16 +72,6 @@ window.addEventListener("load", () => {
 document.addEventListener('DOMContentLoaded', function() {
 	let e = document.getElementById("titleTr");
 	e.style.display = 'none';
-});
-
-window.addEventListener("keydown", (event) => {
-//	console.log(event);
-
-	let m = document.getElementById("modal");
-	if(m.style.display == 'block') {
-		if(event.key == 'Escape')
-			deleteConfirmAction(false);
-	}
 });
 
 window.addEventListener('pageshow', function(event) {
@@ -114,19 +129,6 @@ function writeProgress()
 	});
 }
 
-function deleteProgress(event, id)
-{
-	let url = '/deleteProgress/' + itemId;
-	let req = {
-		id: id,
-		contents: "Delete",
-	};
-
-	postJson(url, req).then(json => {
-		window.location.reload();
-	});
-}
-
 function updateProgress(event, id)
 {
 	console.log("Update/" + itemId + "/ " + id);
@@ -150,6 +152,8 @@ function toggleProgressEditor(event)
 	let div1 = event.target.parentElement;
 	let key = div1.nextElementSibling;
 	let id = key.innerText.substring(1); // #[[${list.id}]]
+	let msgId = "'" + div1.previousElementSibling.previousElementSibling.innerText + "'";
+	console.log(msgId);
 
 	// 既に開いている方をすぐに閉じる（アニメなし）
 	if(targetSave != null && (event.target != targetSave)) {
@@ -175,7 +179,7 @@ function toggleProgressEditor(event)
 			'<div class="flexItem">' +
 			'<input class="customButton1" type="button" value="Update" onclick="updateProgress(event, ' + id + ')">' +
 			'<div style="margin-bottom: 6px;"></div>' +
-			'<input class="customButton1" type="button" value="Delete" onclick="deleteProgress(event, ' + id + ')">' +
+			'<input class="customButton1" type="button" value="Delete" onclick="deleteProgressConfirm(event, ' + id + ', ' + msgId + ')">' +
 			'</div>' +
 		'</div>';
 		let e = text.firstElementChild;

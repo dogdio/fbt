@@ -56,3 +56,75 @@ function updateInputTable(tableName, json)
 	}
 }
 
+function getDialogPosition(event)
+{
+	let dialogWidth = (300+5+5)/2;
+	let buttonWidth = (170)/2;
+	let rect = event.target.getBoundingClientRect();
+	let x = rect.left - dialogWidth + buttonWidth;
+	let y;
+	console.log(event.target);
+
+	if(rect.top > 170)
+		y = rect.top - 160;
+	else
+		y = rect.top + 40;
+
+	return [x, y];
+}
+
+let modalCallback;
+function createConfirmDialog(event, msg1, msg2, func)
+{
+	let d = document.getElementById("modalDialogId");
+	d.innerHTML =
+		'<div id="modalConfirm" class="modal">' +
+		  '<div class="modalDialog" id="modalDialogBody">' +
+		    '<p><b id="modalMessage1" style="margin-right: 10px;"></b></p>' +
+		    '<p><b id="modalMessage2"></b></p>' +
+		    '<button id="modalYes" onclick="confirmAction(true)">Yes</button>' +
+		    '<button id="modalNo" onclick="confirmAction(false)">No</button>' +
+		  '</div>' +
+		'</div>';
+
+	modalCallback = func;
+
+	if(msg1.length > 13) {
+		msg1 = msg1.substring(0, 13);
+		msg1 += "...";
+	}
+	document.getElementById("modalMessage1").innerHTML = '[' + msg1 + ']';
+	document.getElementById("modalMessage2").innerHTML = msg2;
+
+	let [x, y] = getDialogPosition(event);
+	document.getElementById("modalDialogBody").style.top = y + 'px';
+	document.getElementById("modalDialogBody").style.left = x + 'px';
+
+	let m = document.getElementById("modalConfirm");
+	m.addEventListener("click", (event) => {
+		console.log(event.target.id);
+		if(event.target == m)
+			confirmAction(false); // 背景をクリックしたらダイアログを消す
+	});
+	document.getElementById("modalConfirm").style.display = 'block';
+}
+
+function confirmAction(answer)
+{
+	let d = document.getElementById("modalDialogId");
+	d.innerHTML = "";
+
+	modalCallback(answer);
+}
+
+window.addEventListener("keydown", (event) => {
+
+	let m = document.getElementById("modalConfirm");
+	if(m != null) {
+		if(m.style.display == 'block') {
+			if(event.key == 'Escape')
+				confirmAction(false);
+		}
+	}
+});
+
