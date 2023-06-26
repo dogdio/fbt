@@ -6,15 +6,17 @@ function deleteItemConfirm(event)
 	createConfirmDialog(event, item, msg, function(answer) {
 		console.log(">>>>>" + answer + ", " + itemId);
 
-		let url = '/delete/' + itemId;
-		let req = '';
-
-		postJson(url, req).then(json => {
-			for (let info of json) {
-				if(info.key == 'deleted' && info.value == itemId && info.attr == 'EXT')
-					window.location.replace("/summary");
-			}
-		});
+		if(answer) {
+			let url = '/delete/' + itemId;
+			let req = '';
+            
+			postJson(url, req).then(json => {
+				for (let info of json) {
+					if(info.key == 'deleted' && info.value == itemId && info.attr == 'EXT')
+						window.location.replace("/summary");
+				}
+			});
+		}
 	});
 }
 
@@ -64,9 +66,15 @@ window.addEventListener("load", () => {
 	};
 	console.log(inputData);
 
-	let m = location.toString().match(/\/(\d+)$/);
-	if(m.length == 2)
+	let url = location.toString();
+	let regex = /.*\//;
+
+	url = url.replace(regex, '/');
+	let m = url.match(/^\/(\d+)/);
+	if(m.length == 2) {
 		itemId = m[1];
+		console.log("itemId: " + itemId);
+	}
 });
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -125,23 +133,37 @@ function writeProgress()
 	};
 
 	postJson(url, req).then(json => {
-		window.location.reload();
+		updateInputArea("progress", "progressMsg", "contents", json);
+
+		for (let info of json) {
+			if(info.key == 'write' && info.value == itemId && info.attr == "EXT") {
+				window.location.reload();
+				break;
+			}
+		}
 	});
 }
 
 function updateProgress(event, id)
 {
-	console.log("Update/" + itemId + "/ " + id);
+	console.log("Update/" + id);
 	console.log(document.getElementById('progressEditor').value);
 
-	let url = '/updateProgress/' + itemId;
+	let url = '/updateProgress';
 	let req = {
 		id: id,
 		contents: LFtoBR(document.getElementById('progressEditor').value),
 	};
 
 	postJson(url, req).then(json => {
-		window.location.reload();
+		updateInputArea("progressEditor", "progressEditorMsg", "contents", json);
+
+		for (let info of json) {
+			if(info.key == 'update' && info.value == id && info.attr == "EXT") {
+				window.location.reload();
+				break;
+			}
+		}
 	});
 }
 
@@ -180,6 +202,7 @@ function toggleProgressEditor(event)
 			'<input class="customButton1" type="button" value="Update" onclick="updateProgress(event, ' + id + ')">' +
 			'<div style="margin-bottom: 6px;"></div>' +
 			'<input class="customButton1" type="button" value="Delete" onclick="deleteProgressConfirm(event, ' + id + ', ' + msgId + ')">' +
+			'<p id="progressEditorMsg"></p>' +
 			'</div>' +
 		'</div>';
 		let e = text.firstElementChild;

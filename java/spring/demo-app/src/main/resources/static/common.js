@@ -14,6 +14,27 @@ function postJson(url, data)
 	});
 }
 
+function updateInputArea(inputArea, msgArea, field, json)
+{
+	let input = document.getElementById(inputArea);
+	let msg = document.getElementById(msgArea);
+
+	for (let info of json) {
+		if(info.key == field) {
+			if(info.attr == "ERR") {
+				msg.innerHTML = info.value;
+				msg.style.color = 'red';
+				input.style.background = "#ffe0e0";
+			}
+			else {
+				msg.innerHTML = "";
+				input.style.background = "#ffffff";
+			}
+			break;
+		}
+	}
+}
+
 function updateInputTable(tableName, json)
 {
 	let table = document.getElementById(tableName);

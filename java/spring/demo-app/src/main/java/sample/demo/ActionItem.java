@@ -457,9 +457,14 @@ public class ActionItem {
 
 	@PostMapping("writeProgress")
 	@ResponseBody
-	public List<ProgressForm> writeProgress(@RequestBody ProgressForm arg)
+	public List<JsonResult> writeProgress(@RequestBody @Validated ProgressForm arg,
+		BindingResult result)
 	{
-		System.out.println("Args| " + arg.getId() + ": " + arg.getContents());
+		List<JsonResult> ret = new ArrayList<>();
+		System.out.println("Write| " + arg.getId() + ": " + arg.getContents());
+
+		if(result.hasErrors())
+			return bindingResultToJson(result, ret);
 
 		if(itemServ.isExists(arg.getId())) {
 			String dateStr = Utils.getCurrentDate();
@@ -469,10 +474,9 @@ public class ActionItem {
 			ProgressData pd = new ProgressData(null, arg.getId(), progressId,
 												arg.getContents(), dateStr);
 			progressServ.save(pd);
+			ret.add(new JsonResult("write", arg.getId().toString(), "EXT"));
 		}
 
-		List<ProgressForm> ret = new ArrayList<>();
-		ret.add(arg);
 		return ret;
 	}
 
@@ -491,22 +495,24 @@ public class ActionItem {
 		return ret;
 	}
 
-	@PostMapping("/updateProgress/{itemId}")
+	@PostMapping("/updateProgress")
 	@ResponseBody
-	public List<ProgressForm>
-	updateProgress(@RequestBody ProgressForm arg, @PathVariable Integer itemId)
+	public List<JsonResult> updateProgress(@RequestBody @Validated ProgressForm arg,
+		BindingResult result)
 	{
-		System.out.println("### Update key: " + arg.getId() +
-			", item=" + itemId + ", " + arg.getContents());
+		List<JsonResult> ret = new ArrayList<>();
+		System.out.println("Update| " + arg.getId() + ": " + arg.getContents());
+
+		if(result.hasErrors())
+			return bindingResultToJson(result, ret);
 
 		ProgressData pd = progressServ.findById(arg.getId());
 		if(pd.getId() == arg.getId()) {
 			pd.setContents(arg.getContents());
 			progressServ.save(pd);
+			ret.add(new JsonResult("update", arg.getId().toString(), "EXT"));
 		}
 
-		List<ProgressForm> ret = new ArrayList<>();
-		ret.add(arg);
 		return ret;
 	}
 
