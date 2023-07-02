@@ -42,7 +42,6 @@ public class RegistData {
 	private String worker;
 
 	@NotNull
-	@FutureOrPresent
 	private LocalDate deadline;
 }
 
