@@ -69,7 +69,7 @@ void test1(void)
 void test2(void)
 {
 	printf("## %s: \n", __func__);
-	HOGE2 a;
+	HOGE2 a = {};
 	HOGE2 b;
 	Queue::QueueIF<HOGE2> HogeQ;
 

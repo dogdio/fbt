@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <thread>
 #include <functional>
+#include <memory>
 
 class SharedData {
 public:
