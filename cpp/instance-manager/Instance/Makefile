@@ -20,6 +20,9 @@ OBJS1    := $(addprefix $(TMPDIR)/, $(FILES1:.cpp=.o))
 DEPENDS1  = $(addprefix $(TMPDIR)/, $(FILES1:.cpp=.d))
 LIB1      = -ldl -lpthread
 LIB2      = $(PATH1)/libUtils.a
+ifeq ($(WITH_GCOV), 1)
+ LIB1     +=  -lgcov
+endif
 
 TARGET1   = ../InstanceManager
 TARGETS   = $(TARGET1)
