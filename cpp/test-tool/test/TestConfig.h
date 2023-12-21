@@ -9,14 +9,27 @@ namespace test {
 namespace config {
 
 	/** provide abstract class instead of regular class @emoji :bulb: \n
+	  @snippet TestConfig.h Snippet1
 		- You don't have to write private members in header files
 		  - Private members are fully encapsulated in the implementing side (TestConfig.cpp)
 		  - No PIMPL idiom required
 		  - No forward references required
 		- Client code cannot be instantiated
 		  - no more trouble copying/moving instances
+		  - You can adopt the null object pattern if necessary
+		- Say goodbye to the simple and innocent way of defining class hoge in hoge.h and implementing it in hoge.cpp
 
-	    @dotfile Config.dot */
+	    @dotfile Config.dot
+
+        - @ref TestMain.cpp (Caller)
+          @dontinclude TestMain.cpp
+            @skip CONFIG_CATEGORY_GLOBAL
+            @until ;
+          @dontinclude TestMain.cpp
+            @skip void Init
+            @until signal
+	 */
+//[Snippet1]
 	class ConfigIF {
 	public:
 		ConfigIF() {}
@@ -35,6 +48,7 @@ namespace config {
 	    @retval !NULL valid ConfigIF pointer
 	    @retval NULL no Instance specified by @b Name */
 	ConfigIF *GetInstance(const char *Name);
+//[Snippet1]
 }
 }
 
