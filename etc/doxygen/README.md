@@ -3,11 +3,55 @@
 
 https://www.doxygen.nl/manual/index.html<br>
 https://www.doxygen.nl/manual/commands.html<br>
+https://graphviz.org/documentation/<br>
+https://www.mcternan.me.uk/mscgen/<br>
+
 
 - 関数のヘッダだけでなく、ファイルの先頭に説明や図を入れて詳細なドキュメントが作れる
 - ソースやヘッダとは独立したページ `@page` を定義し、いろいろ記述したりジャンプできる
 - ソースコードの一部を抜粋して、図と合わせて説明可能 [(TestConfig.h)](https://github.com/dogdio/fbt/blob/master/cpp/test-tool/test/TestConfig.h "TestConfig")
 - 生成した図から別の図、定義位置などにジャンプできる
+
+```
+テンプレートの生成
+$ doxygen -g hoge.conf
+
+とりあえず以下を修正すればそれなりの結果が出てくる(htmlだけで良ければlatex=NOでおｋ）
+$ vim hoge.conf
+  GENERATE_LATEX   = NO
+  RECURSIVE        = YES
+  EXAMPLE_PATH     = ./dir1 ./dir2
+
+$ doxygen hoge.conf
+./html に出力される
+```
+
+カスタム方法については以下を参照<br>
+https://www.doxygen.nl/manual/customize.html
+
+```
+レイアウトをカスタムするには、テンプレートを生成し適宜修正する
+$ doxygen -l
+./DoxygenLayout.xml が生成される
+
+$ doxygen -w html header.html footer.html customdoxygen.css
+./header.html ./footer.html ./customdoxygen.css が生成される
+```
+
+設定値いろいろ
+```
+MSCFILE_DIRS           = ./doc  # mscgenを使う場合はフォルダを指定する
+
+LAYOUT_FILE            = ./doc/DoxygenLayout.xml # カスタムレイアウトファイルを指定
+
+HTML_HEADER            = ./doc/header.html # カスタムheader/footer/cssを指定
+HTML_FOOTER            = ./doc/footer.html
+HTML_STYLESHEET        = ./doc/customdoxygen.css
+HTML_EXTRA_STYLESHEET  = ./doc/customdoxygen.css
+```
+
+- [(doxygen-priv.conf)](https://github.com/dogdio/fbt/blob/master/cpp/test-tool/doxygen-priv.conf "doxygen-priv.conf")
+- [(doc/)](https://github.com/dogdio/fbt/blob/master/cpp/test-tool/doc "doc")
 
 ---
 
@@ -57,11 +101,37 @@ https://www.doxygen.nl/manual/commands.html<br>
 
 ---
 
-### 関数コメント
+### 関数コメント1
+`@param` で引数、`@retval` で戻り値を記載する
+
+```C
+/** verify following test execution conditions
+    - @ref CONFIG_TEST_PATTERN_RUN
+    - @ref CONFIG_TEST_PATTERN_FROM
+
+    @param[in] tl test target(test-ID and test func)
+    @param[in,out] from_ok flag that satisfies CONFIG_TEST_PATTERN_FROM
+    @retval true test is executable
+    @retval false test is not executable(skip this test) */
+bool TestMain::IsTestExecutable(TEST_LIST &tl, bool &from_ok)
+```
+
+![function2](function2.png "function2")
+
+CALLER_GRAPHがYESの場合のみ、コーラーグラフが表示される(上図はDEPTH=3)<br>
+呼び出し元が完全に表示されていない場合は、一番左の関数が赤色になる
+```
+CALLER_GRAPH           = YES     # default: NO
+MAX_DOT_GRAPH_DEPTH    = 3       # default: 0
+```
+
+---
+
+### 関数コメント2
 `@mscfile` で記述したシーケンスが画像として表示される<br>
 画像に表示された関数名などはクリック可能でジャンプできる
 
-```
+```C
 ヘッダファイル
 /** Called once for registration your test code \n
     please call Register() many times \n
@@ -82,6 +152,11 @@ bool TestSample::RegisterTests(void)
 ```
 
 ![function](https://github.com/dogdio/fbt/blob/for_img/img/function.png "function")
+
+下記の設定がYESの場合のみ、ソースコードが展開される
+```
+INLINE_SOURCES         = YES
+```
 
 ◆mscgen(*.msc)の書き方<br>
 `|||` 1行開ける(実線)　
@@ -110,6 +185,25 @@ msc {
   A<<B [label="return"];
 }
 ```
+
+---
+
+### テーブル
+
+```
+    Option|Init value  |Config-ID                |Description
+    ------|------------|-------------------------|-----------
+    -l    |"./test.log"|CONFIG_LOGFILE           |log file name
+    -d    |"./plugin"  |CONFIG_DIRECTORY         |DLL search path
+    -n    |1           |CONFIG_LOOPNUM           |test loop number
+    -s    |""          |CONFIG_TEST_PATTERN_RUN  |Test pattern to run
+    -u    |""          |CONFIG_TEST_PATTERN_UNTIL|Do test until specified pattern
+    -f    |""          |CONFIG_TEST_PATTERN_FROM |Do test from specified pattern
+    -e    |off         |CONFIG_FAIL_AND_EXIT     |if test failed, exit test sequence
+    -t    |off         |CONFIG_ADD_TIMESTAMP     |add timestamp to the log
+```
+
+![table](table.png "table")
 
 ---
 
@@ -184,8 +278,8 @@ ENABLED_SECTIONS       = SECTION_PRIVATE
 
 ---
 
-### dotfileサンプル(top to bottom)
-`rankdir`が`TB(top to bottom)`だと下に向かって進む<br>
+### dotfileサンプル(TB: top to bottom)
+`rankdir` が `TB` だと下に向かって進む<br>
 `URL=***` の部分に、`@ref` を使えばリンク可能な図となる
 （anonymousな空間の場合はちょっと長くなる）<br>
 ```dot
@@ -222,5 +316,99 @@ digraph g {
 
 ![config](https://github.com/dogdio/fbt/blob/for_img/img/config.png "config")
 
+---
 
+### dotfileサンプル(LR:left to right)
+`rankdir` が `LR` だと右に向かって進む<br>
+データ構造を描くときは `shape="record"` とする。
+各要素には先頭から `f0`, `f1`, `f2`,,, のようにしてアクセスする。
+
+```dot
+digraph g {
+  graph [dpi="64", rankdir="LR"];
+  node [fontsize="16", shape="record"];
+  Top [label="<f0> VecInstances[0]|<f1> VecInstances[1]|", color=black URL="@ref anonymous_namespace{TestBase.cpp}::VecInstances"];
+
+  TestBase01 [label="<f0> #TestBase-1|<f1> :|<f2> :|<f3> priv|", color=black ];
+  TestBase02 [label="<f0> #TestBase-2|<f1> :|<f2> :|<f3> priv|", color=black ];
+
+  TestBasePriv [label="<f0> #TestBasePrivate|<f1> :|<f2> TestList[0]|<f3> TestList[1]|<f4> TestList[2]", color=black ];
+
+  Test01 [label="<f0> TestID1|<f1> func1", color=black ];
+  Test02 [label="<f0> TestID2|<f1> func2", color=black ];
+  Test03 [label="<f0> TestID3|<f1> func3", color=black ];
+
+  Top:f0 -> TestBase01:f0;
+  Top:f1 -> TestBase02:f0 [style="dotted" ];
+
+  TestBase01:f3 -> TestBasePriv:f0;
+  TestBase02:f3 -> TestBasePriv:f0 [style="dotted" ];
+
+  TestBasePriv:f2 -> Test01:f0;
+  TestBasePriv:f3 -> Test02:f0;
+  TestBasePriv:f4 -> Test03:f0;
+}
+```
+
+![VecInstances](VecInstances.png "VecInstances")
+
+
+---
+
+### mscgenサンプル(シーケンス図から別のシーケンス図にジャンプする)
+`label` の部分に `url` を記述することでジャンプ可能となる
+(`Initialization` の部分をクリックすると、`page11` にジャンプする)<br>
+
+```dot
+msc {
+  A[label="TestFramework"], B[label="YourCode"];
+
+  |||;
+  A box A [label="invoke ./ExecTest", textbgcolor="#ccffcc"];
+
+  |||;
+  |||;
+  A:>B [label="Initialization", url="@ref page11"];   ★
+  A<<B;
+
+  |||;
+  |||;
+  A:>B [label="Test Registration", url="@ref page12"];
+  A<<B;
+
+  |||;
+  |||;
+  A:>B [label="Test Execution", url="@ref page13"];
+  A<<B;
+}
+
+page11 については、doxygenコメントとして別途定義しておく(Init.mscの内容が表示される)
+/** @page page11 Init Sequence   ★
+    @mscfile Init.msc "init sequence"
+    @see test::TestBase */
+```
+
+![msc_All](msc_All.png "msc_All")
+
+★ Init.msc (Initialization のジャンプ先の `page11` で表示される)<br>
+この中で `url=@ref ...` を使ってさらに別の関数にジャンプできる
+
+```dot
+msc {
+  A[label="TestFramework"], B[label="YourCode"];
+
+  |||;
+  A box A [label="Initialization", textbgcolor="#ccffcc"];
+  A:>B [label="dlopen"];
+
+  B note B [label="invoke constructor()", textbgcolor="#ffffcc", url="@ref TestSample::TestSample"];
+  |||;
+  A<=B [label="AddBaseQueue()", url="@ref test::TestBase::AddBaseQueue"];
+  A>>B [label="return"];
+
+  A<<B [label="return(dlopen)"];
+}
+```
+
+![msc_Init](msc_Init.png "msc_Init")
 
