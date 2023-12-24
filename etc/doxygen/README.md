@@ -6,7 +6,7 @@ https://www.doxygen.nl/manual/commands.html<br>
 
 - 関数のヘッダだけでなく、ファイルの先頭に説明や図を入れて詳細なドキュメントが作れる
 - ソースやヘッダとは独立したページ `@page` を定義し、いろいろ記述したりジャンプできる
-- ソースコードの一部を抜粋して、図と合わせて説明可能
+- ソースコードの一部を抜粋して、図と合わせて説明可能 [(TestConfig.h)](https://github.com/dogdio/fbt/blob/master/cpp/test-tool/test/TestConfig.h "TestConfig")
 - 生成した図から別の図、定義位置などにジャンプできる
 
 ---
@@ -33,7 +33,7 @@ https://www.doxygen.nl/manual/commands.html<br>
       List of illustrations following (described manually). \n
       Click on the sequence diagram to jump to the next diagram(functions) \n
 ```
-![bullet-points](bullet-points.png "bullet-points")
+![bullet-points](https://github.com/dogdio/fbt/blob/for_img/img/bullet-points.png "bullet-points")
 
 ---
 
@@ -53,7 +53,7 @@ https://www.doxygen.nl/manual/commands.html<br>
     @see TestSample4Ex.cpp */
 ```
 
-![attention](attention.png "attention")
+![attention](https://github.com/dogdio/fbt/blob/for_img/img/attention.png "attention")
 
 ---
 
@@ -81,7 +81,7 @@ bool TestSample::RegisterTests(void)
 }
 ```
 
-![function](function.png "function")
+![function](https://github.com/dogdio/fbt/blob/for_img/img/function.png "function")
 
 ◆mscgen(*.msc)の書き方<br>
 `|||` 1行開ける(実線)　
@@ -148,7 +148,7 @@ msc {
 ENABLED_SECTIONS       = SECTION_PRIVATE
 ```
 
-![link](link.png "link")
+![link](https://github.com/dogdio/fbt/blob/for_img/img/link.png "link")
 
 ---
 
@@ -164,7 +164,7 @@ ENABLED_SECTIONS       = SECTION_PRIVATE
       @until };
 ```
 
-![include](include.png "include")
+![include](https://github.com/dogdio/fbt/blob/for_img/img/include.png "include")
 
 ◆ `@snippet` を使う場合<br>
 下記を読み込む側のコメントに記載する（同一ファイル内で読み込みは可能）。<br>
@@ -220,7 +220,7 @@ digraph g {
 }
 ```
 
-![config](config.png "config")
+![config](https://github.com/dogdio/fbt/blob/for_img/img/config.png "config")
 
 
 
