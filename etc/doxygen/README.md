@@ -266,7 +266,8 @@ ENABLED_SECTIONS       = SECTION_PRIVATE
 @snippet TestConfig.h Snippet1                            
 ```
 
-読み込まれる側(TestConfig.h)に目印をつけておく
+
+読み込まれる側 [(TestConfig.h)](https://github.com/dogdio/fbt/blob/master/cpp/test-tool/test/TestConfig.h#L32-L51 "TestConfig") に目印をつけておく
 ```
 //[Snippet1]
      :
