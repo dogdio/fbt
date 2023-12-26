@@ -116,7 +116,7 @@ HTML_EXTRA_STYLESHEET  = ./doc/customdoxygen.css
 bool TestMain::IsTestExecutable(TEST_LIST &tl, bool &from_ok)
 ```
 
-![function2](function2.png "function2")
+![function2](https://github.com/dogdio/fbt/blob/for_img/img/function2.png "function2")
 
 CALLER_GRAPHがYESの場合のみ、コーラーグラフが表示される(上図はDEPTH=3)<br>
 呼び出し元が完全に表示されていない場合は、一番左の関数が赤色になる
@@ -203,7 +203,7 @@ msc {
     -t    |off         |CONFIG_ADD_TIMESTAMP     |add timestamp to the log
 ```
 
-![table](table.png "table")
+![table](https://github.com/dogdio/fbt/blob/for_img/img/table.png "table")
 
 ---
 
@@ -350,7 +350,7 @@ digraph g {
 }
 ```
 
-![VecInstances](VecInstances.png "VecInstances")
+![VecInstances](https://github.com/dogdio/fbt/blob/for_img/img/VecInstances.png "VecInstances")
 
 
 ---
@@ -388,7 +388,7 @@ page11 については、doxygenコメントとして別途定義しておく(In
     @see test::TestBase */
 ```
 
-![msc_All](msc_All.png "msc_All")
+![msc_All](https://github.com/dogdio/fbt/blob/for_img/img/msc_All.png "msc_All")
 
 ★ Init.msc (Initialization のジャンプ先の `page11` で表示される)<br>
 この中で `url=@ref ...` を使ってさらに別の関数にジャンプできる
@@ -410,5 +410,5 @@ msc {
 }
 ```
 
-![msc_Init](msc_Init.png "msc_Init")
+![msc_Init](https://github.com/dogdio/fbt/blob/for_img/img/msc_Init.png "msc_Init")
 
