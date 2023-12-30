@@ -28,7 +28,7 @@ public class SecurityConfig {
 		// pub配下は認証なしで許可
 		// admin配下はADMINロールのユーザーのみ許可
 		// 上記以外は認証が必要
-		http.authorizeRequests().requestMatchers("/pub/**").permitAll()
+		http.authorizeHttpRequests().requestMatchers("/pub/**").permitAll()
 								.requestMatchers("/admin/**").hasRole("ADMIN")
 								.anyRequest().authenticated();
 
