@@ -176,11 +176,8 @@ map F 0y$:open <C-r>"<CR>
 
 
 " -------------------------- etc ----------------------------
-map W :!cp hoge.diff hoge.diff.org<CR>0wwy$:TabClose <C-r>"<CR>:!svn revert <C-r>"<CR>:q!<CR>Q
-"map Q :TabClose hoge.diff<CR>:!svn diff --diff-cmd /usr/bin/diff -x "-ubBw" > hoge.diff<CR>:tabnew hoge.diff<CR>
-"map Q :TabClose hoge.diff<CR>:!svn diff > hoge.diff<CR>:tabnew hoge.diff<CR>
-map Q :!svn diff > hoge.diff<CR>:tabnew<CR>:r hoge.diff<CR>:set syntax=diff<CR>
-map L :TabClose .svn.log<CR>:!svn log -v > .svn.log<CR>:tabnew .svn.log<CR>
+map W 0y$:TabClose ./<C-r>"<CR>:!git checkout <C-r>"<CR>Q
+map Q :!git ls-files -m > hoge.diff<CR>:!echo >> hoge.diff<CR>:!git diff ./ >> hoge.diff<CR>:tabnew<CR>:r hoge.diff<CR>:set syntax=diff<CR>
 
 "map M :lmake<CR>:lopen<CR><C-W>j/error\\|warning<CR>zz<CR>zz
 map M :lmake<CR>:lopen<CR>
@@ -222,4 +219,6 @@ map ]] ]]zz
 
 let c_no_curly_error=1
 
+" disable beep
+set visualbell t_vb=
 
