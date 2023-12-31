@@ -74,8 +74,28 @@ hi cssClassName    ctermfg=Black
 hi cssBraces       ctermfg=Black
 hi cssIdentifier   ctermfg=Black
 hi cssFunctoinName ctermfg=Black
-hi htmlTag         ctermfg=Black
-hi htmlEndTag      ctermfg=Black
+
+hi HtmlTag            ctermfg=21
+hi HtmlEndTag         ctermfg=21
+hi HtmlArg            cterm=bold
+" Thymeleaf=Arg2
+hi HtmlArg2           ctermfg=164
+hi HtmlWord           ctermfg=20 cterm=bold
+hi HtmlSpecialTagName ctermbg=215 ctermfg=Black
+hi HtmlString         ctermfg=88
+
+" form
+hi HtmlTag1  ctermfg=21 cterm=bold
+hi HtmlTag2  ctermbg=159 ctermfg=Black
+" table
+hi HtmlTag3  ctermfg=34 cterm=bold
+hi HtmlTag4  ctermfg=28 cterm=bold
+hi HtmlTag5  ctermbg=120 ctermfg=Black
+
+"hi HtmlComment ctermfg=100 cterm=bold
+hi HtmlComment ctermfg=242
+
+
 hi xmlTag          ctermfg=Black
 hi xmlTagName      ctermfg=Black
 hi xmlEndTag       ctermfg=Black
@@ -95,6 +115,9 @@ hi PerlStatement   ctermfg=57
 hi PerlSubName ctermfg=26 cterm=bold
 
 hi dotIdentifier ctermfg=Black
+
+hi pythonFunction  ctermfg=Black
+hi pythonBuiltin   ctermfg=26 cterm=bold
 
 "
 "hi Visual          ctermfg=236 ctermbg=210 cterm=reverse
