@@ -517,11 +517,12 @@ hi CursorLine      cterm=none ctermbg=246
 ```
 
 ★ 外部コマンド(git/svn/make) 連携<br>
-現在作業中のリポジトリに対して、Diffをとる `Q`<br>
-all.txt を開いているディレクトリがリポジトリのトップである場合は単純だが、リポジトリが複数ある場合は細工が必要<br>
-svnのところをgit に変えてもOK。TMPファイルに吐き出してそれを新しいタブで読み取るだけ
+現在作業中のリポジトリに対して、git diffをとる `Q`<br>
+差分は新しいタブに表示される。表示されたファイルの一覧(git ls-files -m の結果)にカーソルを合わせて `W` を入力すると、そのファイルの修正が取り消される。<br>
+取り消し対象のファイルを開いている場合は、先にそのファイルを[TabClose](https://github.com/dogdio/fbt/blob/master/vim/plugin/tab_close.vim)で閉じる
 ```
-Q :!svn diff > hoge.diff<CR>:tabnew<CR>:r hoge.diff<CR>:set syntax=diff<CR>
+map Q :!git ls-files -m > hoge.diff<CR>:!echo >> hoge.diff<CR>:!git diff ./ >> hoge.diff<CR>:tabnew<CR>:r hoge.diff<CR>:set syntax=diff<CR>
+map W 0y$:TabClose ./<C-r>"<CR>:!git checkout <C-r>"<CR>Q
 ```
 
 Make環境のトップディレクトリにall.txt を配置しておいて、makeもvimから行う、`M`
