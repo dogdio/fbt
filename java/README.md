@@ -1,12 +1,12 @@
-# Java‚¢‚ë‚¢‚ë
+# Javaã„ã‚ã„ã‚
 
 ## maven
 
-ƒvƒƒWƒFƒNƒgŠÇ—ƒc[ƒ‹  
-ƒRƒ}ƒ“ƒh‚Í `mvn` ‚ğg‚¤  
+ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆç®¡ç†ãƒ„ãƒ¼ãƒ«  
+ã‚³ãƒãƒ³ãƒ‰ã¯ `mvn` ã‚’ä½¿ã†  
 https://ja.wikipedia.org/wiki/Apache_Maven
 
-> ‚±‚Ìƒc[ƒ‹‚Ì‘å‚«‚È“Á’¥‚Íƒvƒ‰ƒOƒCƒ“Šg’£‚É‚æ‚è—lX‚Èg‚¢•û‚ª‚Å‚«‚é‚±‚Æ‚Å‚ ‚éBƒ\[ƒXƒR[ƒh‚ÌƒRƒ“ƒpƒCƒ‹AƒeƒXƒgAJavadoc¶¬AƒeƒXƒgƒŒƒ|[ƒg¶¬AƒvƒƒWƒFƒNƒgƒTƒCƒg¶¬AJAR¶¬AƒT[ƒo‚Ö‚ÌƒfƒvƒƒCAWAR, EARƒtƒ@ƒCƒ‹¶¬‚È‚Ç—lX‚È‹@”\‚ª—pˆÓ‚³‚ê‚Ä‚¨‚èAAnt‚Ìê‡‚É‚Íbuild.xml‚Æ‚¢‚¤İ’èƒtƒ@ƒCƒ‹‚É×‚©‚¢w¦‚ğ‹Lq‚µ‚Äs‚Á‚Ä‚¢‚½Šeˆ—‚ğAMaven‚Å‚Í‘å‚Ü‚©‚Èw¦‚ğpom.xml‚É‹Lq‚µ‚Äˆ—‚·‚éŒ`‚Æ‚È‚Á‚Ä‚¢‚éB
+> ã“ã®ãƒ„ãƒ¼ãƒ«ã®å¤§ããªç‰¹å¾´ã¯ãƒ—ãƒ©ã‚°ã‚¤ãƒ³æ‹¡å¼µã«ã‚ˆã‚Šæ§˜ã€…ãªä½¿ã„æ–¹ãŒã§ãã‚‹ã“ã¨ã§ã‚ã‚‹ã€‚ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã€ãƒ†ã‚¹ãƒˆã€Javadocç”Ÿæˆã€ãƒ†ã‚¹ãƒˆãƒ¬ãƒãƒ¼ãƒˆç”Ÿæˆã€ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚µã‚¤ãƒˆç”Ÿæˆã€JARç”Ÿæˆã€ã‚µãƒ¼ãƒã¸ã®ãƒ‡ãƒ—ãƒ­ã‚¤ã€WAR, EARãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆãªã©æ§˜ã€…ãªæ©Ÿèƒ½ãŒç”¨æ„ã•ã‚Œã¦ãŠã‚Šã€Antã®å ´åˆã«ã¯build.xmlã¨ã„ã†è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã«ç´°ã‹ã„æŒ‡ç¤ºã‚’è¨˜è¿°ã—ã¦è¡Œã£ã¦ã„ãŸå„å‡¦ç†ã‚’ã€Mavenã§ã¯å¤§ã¾ã‹ãªæŒ‡ç¤ºã‚’pom.xmlã«è¨˜è¿°ã—ã¦å‡¦ç†ã™ã‚‹å½¢ã¨ãªã£ã¦ã„ã‚‹ã€‚
 
 ## jacoco
 
@@ -14,9 +14,9 @@ Java Code Coverage Library
 https://www.eclemma.org/jacoco/  
 > JaCoCo is a free code coverage library for Java, which has been created by the EclEmma team based on the lessons learned from using and integration existing libraries for many years.
 
-pom.xml ‚Ìİ’è  
+pom.xml ã®è¨­å®š  
 https://www.jacoco.org/jacoco/trunk/doc/maven.html  
-xml‚Ì‹Lq‚Í‚±‚ê‚Æ“¯‚¶‚¶‚á‚È‚­‚Ä‚à‚¢‚¯‚éBBB
+xmlã®è¨˜è¿°ã¯ã“ã‚Œã¨åŒã˜ã˜ã‚ƒãªãã¦ã‚‚ã„ã‘ã‚‹ã€‚ã€‚ã€‚
 ```xml
 <plugin>
   <groupId>org.jacoco</groupId>
@@ -40,14 +40,14 @@ xml‚Ì‹Lq‚Í‚±‚ê‚Æ“¯‚¶‚¶‚á‚È‚­‚Ä‚à‚¢‚¯‚éBBB
 ```
 
 
-jacoco‚Ìversion‚É‚æ‚Á‚Ä‚ÍAjava calss file ‚Ì‘Î‰version‚ªˆÙ‚È‚é‚Ì‚Å’ˆÓ  
-javac‚Å¶¬‚·‚éclass file‚Æˆê’v‚µ‚È‚¢‚Æƒ_ƒ(ˆÈ‰º‚É‚¿‚å‚ë‚Á‚Æ‘‚¢‚Ä‚ ‚é)B  
+jacocoã®versionã«ã‚ˆã£ã¦ã¯ã€java calss file ã®å¯¾å¿œversionãŒç•°ãªã‚‹ã®ã§æ³¨æ„  
+javacã§ç”Ÿæˆã™ã‚‹class fileã¨ä¸€è‡´ã—ãªã„ã¨ãƒ€ãƒ¡(ä»¥ä¸‹ã«ã¡ã‚‡ã‚ã£ã¨æ›¸ã„ã¦ã‚ã‚‹)ã€‚  
 https://www.jacoco.org/jacoco/trunk/doc/changes.html  
-java‚Ìversion‚Ípom.xml‚Åw’è‚Å‚«‚é
+javaã®versionã¯pom.xmlã§æŒ‡å®šã§ãã‚‹
 
-### mvn, jacoco ƒCƒ“ƒXƒg[ƒ‹•û–@  
+### mvn, jacoco ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«æ–¹æ³•  
 
-mvn ‚ªƒŠƒ|ƒWƒgƒŠ‚©‚ç‚¢‚ë‚¢‚ëˆø‚Á’£‚Á‚Ä‚­‚é‚Ì‚ÅAjacoco ‚ÍƒCƒ“ƒXƒg[ƒ‹‚µ‚È‚­‚Ä‚à‘åä•v‚©‚àBB
+mvn ãŒãƒªãƒã‚¸ãƒˆãƒªã‹ã‚‰ã„ã‚ã„ã‚å¼•ã£å¼µã£ã¦ãã‚‹ã®ã§ã€jacoco ã¯ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ãªãã¦ã‚‚å¤§ä¸ˆå¤«ã‹ã‚‚ã€‚ã€‚
 
 ```
 $ apt-get install maven
@@ -61,13 +61,13 @@ Default locale: ja_JP, platform encoding: UTF-8
 OS name: "linux", version: "5.10.0-10-amd64", arch: "amd64", family: "unix"
 ```
 
-### mvn g‚¢•û
+### mvn ä½¿ã„æ–¹
 
-1. •W€‚ÌƒtƒHƒ‹ƒ_\¬‚ğì‚é(HelloWorld‚ğ—pˆÓ‚·‚é)
-2. pom.xml ‚ğ‹Lq‚·‚é
+1. æ¨™æº–ã®ãƒ•ã‚©ãƒ«ãƒ€æ§‹æˆã‚’ä½œã‚‹(HelloWorldã‚’ç”¨æ„ã™ã‚‹)
+2. pom.xml ã‚’è¨˜è¿°ã™ã‚‹
 
-ƒeƒXƒg–³‚µ‚ÌÅ¬\¬(sample.Hoge)  
-pom.xml ‚Æ *.java ‚ªˆê‚Â‚ ‚ê‚ÎOK
+ãƒ†ã‚¹ãƒˆç„¡ã—ã®æœ€å°æ§‹æˆ(sample.Hoge)  
+pom.xml ã¨ *.java ãŒä¸€ã¤ã‚ã‚Œã°OK
 
 ```
 $ find
@@ -79,25 +79,25 @@ $ find
 ./src/main
 ./src/main/java
 ./src/main/java/sample
-./src/main/java/sample/Hoge.java <-- mainŠÖ”‚ÅHelloWorldÀ‘•‚·‚ê‚ÎOK
+./src/main/java/sample/Hoge.java <-- mainé–¢æ•°ã§HelloWorldå®Ÿè£…ã™ã‚Œã°OK
 ./src/main/resources
 ```
 
-mvn ƒRƒ}ƒ“ƒh
+mvn ã‚³ãƒãƒ³ãƒ‰
 
 ```
-‚Æ‚è‚ ‚¦‚¸‚±‚Ì2‚Â‚ÅOK
+ã¨ã‚Šã‚ãˆãšã“ã®2ã¤ã§OK
 $ mvn clean
 $ mvn package
-*.jar ‚Æ maven-archiver ‚ª target/ ”z‰º‚É¶¬‚³‚ê‚é
-¦ ƒeƒXƒg‚Ì‚â‚è•û‚ÍŒãq
+*.jar ã¨ maven-archiver ãŒ target/ é…ä¸‹ã«ç”Ÿæˆã•ã‚Œã‚‹
+â€» ãƒ†ã‚¹ãƒˆã®ã‚„ã‚Šæ–¹ã¯å¾Œè¿°
 ```
 
-### jacoco g‚¢•û  
+### jacoco ä½¿ã„æ–¹  
 
-`mvn package` ‚µ‚½‚Æ‚«‚É•\¦‚³‚ê‚éAˆÈ‰º‚Ì•”•ª‚É•\¦‚³‚ê‚éƒIƒvƒVƒ‡ƒ“ `-javaagent:/***` ‚ğƒRƒsƒy‚µ‚Äjava‚ğ‹N“®‚·‚é  
-‚±‚ÌƒIƒvƒVƒ‡ƒ“‚ğ’Ç‰Á‚µ‚È‚¢‚ÆAjacoco.exec‚Éƒf[ƒ^‚ª’~Ï‚³‚ê‚È‚¢  
-clean ‚µ‚È‚¢ŒÀ‚èƒf[ƒ^‚Í‚Ç‚ñ‚Ç‚ñ’~Ï‚³‚ê‚éiƒeƒXƒg‘¤‚ğ‘å‚«‚­•Ï‚¦‚½ê‡‚Í clean ‚µ‚½‚Ù‚¤‚ª‚¢‚¢j
+`mvn package` ã—ãŸã¨ãã«è¡¨ç¤ºã•ã‚Œã‚‹ã€ä»¥ä¸‹ã®éƒ¨åˆ†ã«è¡¨ç¤ºã•ã‚Œã‚‹ã‚ªãƒ—ã‚·ãƒ§ãƒ³ `-javaagent:/***` ã‚’ã‚³ãƒ”ãƒšã—ã¦javaã‚’èµ·å‹•ã™ã‚‹  
+ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’è¿½åŠ ã—ãªã„ã¨ã€jacoco.execã«ãƒ‡ãƒ¼ã‚¿ãŒè“„ç©ã•ã‚Œãªã„  
+clean ã—ãªã„é™ã‚Šãƒ‡ãƒ¼ã‚¿ã¯ã©ã‚“ã©ã‚“è“„ç©ã•ã‚Œã‚‹ï¼ˆãƒ†ã‚¹ãƒˆå´ã‚’å¤§ããå¤‰ãˆãŸå ´åˆã¯ clean ã—ãŸã»ã†ãŒã„ã„ï¼‰
 
 ```
 [INFO] --- jacoco-maven-plugin:0.8.6:prepare-agent (default) @ sample-maven ---
@@ -105,39 +105,39 @@ clean ‚µ‚È‚¢ŒÀ‚èƒf[ƒ^‚Í‚Ç‚ñ‚Ç‚ñ’~Ï‚³‚ê‚éiƒeƒXƒg‘¤‚ğ‘å‚«‚­•Ï‚¦‚½ê‡‚Í clean ‚
 ```
 
 ```
-sample.Main ‚ğ‹N“®‚·‚é—á(ã‚Íjacoco–³‚µA‰º‚Íjacoco—L‚è)
+sample.Main ã‚’èµ·å‹•ã™ã‚‹ä¾‹(ä¸Šã¯jacocoç„¡ã—ã€ä¸‹ã¯jacocoæœ‰ã‚Š)
 $ java -cp target/sample-1.0.0.jar sample.TestHoge
 $ java -javaagent:/home/***/.m2/repository/org/jacoco/org.jacoco.agent/0.8.6/org.jacoco.agent-0.8.6-runtime.jar=destfile=/home/***/tmp/fbt/java/sample-maven/target/jacoco.exec -cp target/sample-1.0.0.jar sample.TestHoge
 
-“¯Šm‚ªI‚í‚Á‚½‚ç‚±‚ê‚Åo—Í‚·‚é
+åŒç¢ºãŒçµ‚ã‚ã£ãŸã‚‰ã“ã‚Œã§å‡ºåŠ›ã™ã‚‹
 $ mvn jacoco:report
 
-Àsƒf[ƒ^ƒtƒ@ƒCƒ‹i‚±‚±‚É‹L˜^‚³‚ê‚éj
+å®Ÿè¡Œãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆã“ã“ã«è¨˜éŒ²ã•ã‚Œã‚‹ï¼‰
 $ ls target/jacoco.exec
 target/jacoco.exec
 
-‚±‚Ì‰º‚ÉƒJƒoƒŒƒbƒW‚ÌŒ‹‰Ê‚ª“ü‚Á‚Ä‚¢‚é
+ã“ã®ä¸‹ã«ã‚«ãƒãƒ¬ãƒƒã‚¸ã®çµæœãŒå…¥ã£ã¦ã„ã‚‹
 $ ls target/site/jacoco/
 index.html  jacoco-resources/  jacoco-sessions.html  jacoco.csv  jacoco.xml  sample/
 ```
 
 ## Junit
 
-Java—p‚Ì’P‘ÌŒ±‚ÌƒtƒŒ[ƒ€ƒ[ƒN  
+Javaç”¨ã®å˜ä½“è©¦é¨“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯  
 https://junit.org/junit4/  
 https://junit.org/junit5/  
 
-junit ‚¾‚¯‚Å‚à“®‚©‚¹‚é‚Á‚Û‚¢‚ªAmaven/jacoco ‚È‚Ç‚Æ˜A“®‚µ‚ÄŒ±‚Æ“¯‚ÉƒJƒoƒŒƒbƒW‚ğŒv‘ª‚Å‚«‚½‚Ù‚¤‚ª‚¢‚¢  
-ijunit ‚¾‚¯‚Å‚ÍƒJƒoƒŒƒbƒW‚ÍŒv‘ª‚Å‚«‚È‚¢j  
+junit ã ã‘ã§ã‚‚å‹•ã‹ã›ã‚‹ã£ã½ã„ãŒã€maven/jacoco ãªã©ã¨é€£å‹•ã—ã¦è©¦é¨“ã¨åŒæ™‚ã«ã‚«ãƒãƒ¬ãƒƒã‚¸ã‚’è¨ˆæ¸¬ã§ããŸã»ã†ãŒã„ã„  
+ï¼ˆjunit ã ã‘ã§ã¯ã‚«ãƒãƒ¬ãƒƒã‚¸ã¯è¨ˆæ¸¬ã§ããªã„ï¼‰  
 
-### maven/jacoco ‚Æ‚Ì˜AŒg
+### maven/jacoco ã¨ã®é€£æº
 
 [Maven Surefire Plugin](https://maven.apache.org/surefire/maven-surefire-plugin/)  
-Maven ƒvƒƒWƒFƒNƒg‚ÌƒeƒXƒg‚ğÀs‚·‚é‚½‚ß‚Ìƒvƒ‰ƒOƒCƒ“  
-‚±‚Ìƒvƒ‰ƒOƒCƒ“‚ÍAJUnit ‚â TestNG ‚È‚Ç‚ÌƒeƒXƒgƒ‰ƒ“ƒi[‚ğg—p‚µ‚ÄƒeƒXƒg‚ğ©“®“I‚ÉÀs‚µAƒeƒXƒgŒ‹‰Ê‚ğo—Í‚·‚é  
+Maven ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ†ã‚¹ãƒˆã‚’å®Ÿè¡Œã™ã‚‹ãŸã‚ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³  
+ã“ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã¯ã€JUnit ã‚„ TestNG ãªã©ã®ãƒ†ã‚¹ãƒˆãƒ©ãƒ³ãƒŠãƒ¼ã‚’ä½¿ç”¨ã—ã¦ãƒ†ã‚¹ãƒˆã‚’è‡ªå‹•çš„ã«å®Ÿè¡Œã—ã€ãƒ†ã‚¹ãƒˆçµæœã‚’å‡ºåŠ›ã™ã‚‹  
 
-pom.xml ‚Ìƒvƒ‰ƒOƒCƒ“‚Ì•”•ª‚Ì‹LÚ—á  
-`argLine` ‚Ì•”•ª‚ÍAjava ‚É‚í‚½‚·jacoco‚ÌƒIƒvƒVƒ‡ƒ“‚Æ‚È‚éimvn package‚Åo—Í‚³‚ê‚é‚à‚Ì‚Æ“¯‚¶j  
+pom.xml ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®éƒ¨åˆ†ã®è¨˜è¼‰ä¾‹  
+`argLine` ã®éƒ¨åˆ†ã¯ã€java ã«ã‚ãŸã™jacocoã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¨ãªã‚‹ï¼ˆmvn packageã§å‡ºåŠ›ã•ã‚Œã‚‹ã‚‚ã®ã¨åŒã˜ï¼‰  
 
 ```xml
 <plugin>
@@ -150,8 +150,8 @@ pom.xml ‚Ìƒvƒ‰ƒOƒCƒ“‚Ì•”•ª‚Ì‹LÚ—á
 </plugin>
 ```
 
-pom.xml ‚ÉˆË‘¶ŠÖŒW‚Æ‚µ‚Ä junit ‚ğ‹LÚ‚·‚é  
-`version` ‚ª‡‚í‚È‚¢ê‡‚ÍAƒrƒ‹ƒh‚É“{‚ç‚ê‚é‚Ì‚ÅA[ƒŠƒ|ƒWƒgƒŠ](https://repo.maven.apache.org/maven2/) ‚©‚ç’T‚·
+pom.xml ã«ä¾å­˜é–¢ä¿‚ã¨ã—ã¦ junit ã‚’è¨˜è¼‰ã™ã‚‹  
+`version` ãŒåˆã‚ãªã„å ´åˆã¯ã€ãƒ“ãƒ«ãƒ‰æ™‚ã«æ€’ã‚‰ã‚Œã‚‹ã®ã§ã€[ãƒªãƒã‚¸ãƒˆãƒª](https://repo.maven.apache.org/maven2/) ã‹ã‚‰æ¢ã™
 
 ```xml
 <dependencies>
@@ -164,22 +164,22 @@ pom.xml ‚ÉˆË‘¶ŠÖŒW‚Æ‚µ‚Ä junit ‚ğ‹LÚ‚·‚é
 </dependencies>
 ```
 
-### TestƒR[ƒh
+### Testã‚³ãƒ¼ãƒ‰
 
-assert API‚ğg‚¤‚ÍAimport static ‚É‚µ‚È‚¢‚Æƒrƒ‹ƒh‚Å‚«‚È‚¢‚Ì‚Å’ˆÓ  
-junit5 ‚¾‚Æ‘‚«•û‚ª•Ï‚í‚é‚Á‚Û‚¢iˆÈ‰º‚ÍAjunit4—p‚ÌƒR[ƒhj  
-`@Test` ‚ª‚Â‚¢‚Ä‚¢‚È‚¢ƒƒ\ƒbƒh‚ÍÀs‚³‚ê‚È‚¢
+assert APIã‚’ä½¿ã†æ™‚ã¯ã€import static ã«ã—ãªã„ã¨ãƒ“ãƒ«ãƒ‰ã§ããªã„ã®ã§æ³¨æ„  
+junit5 ã ã¨æ›¸ãæ–¹ãŒå¤‰ã‚ã‚‹ã£ã½ã„ï¼ˆä»¥ä¸‹ã¯ã€junit4ç”¨ã®ã‚³ãƒ¼ãƒ‰ï¼‰  
+`@Test` ãŒã¤ã„ã¦ã„ãªã„ãƒ¡ã‚½ãƒƒãƒ‰ã¯å®Ÿè¡Œã•ã‚Œãªã„
 
-test”z‰º‚ÉˆÈ‰º‚Ì—p‚ÈƒR[ƒh‚ğ“ü‚ê‚Ä‚¨‚­  
+testé…ä¸‹ã«ä»¥ä¸‹ã®ç”¨ãªã‚³ãƒ¼ãƒ‰ã‚’å…¥ã‚Œã¦ãŠã  
 src/test/java/sample/TestHoge.java  
 ```Java
 // junit4
-import org.junit.Test; // TestƒAƒmƒe[ƒVƒ‡ƒ“‚É‘Î‰‚·‚é
-import static org.junit.Assert.*; // staticƒƒ“ƒo‚ÌƒNƒ‰ƒX–¼‚ğÈ—ª‚Å‚«‚é
+import org.junit.Test; // Testã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã«å¯¾å¿œã™ã‚‹
+import static org.junit.Assert.*; // staticãƒ¡ãƒ³ãƒã®ã‚¯ãƒ©ã‚¹åã‚’çœç•¥ã§ãã‚‹
 
 public class TestHoge {
 
-	@Test // ƒeƒXƒg‘ÎÛ‚Ìƒƒ\ƒbƒh‚ğw’è‚·‚é
+	@Test // ãƒ†ã‚¹ãƒˆå¯¾è±¡ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’æŒ‡å®šã™ã‚‹
 	public void test_is_zero()
 	{
 		Hoge h = new Hoge();
@@ -188,21 +188,21 @@ public class TestHoge {
 		System.out.println("zero");
 	}
 ```
-### TestÀ{
+### Testå®Ÿæ–½
 
-ƒrƒ‹ƒh‚µ‚½‚ç‚»‚Ì‚Ü‚ÜƒeƒXƒgÀsAƒŒƒ|[ƒg¶¬‚Ü‚Å‚â‚Á‚Ä‚­‚ê‚é
+ãƒ“ãƒ«ãƒ‰ã—ãŸã‚‰ãã®ã¾ã¾ãƒ†ã‚¹ãƒˆå®Ÿè¡Œã€ãƒ¬ãƒãƒ¼ãƒˆç”Ÿæˆã¾ã§ã‚„ã£ã¦ãã‚Œã‚‹
 ```
-‚±‚ê‚¾‚¯‚ÅOK
+ã“ã‚Œã ã‘ã§OK
 $ mvn clean
 $ mvn test
 
-“Á’è‚ÌŒ±‚¾‚¯‚ğÀ{‚·‚éê‡
+ç‰¹å®šã®è©¦é¨“ã ã‘ã‚’å®Ÿæ–½ã™ã‚‹å ´åˆ
 $ mvn test -Dtest=ClassName#testMethodName
 
-src/main ‚Ìƒrƒ‹ƒh‚¾‚¯‚ğs‚¤
+src/main ã®ãƒ“ãƒ«ãƒ‰ã ã‘ã‚’è¡Œã†
 $ mvn compile
 
-src/main, src/test ‚Ìƒrƒ‹ƒh‚¾‚¯‚ğs‚¤
+src/main, src/test ã®ãƒ“ãƒ«ãƒ‰ã ã‘ã‚’è¡Œã†
 $ mvn test-compile
 ```
 
