@@ -44,9 +44,8 @@ C/C++のスタブを生成するツール(完壁なものではない...)<br>
 下記をインストールしてからビルドする
 
 ```
-$ sudo apt-get install
-sudo apt-get install libssl-dev
-sudo apt-get install libpcap-dev
+$ sudo apt-get install libssl-dev
+$ sudo apt-get install libpcap-dev
 ```
 
 ---
