@@ -503,6 +503,15 @@ endif
 set diffopt によって、Diffの設定を変えられる<br>
 削除領域を黒で埋める(filler)、空白の差分を無視する(iwhite)。
 
+★ 色の設定は以下の通り
+```vim
+hi DiffChange term=standout ctermbg=248 ctermfg=21
+hi DiffText   term=standout ctermbg=117 ctermfg=21
+hi DiffDelete term=standout ctermbg=232 ctermfg=159
+hi DiffAdd    term=standout ctermbg=159 ctermfg=232
+```
+![diff color](https://github.com/dogdio/fbt/blob/for_img/img/vimdiff.png "diff color")
+
 ## etc
 
 ★ カーソル位置にラインを引く <br>
