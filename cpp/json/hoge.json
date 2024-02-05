@@ -1,0 +1,14 @@
+{
+  "key1" : 100,
+  "key7" : ["abc", "def", "ghi"],
+  "key3" : {
+    "KEY1" : false,
+    "KEY3" : [
+      { "aaa": 10, "bbb": 10.1, "ccc": "xxx" },
+      { "aaa": 20, "bbb": 20.2, "ccc": "yyy" },
+      { "aaa": 30, "bbb": 30.3, "ccc": "zzz" }
+    ],
+    "KEY2" : true
+  },
+  "key4" : 400
+}
