@@ -2,9 +2,57 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <Json.h>
+
+#define MY_LOG_TYPE Log::TYPE_UTILS
+#include "Log.h"
+#include "Factory.h"
+#include "Json.h"
+
+using namespace Utils;
 
 namespace {
+
+class JsonPriv : public Json::JsonIF {
+public:
+	JsonPriv(const char *Name)
+	{
+		if(Name == NULL)
+			throw std::invalid_argument("Name is null");
+		MyName = Name;
+	} 
+	~JsonPriv() {}
+
+	bool ParseFile(std::string file) override;
+	bool Parse(std::string &str) override;
+	void Dump(void) override;
+	bool Save(std::string file) override;
+	JSON_MAP &GetRoot(void) override;
+
+	bool ParseObjectStart(const char **buff);
+	bool ParseObject(const char **buff);
+	bool ParseObjectEnd(const char **buff);
+
+	bool ParseObjects(const char **buff, bool *IsLast, int index);
+	bool ParseArrayEnd(const char **buff);
+
+	bool ParseValue(const char **buff, bool *IsLast, bool IsArray=false, int index=0);
+	bool ParseValueAsObject(const char **buff);
+	bool ParseValueAsArray(const char **buff);
+
+	bool ParseKey(const char **buff);
+	bool ParseString(const char **buff, char *str);
+	bool ParseNumber(const char **buff, bool IsArray, int index);
+
+	const static int BUFF_SIZE = 256;
+	char key[BUFF_SIZE] = {};
+	char value[BUFF_SIZE] = {};
+	int idx;
+	JSON_MAP Map = {};
+	JSON_MAP *Curr = &Map;
+	const char *MyName;
+};
+
+Factory::FactoryIF<JsonPriv, Json::JsonIF> Inst("Utils.Json");
 
 bool IsBool(char *str, bool &bv)
 {
@@ -44,7 +92,7 @@ bool IsInteger(char *str, int &iv)
 
 };
 
-bool Json::ParseNumber(const char **buff, bool IsArray, int index)
+bool JsonPriv::ParseNumber(const char **buff, bool IsArray, int index)
 {
 	const char *p = *buff;
 	bool bv;
@@ -95,7 +143,7 @@ bool Json::ParseNumber(const char **buff, bool IsArray, int index)
 	return false;
 }
 
-bool Json::ParseString(const char **buff, char *str)
+bool JsonPriv::ParseString(const char **buff, char *str)
 {
 	const char *p = *buff;
 
@@ -122,7 +170,7 @@ bool Json::ParseString(const char **buff, char *str)
 	return false;
 }
 
-bool Json::ParseObjects(const char **buff, bool *IsLast, int index)
+bool JsonPriv::ParseObjects(const char **buff, bool *IsLast, int index)
 {
 	if(!ParseObjectStart(buff)) // '{'
 		return false;
@@ -155,7 +203,7 @@ bool Json::ParseObjects(const char **buff, bool *IsLast, int index)
 	return true;
 }
 
-bool Json::ParseValueAsArray(const char **buff)
+bool JsonPriv::ParseValueAsArray(const char **buff)
 {
 	bool IsObjects = false;
 	const char *p = *buff;
@@ -182,7 +230,7 @@ bool Json::ParseValueAsArray(const char **buff)
 	return true;
 }
 
-bool Json::ParseValueAsObject(const char **buff)
+bool JsonPriv::ParseValueAsObject(const char **buff)
 {
 	JSON_MAP *Save = Curr;
 	Curr = (*Curr)[key].Map();
@@ -197,7 +245,7 @@ bool Json::ParseValueAsObject(const char **buff)
 	return true;
 }
 
-bool Json::ParseValue(const char **buff, bool *IsLast, bool IsArray, int index)
+bool JsonPriv::ParseValue(const char **buff, bool *IsLast, bool IsArray, int index)
 {
 	const char *p = *buff;
 
@@ -242,7 +290,7 @@ bool Json::ParseValue(const char **buff, bool *IsLast, bool IsArray, int index)
 	return true;
 }
 
-bool Json::ParseKey(const char **buff)
+bool JsonPriv::ParseKey(const char **buff)
 {
 	if(!ParseString(buff, key))
 		return false;
@@ -257,7 +305,7 @@ bool Json::ParseKey(const char **buff)
 	return true;
 }
 
-bool Json::ParseObject(const char **buff)
+bool JsonPriv::ParseObject(const char **buff)
 {
 	bool IsLast = false;
 
@@ -276,7 +324,7 @@ bool Json::ParseObject(const char **buff)
 	return true;
 }
 
-bool Json::ParseObjectStart(const char **buff)
+bool JsonPriv::ParseObjectStart(const char **buff)
 {
 	const char *p = *buff;
 
@@ -289,7 +337,7 @@ bool Json::ParseObjectStart(const char **buff)
 		return false;
 }
 
-bool Json::ParseObjectEnd(const char **buff)
+bool JsonPriv::ParseObjectEnd(const char **buff)
 {
 	const char *p = *buff;
 
@@ -302,7 +350,7 @@ bool Json::ParseObjectEnd(const char **buff)
 		return false;
 }
 
-bool Json::ParseArrayEnd(const char **buff)
+bool JsonPriv::ParseArrayEnd(const char **buff)
 {
 	const char *p = *buff;
 
@@ -315,7 +363,7 @@ bool Json::ParseArrayEnd(const char **buff)
 		return false;
 }
 
-bool Json::Parse(std::string &str)
+bool JsonPriv::Parse(std::string &str)
 {
 	const char *buff = str.c_str();
 
@@ -331,7 +379,7 @@ bool Json::Parse(std::string &str)
 	return true;
 }
 
-bool Json::ParseFile(std::string file)
+bool JsonPriv::ParseFile(std::string file)
 {
 	std::ifstream ifs(file);
 	std::string json_string = "";
@@ -349,14 +397,14 @@ bool Json::ParseFile(std::string file)
 	return Parse(json_string);
 }
 
-void Json::Dump(void)
+void JsonPriv::Dump(void)
 {
 	std::cout << "{" << std::endl;
 	JsonData::Traverse(Map);
 	std::cout << "\n}" << std::endl;
 }
 
-bool Json::Save(std::string file)
+bool JsonPriv::Save(std::string file)
 {
 	std::streambuf *save = std::cout.rdbuf();
 	std::ofstream ofs(file);
@@ -372,8 +420,50 @@ bool Json::Save(std::string file)
 	return true;
 }
 
-JSON_MAP &Json::GetRoot(void)
+JSON_MAP &JsonPriv::GetRoot(void)
 {
 	return Map;
+}
+
+
+namespace Json {
+
+class JsonNull : public Json::JsonIF {
+public:
+	bool ParseFile(std::string file) { return true; }
+	bool Parse(std::string &str) { return true; }
+	void Dump(void) { }
+	bool Save(std::string file) { return true; }
+	JSON_MAP &GetRoot(void) { return data; }
+	JSON_MAP data;
+};
+JsonNull JsonNullInst;
+
+JsonIF::JsonIF() {}
+JsonIF::~JsonIF() {}
+
+JsonIF *GetInstance(const char *Name)
+{
+	JsonIF *jif = Inst.GetInstance(Name);
+	if(jif == NULL)
+		return &JsonNullInst;
+	else
+		return jif;
+}
+
+JsonIF *Create(const char *Name)
+{
+	JsonIF *jif = Inst.Create(Name);
+	if(jif == NULL)
+		return &JsonNullInst;
+	else
+		return jif;
+}
+
+bool Destroy(const char *Name)
+{
+	return Inst.Destroy(Name);
+}
+
 }
 

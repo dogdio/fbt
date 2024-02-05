@@ -7,17 +7,15 @@
 
 void json_parse(void)
 {
-	Json json;
+	Json::JsonIF *json = Json::Create("hoge");
 
-//	bool ret = json.Parse(json_string);
-	bool ret = json.ParseFile("hoge.json");
-//	std::cout << "### " << ((ret == true) ? "OK" : "NG") << " ###" << std::endl;
+	json->ParseFile("hoge.json");
+	json->Dump();
 
-	json.Dump();
-	json.Save("hoge.dat");
+	Json::GetInstance("hoge")->Save("hoge.dat");
 
 #if 0
-	JSON_MAP &Map = json.GetRoot();
+	JSON_MAP &Map = json->GetRoot();
 	std::cout << std::boolalpha;
 	std::cout << Map["key4"].GetInt() << std::endl;
 	std::cout << Map["key7"][1].GetString() << std::endl;
@@ -30,6 +28,8 @@ void json_parse(void)
 	std::cout << Map["key3"]["KEY3"][2]["bbb"].GetFloat() << std::endl;
 	std::cout << Map["key3"]["KEY3"][2]["ccc"].GetString() << std::endl;
 #endif
+
+	Json::Destroy("hoge");
 }
 
 int main(int argc, char **argv)

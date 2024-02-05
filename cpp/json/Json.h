@@ -3,36 +3,23 @@
 
 #include "JsonData.h"
 
-class Json {
-public:
-	bool ParseFile(std::string file);
-	bool Parse(std::string &str);
-	void Dump(void);
-	bool Save(std::string file);
-	JSON_MAP &GetRoot(void);
+namespace Json {
 
-private:
-	bool ParseObjectStart(const char **buff);
-	bool ParseObject(const char **buff);
-	bool ParseObjectEnd(const char **buff);
+	class JsonIF {
+	public:
+		JsonIF();
+		virtual ~JsonIF();
 
-	bool ParseObjects(const char **buff, bool *IsLast, int index);
-	bool ParseArrayEnd(const char **buff);
+		virtual bool ParseFile(std::string file) = 0;
+		virtual bool Parse(std::string &str) = 0;
+		virtual void Dump(void) = 0;
+		virtual bool Save(std::string file) = 0;
+		virtual JSON_MAP &GetRoot(void) = 0;
+	};
 
-	bool ParseValue(const char **buff, bool *IsLast, bool IsArray=false, int index=0);
-	bool ParseValueAsObject(const char **buff);
-	bool ParseValueAsArray(const char **buff);
-
-	bool ParseKey(const char **buff);
-	bool ParseString(const char **buff, char *str);
-	bool ParseNumber(const char **buff, bool IsArray, int index);
-
-	const static int BUFF_SIZE = 256;
-	char key[BUFF_SIZE] = {};
-	char value[BUFF_SIZE] = {};
-	int idx;
-	JSON_MAP Map = {};
-	JSON_MAP *Curr = &Map;
+	JsonIF *GetInstance(const char *Name);
+	JsonIF *Create(const char *Name);
+	bool Destroy(const char *Name);
 };
 
 #endif

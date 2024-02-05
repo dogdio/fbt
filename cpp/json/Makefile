@@ -11,14 +11,14 @@ CFLAGS    ?= $(WARNING) -O3
 CXXFLAGS  ?= $(WARNING) -g -std=c++11 $(COVERAGE)
 #LDFLAGS1  ?= -rdynamic
 #LDFLAGS2  ?= -shared
-INCLUDES  ?= -I./
+INCLUDES  ?= -I./ -I../utils/core
 
 FILES1    = $(wildcard *.cpp)
 TMPDIR    = .objs
 #OBJS1    := $(FILES1:.cpp=.o)
 OBJS1    := $(addprefix $(TMPDIR)/, $(FILES1:.cpp=.o))
 DEPENDS1  = $(addprefix $(TMPDIR)/, $(FILES1:.cpp=.d))
-#LIB1      =  -ljsoncpp
+LIB1      =  ../utils/core/libUtils.a
 
 TARGET1   = ./json-sample
 TARGETS   = $(TARGET1)
