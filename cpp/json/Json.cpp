@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <cstring>
 #include <Json.h>
 
@@ -330,11 +331,45 @@ bool Json::Parse(std::string &str)
 	return true;
 }
 
+bool Json::ParseFile(std::string file)
+{
+	std::ifstream ifs(file);
+	std::string json_string = "";
+
+	if(!ifs.is_open())
+		return false;
+
+	std::string line;
+	while(std::getline(ifs, line)) {
+		json_string += line;
+		json_string += "\n";
+	}
+	ifs.close();
+
+	return Parse(json_string);
+}
+
 void Json::Dump(void)
 {
 	std::cout << "{" << std::endl;
 	JsonData::Traverse(Map);
 	std::cout << "\n}" << std::endl;
+}
+
+bool Json::Save(std::string file)
+{
+	std::streambuf *save = std::cout.rdbuf();
+	std::ofstream ofs(file);
+
+	if(!ofs.is_open())
+		return false;
+
+	std::cout.rdbuf(ofs.rdbuf());
+	Dump();
+	std::cout.rdbuf(save);
+
+	ofs.close();
+	return true;
 }
 
 JSON_MAP &Json::GetRoot(void)

@@ -7,23 +7,14 @@
 
 void json_parse(void)
 {
-	std::string file = "hoge.json";
-	std::ifstream ifp(file);
-	std::string json_string = "";
-
-	if(!ifp.is_open())
-		return;
-
-	std::string line;
-	while(std::getline(ifp, line)) {
-		json_string += line;
-		json_string += "\n";
-	}
-
 	Json json;
-	bool ret = json.Parse(json_string);
+
+//	bool ret = json.Parse(json_string);
+	bool ret = json.ParseFile("hoge.json");
 //	std::cout << "### " << ((ret == true) ? "OK" : "NG") << " ###" << std::endl;
+
 	json.Dump();
+	json.Save("hoge.dat");
 
 #if 0
 	JSON_MAP &Map = json.GetRoot();
@@ -39,8 +30,6 @@ void json_parse(void)
 	std::cout << Map["key3"]["KEY3"][2]["bbb"].GetFloat() << std::endl;
 	std::cout << Map["key3"]["KEY3"][2]["ccc"].GetString() << std::endl;
 #endif
-
-	ifp.close();
 }
 
 int main(int argc, char **argv)

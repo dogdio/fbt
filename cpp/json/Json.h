@@ -5,8 +5,10 @@
 
 class Json {
 public:
+	bool ParseFile(std::string file);
 	bool Parse(std::string &str);
 	void Dump(void);
+	bool Save(std::string file);
 	JSON_MAP &GetRoot(void);
 
 private:
