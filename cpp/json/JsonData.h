@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <map>
-#include <sstream>
 
 class JsonData;
 using JSON_MAP = std::map<std::string, JsonData>;
@@ -19,7 +18,8 @@ public:
 	void SetString(std::string str);
 	std::string &GetString();
 
-	JSON_MAP *Map(void);
+	JSON_MAP &Map(void);
+	std::vector<JsonData> &Array(void);
 	JsonData &operator[](const std::string &key);
 	JsonData &operator[](const size_t index);
 
@@ -27,7 +27,6 @@ public:
 
 private:
 	std::string ToString();
-	std::vector<JsonData> &Array(void);
 	static void TraverseArray(std::vector<JsonData> &vdata, std::string &sp, int depth = 0);
 
 	typedef enum {

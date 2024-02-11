@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "JsonData.h"
 
 void JsonData::SetInt(int num)
@@ -67,9 +68,9 @@ std::vector<JsonData> &JsonData::Array(void)
 	return vdata;
 }
 
-JSON_MAP *JsonData::Map(void)
+JSON_MAP &JsonData::Map(void)
 {
-	return &data;
+	return data;
 }
 
 JsonData &JsonData::operator[](const std::string &key)

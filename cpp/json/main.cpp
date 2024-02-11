@@ -25,8 +25,13 @@ void json_parse(void)
 
 	Map["key3"]["KEY3"][2]["bbb"].SetFloat(-123.456);
 	Map["key3"]["KEY3"][2]["ccc"].SetString("hogehoge");
-	std::cout << Map["key3"]["KEY3"][2]["bbb"].GetFloat() << std::endl;
-	std::cout << Map["key3"]["KEY3"][2]["ccc"].GetString() << std::endl;
+	std::cout << std::endl;
+
+	for(auto &a : Map["key3"]["KEY3"].Array()) {
+		std::cout << "aaa = " << a["aaa"].GetInt() << std::endl;
+		std::cout << "bbb = " << a["bbb"].GetFloat() << std::endl;
+		std::cout << "ccc = " << a["ccc"].GetString() << std::endl;
+	}
 #endif
 
 	Json::Destroy("hoge");

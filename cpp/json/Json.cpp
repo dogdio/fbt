@@ -177,7 +177,7 @@ bool JsonPriv::ParseObjects(const char **buff, bool *IsLast, int index)
 	
 	JSON_MAP *Save = Curr;
 	std::string key_save = key;
-	Curr = (*Curr)[key][index].Map();
+	Curr = &(*Curr)[key][index].Map();
 
 	bool IsLast2 = false;
 	while(!IsLast2) {
@@ -233,7 +233,7 @@ bool JsonPriv::ParseValueAsArray(const char **buff)
 bool JsonPriv::ParseValueAsObject(const char **buff)
 {
 	JSON_MAP *Save = Curr;
-	Curr = (*Curr)[key].Map();
+	Curr = &(*Curr)[key].Map();
 
 	if(!ParseObject(buff))
 		return false;
