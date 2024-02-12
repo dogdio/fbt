@@ -42,6 +42,7 @@ public:
 	bool ParseKey(const char **buff);
 	bool ParseString(const char **buff, char *str);
 	bool ParseNumber(const char **buff, bool IsArray, int index);
+	void SetValue(bool IsArray, int index, VARIANT vv);
 
 	const static int BUFF_SIZE = 256;
 	char key[BUFF_SIZE] = {};
@@ -68,11 +69,11 @@ bool IsBool(char *str, bool &bv)
 		return false;
 }
 
-bool IsFloat(char *str, float &fv)
+bool IsDouble(char *str, double &dv)
 {
 	char *endptr;
 
-	fv = strtof(str, &endptr);
+	dv = strtof(str, &endptr);
 	if(*endptr == '\0')
 		return true;
 	else
@@ -92,12 +93,20 @@ bool IsInteger(char *str, int &iv)
 
 };
 
+void JsonPriv::SetValue(bool IsArray, int index, VARIANT vv)
+{
+	if(IsArray)
+		(*Curr)[key][index].Set(vv);
+	else
+		(*Curr)[key].Set(vv);
+}
+
 bool JsonPriv::ParseNumber(const char **buff, bool IsArray, int index)
 {
 	const char *p = *buff;
 	bool bv;
 	int iv;
-	float fv;
+	double dv;
 	idx = 0;
 
 	while (*p != '\0') {
@@ -110,27 +119,12 @@ bool JsonPriv::ParseNumber(const char **buff, bool IsArray, int index)
 		}
 		else {
 			value[idx] = '\0';
-			if(IsInteger(value, iv)) {
-//				std::cout << "I:" << key << ", " << value << std::endl;
-				if(IsArray)
-					(*Curr)[key][index].SetInt(iv);
-				else
-					(*Curr)[key].SetInt(iv);
-			}
-			else if(IsFloat(value, fv)) {
-//				std::cout << "F:" << key << ", " << fv << std::endl;
-				if(IsArray)
-					(*Curr)[key][index].SetFloat(fv);
-				else
-					(*Curr)[key].SetFloat(fv);
-			}
-			else if(IsBool(value, bv)) {
-//				std::cout << "B:" << key << ", " << bv << std::endl;
-				if(IsArray)
-					(*Curr)[key][index].SetBool(bv);
-				else
-					(*Curr)[key].SetBool(bv);
-			}
+			if(IsInteger(value, iv))
+				SetValue(IsArray, index, iv);
+			else if(IsDouble(value, dv))
+				SetValue(IsArray, index, dv);
+			else if(IsBool(value, bv))
+				SetValue(IsArray, index, bv);
 			else
 				return false;
 
@@ -263,11 +257,7 @@ bool JsonPriv::ParseValue(const char **buff, bool *IsLast, bool IsArray, int ind
 	else if(*p == '"') { // "key" : "value"
 		if(!ParseString(buff, value))
 			return false;
-//		std::cout << "S:" << key << ", " << value << std::endl;
-		if(IsArray)
-			(*Curr)[key][index].SetString(value);
-		else
-			(*Curr)[key].SetString(value);
+		SetValue(IsArray, index, value);
 	}
 	else { // "key" : 12345 or true or false or -12.345
 		*buff = p;

@@ -15,23 +15,33 @@ void json_parse(void)
 	Json::GetInstance("hoge")->Save("hoge.dat");
 
 #if 0
-	JSON_MAP &Map = json->GetRoot();
-	std::cout << std::boolalpha;
-	std::cout << Map["key4"].GetInt() << std::endl;
-	std::cout << Map["key7"][1].GetString() << std::endl;
-	std::cout << Map["key3"]["KEY1"].GetBool() << std::endl;
-	std::cout << Map["key3"]["KEY3"][2]["bbb"].GetFloat() << std::endl;
-	std::cout << Map["key3"]["KEY3"][2]["ccc"].GetString() << std::endl;
+	JSON_MAP &Root = json->GetRoot();
 
-	Map["key3"]["KEY3"][2]["bbb"].SetFloat(-123.456);
-	Map["key3"]["KEY3"][2]["ccc"].SetString("hogehoge");
+	Root["key3"]["KEY1"].Set(true);
+	for(auto &m : Root) {
+		std::cout << m.first << " => " << m.second.ToString() << std::endl;
+	}
+	for(auto &m : Root["key3"].Map()) {
+		std::cout << m.first << " => " << m.second.ToString() << std::endl;
+	}
+
+	std::cout << Root["key3"]["KEY3"][2]["bbb"].GetDouble() << std::endl;
+	std::cout << Root["key3"]["KEY3"][2]["ccc"].GetString() << std::endl;
+
+	Root["key3"]["KEY3"][2]["bbb"].Set(-123.456);
+	Root["key3"]["KEY3"][2]["ccc"].Set("hogehoge");
+	Root["key7"][2].Set("GHI");
 	std::cout << std::endl;
 
-	for(auto &a : Map["key3"]["KEY3"].Array()) {
-		std::cout << "aaa = " << a["aaa"].GetInt() << std::endl;
-		std::cout << "bbb = " << a["bbb"].GetFloat() << std::endl;
-		std::cout << "ccc = " << a["ccc"].GetString() << std::endl;
+	for(auto &a : Root["key3"]["KEY3"].Array()) {
+		for(auto &m : a.Map()) {
+			std::cout << m.first << " => " << m.second.ToString() << std::endl;
+		}
 	}
+	for(auto &a : Root["key7"].Array()) {
+		std::cout << a.GetString() << std::endl;
+	}
+
 #endif
 
 	Json::Destroy("hoge");

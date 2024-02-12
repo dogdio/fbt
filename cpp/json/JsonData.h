@@ -3,48 +3,38 @@
 
 #include <vector>
 #include <map>
+#include <variant>
 
 class JsonData;
 using JSON_MAP = std::map<std::string, JsonData>;
+using VARIANT = std::variant<int, double, bool, std::string>;
 
 class JsonData {
 public:
-	void SetInt(int num);
+	// root["key"].Set()
+	void Set(VARIANT vv);
 	int GetInt();
-	void SetFloat(float num);
-	float GetFloat();
-	void SetBool(bool v);
+	double GetDouble();
 	bool GetBool();
-	void SetString(std::string str);
-	std::string &GetString();
+	std::string GetString();
 
+	// for(auto &a : root["key"].Map()) { ... }
 	JSON_MAP &Map(void);
-	std::vector<JsonData> &Array(void);
+
+	// root["key"]["xxx"].Set()
 	JsonData &operator[](const std::string &key);
+
+	// for(auto &a : root["key"].Array()) { ... }
+	std::vector<JsonData> &Array(void);
+
+	// root["key"][0].Set()
 	JsonData &operator[](const size_t index);
 
+	std::string ToString();
 	static void Traverse(JSON_MAP &json_map, int depth = 0);
 
 private:
-	std::string ToString();
-	static void TraverseArray(std::vector<JsonData> &vdata, std::string &sp, int depth = 0);
-
-	typedef enum {
-		VALUE_INT,
-		VALUE_FLOAT,
-		VALUE_BOOL,
-		VALUE_STR,
-		VALUE_MAX,
-	} VALUE_TYPE;
-	VALUE_TYPE ValueType = VALUE_MAX;
-
-	union {
-		int IntValue;
-		float FloatValue;
-		bool BoolValue;
-	};
-	std::string StringValue;
-
+	VARIANT VarValue;
 	JSON_MAP data;
 	std::vector<JsonData> vdata;
 };

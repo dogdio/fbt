@@ -8,7 +8,7 @@ WARNING    = -Wall -Wno-unused-value -Wno-unused
 #WARNING    = -Wall
 #COVERAGE   = -fprofile-arcs -ftest-coverage -fno-inline
 CFLAGS    ?= $(WARNING) -O3
-CXXFLAGS  ?= $(WARNING) -g -std=c++11 $(COVERAGE)
+CXXFLAGS  ?= $(WARNING) -g -std=c++17 $(COVERAGE)
 #LDFLAGS1  ?= -rdynamic
 #LDFLAGS2  ?= -shared
 INCLUDES  ?= -I./ -I../utils/core

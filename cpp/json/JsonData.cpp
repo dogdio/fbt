@@ -2,70 +2,63 @@
 #include <sstream>
 #include "JsonData.h"
 
-void JsonData::SetInt(int num)
+void JsonData::Set(VARIANT vv)
 {
-	IntValue = num;
-	ValueType = VALUE_INT;
+	VarValue = vv;
 }
 
 int JsonData::GetInt()
 {
-	return IntValue;
+	if(VarValue.index() == 0)
+		return std::get<int>(VarValue);
+	else
+		return 0;
 }
 
-void JsonData::SetFloat(float num)
+double JsonData::GetDouble()
 {
-	FloatValue = num;
-	ValueType = VALUE_FLOAT;
-}
-
-float JsonData::GetFloat()
-{
-	return FloatValue;
-}
-
-void JsonData::SetBool(bool v)
-{
-	BoolValue = v;
-	ValueType = VALUE_BOOL;
+	if(VarValue.index() == 1)
+		return std::get<double>(VarValue);
+	else
+		return 0.0;
 }
 
 bool JsonData::GetBool()
 {
-	return BoolValue;
+	if(VarValue.index() == 2)
+		return std::get<bool>(VarValue);
+	else
+		return false;
 }
 
-void JsonData::SetString(std::string str)
+std::string JsonData::GetString()
 {
-	StringValue = str;
-	ValueType = VALUE_STR;
-}
-
-std::string &JsonData::GetString()
-{
-	return StringValue;
+	if(VarValue.index() == 3)
+		return std::get<std::string>(VarValue);
+	else
+		return "";
 }
 
 std::string JsonData::ToString()
 {
 	std::stringstream ss;
-	if(ValueType == VALUE_INT)
-		ss << IntValue;
-	else if(ValueType == VALUE_BOOL)
-		ss << std::boolalpha << BoolValue;
-	else if(ValueType == VALUE_FLOAT)
-		ss << FloatValue;
-	else if(ValueType == VALUE_STR)
-		ss << '"' << StringValue << '"';
+
+	if(data.size() != 0)
+		ss << "{}";
+	else if(vdata.size() != 0)
+		ss << "[]";
+	else if(VarValue.index() == 0)
+		ss << std::get<int>(VarValue);
+	else if(VarValue.index() == 1)
+		ss << std::get<double>(VarValue);
+	else if(VarValue.index() == 2)
+		ss << std::boolalpha << std::get<bool>(VarValue);
+	else if(VarValue.index() == 3)
+		ss << '"' << std::get<std::string>(VarValue) << '"';
 	else
 		ss << "??";
 
 	return ss.str();
-}
-
-std::vector<JsonData> &JsonData::Array(void)
-{
-	return vdata;
 }
 
 JSON_MAP &JsonData::Map(void)
@@ -78,6 +71,11 @@ JsonData &JsonData::operator[](const std::string &key)
 	return data[key];
 }
 
+std::vector<JsonData> &JsonData::Array(void)
+{
+	return vdata;
+}
+
 JsonData &JsonData::operator[](const size_t index)
 {
 	if(vdata.size() == 0 || vdata.size() <= index)
@@ -86,16 +84,18 @@ JsonData &JsonData::operator[](const size_t index)
 	return vdata[index];
 }
 
-void JsonData::TraverseArray(std::vector<JsonData> &vdata, std::string &sp, int depth)
+namespace {
+
+void TraverseArray(std::vector<JsonData> &vdata, std::string &sp, int depth)
 {
 	int num = 0;
 	for(auto &v : vdata) {
 		if(num > 0)
 			std::cout << "," << std::endl;
 
-		if(v.ValueType == VALUE_MAX) {
+		if(v.Map().size() > 0) {
 			std::cout << sp << "  " << "{" << std::endl;
-			Traverse(v.data, depth+2);
+			JsonData::Traverse(v.Map(), depth+2);
 			std::cout << "\n" << sp << "  }";
 		}
 		else
@@ -103,6 +103,8 @@ void JsonData::TraverseArray(std::vector<JsonData> &vdata, std::string &sp, int 
 		num++;
 	}
 }
+
+};
 
 void JsonData::Traverse(JSON_MAP &json_map, int depth)
 {
@@ -121,7 +123,7 @@ void JsonData::Traverse(JSON_MAP &json_map, int depth)
 			TraverseArray(m.second.vdata, sp, depth);
 			std::cout << "\n" << sp << "]";
 		}
-		else if(m.second.ValueType == VALUE_MAX) {
+		else if(m.second.data.size() > 0) {
 			std::cout << "{" << std::endl;
 			Traverse(m.second.data, depth+1);
 			std::cout << "\n" << sp << "}";
