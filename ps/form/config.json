@@ -1,0 +1,100 @@
+{
+  "menu1": [
+    {
+      "name": "value1",
+      "type": "choice",
+      "current": "bbb",
+      "values": [
+        "aaa",
+        "bbb",
+        "ccc"
+      ]
+    },
+    {
+      "name": "value2",
+      "type": "number",
+      "min": 10,
+      "max": 30000,
+      "current": "12345"
+    },
+    {
+      "name": "value3",
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]+$",
+      "errmsg": ": 16進数を入力してください",
+      "min": 1,
+      "max": 20,
+      "current": "abcdef0123"
+    },
+    {
+      "name": "value4",
+      "type": "onoff",
+      "activate_with_on": [
+        "menu1.value7",
+        "menu1.value8",
+        "menu1.value9",
+        "menu1.value10"
+      ],
+      "current": false
+    },
+    {
+      "name": "value5",
+      "type": "onoff",
+      "activate_with_off": [
+        "menu1.value3",
+        "menu1.OpenFile"
+      ],
+      "current": true
+    },
+    {
+      "name": "value6",
+      "type": "string",
+      "readonly": true,
+      "current": "C:\\Windows\\notepad.exe"
+    },
+    {
+      "name": "Setting",
+      "type": "button",
+      "validation": [
+        "menu1.value2",
+        "menu1.value3"
+      ]
+    },
+    {
+      "name": "OpenFile",
+      "type": "button"
+    },
+    {
+      "type": "column",
+      "margin": 30
+    },
+    {
+      "name": "value7",
+      "type": "choice",
+      "values": [
+        "ddd",
+        "eee",
+        "fff"
+      ],
+      "current": "fff"
+    },
+    {
+      "name": "value8",
+      "type": "date",
+      "current": "2024/09/18"
+    },
+    {
+      "type": "blank"
+    },
+    {
+      "name": "value9",
+      "type": "onoff",
+      "current": false
+    },
+    {
+      "name": "value10",
+      "type": "onoff",
+      "current": true
+    }
+  ]
+}
