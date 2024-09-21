@@ -143,7 +143,7 @@ function SetObject
 
 function CreateComboBox
 {
-    param ($v, $form, $x, $y)
+    param ($v, $tab, $x, $y)
 
     # ドロップダウンリストを作成
     $comboBox = New-Object System.Windows.Forms.ComboBox
@@ -157,14 +157,14 @@ function CreateComboBox
     $comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList  # ユーザーの入力を無効化.
 #   Write-Host $comboBox.SelectedItem
 
-    $form.Controls.Add($comboBox)
+    $tab.Controls.Add($comboBox)
     $newobj = [PSCustomObject]@{ v=$v; myobj=$comboBox; label=$null; }
     return $newobj
 }
 
 function CreateTextStr
 {
-    param ($v, $form, $x, $y)
+    param ($v, $tab, $x, $y)
 
     # テキストボックスを作成
     $textBox = New-Object System.Windows.Forms.TextBox
@@ -205,15 +205,15 @@ function CreateTextStr
             }
         }
     })
-    $form.Controls.Add($textBox)
-    $form.Controls.Add($errorLabel)
+    $tab.Controls.Add($textBox)
+    $tab.Controls.Add($errorLabel)
     $newobj = [PSCustomObject]@{ v=$v; myobj=$textBox; label=$errorLabel; }
     return $newobj
 }
 
 function CreateTextNum
 {
-    param ($v, $form, $x, $y)
+    param ($v, $tab, $x, $y)
 
     # テキストボックスを作成
     $textBox = New-Object System.Windows.Forms.TextBox
@@ -273,8 +273,8 @@ function CreateTextNum
             }
         }
     })
-    $form.Controls.Add($textBox)
-    $form.Controls.Add($errorLabel)
+    $tab.Controls.Add($textBox)
+    $tab.Controls.Add($errorLabel)
     $newobj = [PSCustomObject]@{ v=$v; myobj=$textBox; label=$errorLabel; }
     return $newobj
 }
@@ -308,13 +308,13 @@ function ActivateOther
 
 function CreateDate
 {
-    param ($v, $form, $x, $y)
+    param ($v, $tab, $x, $y)
 
     $datePicker = New-Object System.Windows.Forms.DateTimePicker
     $datePicker.Format = [System.Windows.Forms.DateTimePickerFormat]::Short
     $datePicker.Location = New-Object System.Drawing.Point($x, $y)
 
-    $form.Controls.Add($datePicker)
+    $tab.Controls.Add($datePicker)
 
     $newobj = [PSCustomObject]@{ v=$v; myobj=$datePicker; label=$null; }
     return $newobj
@@ -322,7 +322,7 @@ function CreateDate
 
 function CreateCheckBox
 {
-    param ($v, $form, $x, $y)
+    param ($v, $tab, $x, $y)
 
     # チェックボックスの作成
     $checkBox = New-Object System.Windows.Forms.CheckBox
@@ -337,7 +337,7 @@ function CreateCheckBox
 
         ActivateOther $obj
     })
-    $form.Controls.Add($checkBox)
+    $tab.Controls.Add($checkBox)
 
     $newobj = [PSCustomObject]@{ v=$v; myobj=$checkBox; label=$null; }
     return $newobj
@@ -421,7 +421,7 @@ function ValidationOnClick
 
 function CreateButton
 {
-    param ($menuName, $v, $form, $x, $y)
+    param ($menuName, $v, $tab, $x, $y)
 
     # ボタン
     $button = New-Object System.Windows.Forms.Button
@@ -443,7 +443,7 @@ function CreateButton
             & $funcName
         }
     })
-    $form.Controls.Add($button)
+    $tab.Controls.Add($button)
 
     $newobj = [PSCustomObject]@{ v=$v; myobj=$button; label=$null; }
     return $newobj
@@ -451,7 +451,7 @@ function CreateButton
 
 function CreateMenu
 {
-    param ($menuName, $v, $form)
+    param ($menuName, $v, $tab)
     $id = $menuName + "." + $($v.name)
     $x = $MenuX
     $y = $MenuY
@@ -464,7 +464,7 @@ function CreateMenu
 
     if ($v.type -eq "button") {
         $x += $LABEL_WIDTH
-        $newobj = CreateButton $menuName $v -form $form $x $y
+        $newobj = CreateButton $menuName $v $tab $x $y
         SetObject $id $newobj
     }
     else {
@@ -473,24 +473,24 @@ function CreateMenu
         $label.Text = $v.name
         $label.Location = New-Object System.Drawing.Point($x, ($y + 3))
         $label.AutoSize = $true
-        $form.Controls.Add($label)
+        $tab.Controls.Add($label)
         $x += $LABEL_WIDTH
 
         $newobj = $null
         if ($v.type -eq "choice") {
-            $newobj = CreateComboBox $v -form $form $x $y
+            $newobj = CreateComboBox $v $tab $x $y
         }
         if ($v.type -eq "number") {
-            $newobj = CreateTextNum $v -form $form $x $y
+            $newobj = CreateTextNum $v $tab $x $y
         }
         if ($v.type -eq "string") {
-            $newobj = CreateTextStr $v -form $form $x $y
+            $newobj = CreateTextStr $v $tab $x $y
         }
         if ($v.type -eq "date") {
-            $newobj = CreateDate $v -form $form $x $y
+            $newobj = CreateDate $v $tab $x $y
         }
         if ($v.type -eq "onoff") {
-            $newobj = CreateCheckBox $v -form $form $x $y
+            $newobj = CreateCheckBox $v $tab $x $y
         }
         if ($newobj -ne $null) {
             SetObject $id $newobj
@@ -503,28 +503,65 @@ function CreateMenu
     $Global:MenuY = $y + 50
 }
 
-
 function CreateForm
 {
-    param ( $fileName, $width, $height )
-    $configObj = Get-Content -Path $fileName -Raw | ConvertFrom-Json
+    param (
+        $appName,
+        $width,
+        $height,
+        [Parameter(ValueFromRemainingArguments = $true)]
+        [object[]]$Files
+    )
 
-    foreach ($menu in $configObj.PSObject.Properties) {
+    try {
         $form = New-Object System.Windows.Forms.Form
-        $form.Text = $($menu.Name)
+        $form.Text = $appName
         $form.Width = $width
         $form.Height = $height
 
-        foreach ($v in $($menu.Value)) {
-            CreateMenu $($menu.Name) $v -form $form
+        $width -= 35
+        $height -= 60
+        $tabCtrl = New-Object System.Windows.Forms.TabControl
+        $tabCtrl.Size = New-Object System.Drawing.Size($width, $height)
+        $tabCtrl.Location = New-Object System.Drawing.Point(10, 10)
+
+        $configObj = New-Object 'PSObject[]' $Files.Length
+        $i = 0
+        foreach ($fileName in $Files) { # 1file => 1tab
+            $Global:MenuX = $MENU_X0
+            $Global:MenuY = $MENU_Y0
+            $configObj[$i] = Get-Content -Path $fileName -Raw | ConvertFrom-Json
+
+            foreach ($menu in $configObj[$i].PSObject.Properties) {
+                $tab = New-Object System.Windows.Forms.TabPage
+                $tab.Text = $menu.Name
+
+                foreach ($v in $($menu.Value)) {
+                    CreateMenu $($menu.Name) $v $tab
+                }
+            }
+            $tabCtrl.TabPages.Add($tab)
+            $i++
         }
+
+        InitObjList
+        ActivateOthers
+        $form.Controls.Add($tabCtrl)
+    }
+    catch {
+        Write-Host "Error: $_"
+        return
     }
 
-    InitObjList
-    ActivateOthers
-    $form.ShowDialog()
+    $form.ShowDialog() # main loop
 
-    SaveConfig $configObj $fileName
+    $i = 0
+    foreach ($fileName in $Files) {
+        if ($configObj[$i] -ne $null) {
+            SaveConfig $configObj[$i] $fileName
+            $i++
+        }
+    }
 }
 
 function ConfirmDialog
@@ -555,6 +592,7 @@ function ProgressStart
     $progressBar.Size = New-Object System.Drawing.Size(260, 20)
     $progressBar.Minimum = 0
     $progressBar.Maximum = 100
+    $progressBar.Value = 0
     $form.Controls.Add($progressBar)
     $form.Show()
 
@@ -563,7 +601,10 @@ function ProgressStart
 
 function ProgressEnd
 {
-    param ($form, $progressBar)
+    param ($prog)
+    $form = $prog[0]
+    $progressBar = $prog[1]
+
     if ($progressBar.Value -lt 70) {
         $progressBar.Value = 70
         Start-Sleep -Milliseconds 50
@@ -575,6 +616,33 @@ function ProgressEnd
     $progressBar.Value = 100
     Start-Sleep -Milliseconds 50
     $form.Close()
+}
+
+function ProgressUpdate
+{
+    param ($process, $file, $prog)
+
+    while(-not $process.HasExited) {
+        Start-Sleep -Milliseconds 200
+
+        Select-String -Path $file -Pattern "PROG" | Foreach-Object {
+            if ($_ -match "\[PROG\].(\d+)") {
+                $num = [int]$($matches[1])
+
+                if ($num -gt $prog.Value) {
+                    $prog.Value = $num
+                    Write-Host "=== $num"
+                }
+            }
+        }
+    }
+}
+
+function GenerateNewFile
+{
+    param($file)
+    if (Test-Path $file) { Remove-Item $file }
+    New-Item -Path $file -ItemType File
 }
 
 ##############################################################
@@ -590,11 +658,15 @@ function do_Setting
         Write-Host (GetValueByName "menu1.value4")
         Write-Host (GetValueByName "menu1.value5")
 
+        $file = "transfer.log"
+        GenerateNewFile $file
+
         $prog = ProgressStart
-        #
-        # do anything
-        #
-        ProgressEnd $prog[0] $prog[1]
+
+        $process = Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File ./sleep.ps1" -PassThru -NoNewWindow
+        ProgressUpdate $process $file $prog[1]
+
+        ProgressEnd $prog
     }
 }
 
@@ -608,5 +680,5 @@ function do_OpenFile
     }
 }
 
-CreateForm 'config.json' 650 600
+CreateForm 'SampleForm' 650 600 "config.json" "config2.json"
 
