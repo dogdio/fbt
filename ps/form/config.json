@@ -1,9 +1,9 @@
-{
+﻿{
   "menu1": [
     {
       "name": "value1",
       "type": "choice",
-      "current": "bbb",
+      "init": "bbb",
       "values": [
         "aaa",
         "bbb",
@@ -15,7 +15,7 @@
       "type": "number",
       "min": 10,
       "max": 30000,
-      "current": "12345"
+      "init": "23451"
     },
     {
       "name": "value3",
@@ -24,7 +24,7 @@
       "errmsg": ": 16進数を入力してください",
       "min": 1,
       "max": 20,
-      "current": "abcdef0123"
+      "init": "abcdef0123"
     },
     {
       "name": "value4",
@@ -35,7 +35,7 @@
         "menu1.value9",
         "menu1.value10"
       ],
-      "current": false
+      "init": false
     },
     {
       "name": "value5",
@@ -44,13 +44,13 @@
         "menu1.value3",
         "menu1.OpenFile"
       ],
-      "current": true
+      "init": true
     },
     {
       "name": "value6",
       "type": "string",
       "readonly": true,
-      "current": "C:\\Windows\\notepad.exe"
+      "init": "C:\\Windows\\notepad.exe"
     },
     {
       "name": "Setting",
@@ -76,12 +76,12 @@
         "eee",
         "fff"
       ],
-      "current": "fff"
+      "init": "fff"
     },
     {
       "name": "value8",
       "type": "date",
-      "current": "2024/09/18"
+      "init": "2024/09/18"
     },
     {
       "type": "blank"
@@ -89,12 +89,12 @@
     {
       "name": "value9",
       "type": "onoff",
-      "current": false
+      "init": false
     },
     {
       "name": "value10",
       "type": "onoff",
-      "current": true
+      "init": true
     }
   ]
 }

@@ -4,6 +4,7 @@ Add-Type -AssemblyName System.Drawing
 
 $Global:VALUE_WIDTH = 200
 $Global:LABEL_WIDTH = 60
+$Global:VALUES_JSON = 'values.json'
 
 $Global:MENU_X0 = 30
 $Global:MENU_Y0 = 30
@@ -15,77 +16,82 @@ $Global:ObjList = @{}
 
 function SaveConfig
 {
-    param ($configObj, $fileName)
+    $ValueObj = @{}
 
-    foreach ($menu in $configObj.PSObject.Properties) {
-        foreach ($v in $($menu.Value)) {
-            $id = $($menu.Name) + "." + $($v.name)
+    foreach ($key in $ObjList.Keys) {
+        $obj = $ObjList[$Key]
 
-            $obj = $ObjList[$id]
-            if ($obj -eq $null) { continue }
-            if ((IsValid $obj $false) -eq $false) { continue }
+        if ((IsValid $obj $false) -eq $false) { continue }
 
-            if ($obj.v.PSObject.Properties['current']) {
-                if ($obj.v.type -eq "choice") {
-                    $obj.v.current = $obj.myobj.SelectedItem
-                }
-                if ($obj.v.type -eq "number") {
-                    $obj.v.current = $obj.myobj.Text
-                }
-                if ($obj.v.type -eq "string") {
-                    $obj.v.current = $obj.myobj.Text
-                }
-                if ($obj.v.type -eq "date") {
-                    $obj.v.current = [string]$($obj.myobj.Text)
-                }
-                if ($obj.v.type -eq "onoff") {
-                    $obj.v.current = $obj.myobj.Checked
-                }
-            }
-            else {
-                if ($obj.v.type -eq "choice") {
-                    $obj.v | Add-Member -MemberType NoteProperty -Name "current" -Value $obj.myobj.SelectedItem
-                }
-                if ($obj.v.type -eq "number") {
-                    $obj.v | Add-Member -MemberType NoteProperty -Name "current" -Value $obj.myobj.Text
-                }
-                if ($obj.v.type -eq "string") {
-                    $obj.v | Add-Member -MemberType NoteProperty -Name "current" -Value $obj.myobj.Text
-                }
-                if ($obj.v.type -eq "date") {
-                    $obj.v | Add-Member -MemberType NoteProperty -Name "current" -Value [string]$($obj.myobj.Value)
-                }
-                if ($obj.v.type -eq "onoff") {
-                    $obj.v | Add-Member -MemberType NoteProperty -Name "current" -Value $obj.myobj.Checked
-                }
-            }
+        if ($obj.v.type -eq "choice") {
+            $ValueObj | Add-Member -MemberType NoteProperty -Name $key -Value $obj.myobj.SelectedItem
+        }
+        if ($obj.v.type -eq "number") {
+            $ValueObj | Add-Member -MemberType NoteProperty -Name $key -Value $obj.myobj.Text
+        }
+        if ($obj.v.type -eq "string") {
+            $ValueObj | Add-Member -MemberType NoteProperty -Name $key -Value $obj.myobj.Text
+        }
+        if ($obj.v.type -eq "date") {
+            $date = $obj.myobj.Value.ToString("yyyy/MM/dd")
+            $ValueObj | Add-Member -MemberType NoteProperty -Name $key -Value $date
+        }
+        if ($obj.v.type -eq "onoff") {
+            $ValueObj | Add-Member -MemberType NoteProperty -Name $key -Value $obj.myobj.Checked
         }
     }
 
-    $json = $configObj | ConvertTo-Json -Depth 4
-    $json | Set-Content -Path $fileName -Encoding UTF8
+    $json = $ValueObj | ConvertTo-Json -Depth 4
+    $json | Set-Content -Path $VALUES_JSON -Encoding UTF8
 }
 
 function InitObjList
 {
+    $ValueObj = Get-Content -Path $VALUES_JSON -Raw | ConvertFrom-Json
+    Write-Host $ValueObj
+
     foreach ($key in $ObjList.Keys) {
         $obj = $ObjList[$Key]
 
-        if ($obj.v.PSObject.Properties['current']) {
+        # JSONオブジェクトは obj[keyname]とは書けないのでPropertiesを使う
+        # keynameがわかる場合は obj.keyname とする
+        $prop = $ValueObj.PSObject.Properties[$key]
+        if ($prop) {
+            $value = $prop.Value
+
             if ($obj.v.type -eq "choice") {
-                $obj.myobj.SelectedItem = $obj.v.current
+                $obj.myobj.SelectedItem = $value
             }
             if ($obj.v.type -eq "number") {
-                $obj.myobj.Text = $obj.v.current
+                $obj.myobj.Text = $value
             }
             if ($obj.v.type -eq "string") {
-                $obj.myobj.Text = $obj.v.current
+                $obj.myobj.Text = $value
             }
             if ($obj.v.type -eq "date") {
-                $obj.myobj.Value = [System.DateTime]$($obj.v.current)
+                $obj.myobj.Value = [System.DateTime]$($value)
             }
             if ($obj.v.type -eq "onoff") {
-                $obj.myobj.Checked = $obj.v.current
+                $obj.myobj.Checked = $value
+            }
+            continue
+        }
+
+        if ($obj.v.PSObject.Properties['init']) {
+            if ($obj.v.type -eq "choice") {
+                $obj.myobj.SelectedItem = $obj.v.init
+            }
+            if ($obj.v.type -eq "number") {
+                $obj.myobj.Text = $obj.v.init
+            }
+            if ($obj.v.type -eq "string") {
+                $obj.myobj.Text = $obj.v.init
+            }
+            if ($obj.v.type -eq "date") {
+                $obj.myobj.Value = [System.DateTime]$($obj.v.init)
+            }
+            if ($obj.v.type -eq "onoff") {
+                $obj.myobj.Checked = $obj.v.init
             }
         }
     }
@@ -555,13 +561,7 @@ function CreateForm
 
     $form.ShowDialog() # main loop
 
-    $i = 0
-    foreach ($fileName in $Files) {
-        if ($configObj[$i] -ne $null) {
-            SaveConfig $configObj[$i] $fileName
-            $i++
-        }
-    }
+    SaveConfig
 }
 
 function ConfirmDialog

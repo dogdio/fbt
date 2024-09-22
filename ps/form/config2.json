@@ -1,25 +1,25 @@
 ﻿{
-    "menu2":  [
-                  {
-                      "name":  "value1",
-                      "type":  "choice",
-                      "current":  "りんご",
-                      "values":  [
-                                     "みかん",
-                                     "りんご",
-                                     "なし"
-                                 ]
-                  },
-                  {
-                      "name":  "value2",
-                      "type":  "choice",
-                      "current":  "トマト",
-                      "values":  [
-                                     "パプリカ",
-                                     "サツマイモ",
-                                     "トマト",
-                                     "ブロッコリー"
-                                 ]
-                  }
-              ]
+  "menu2": [
+    {
+      "name": "value1",
+      "type": "choice",
+      "init": "りんご",
+      "values": [
+        "みかん",
+        "りんご",
+        "なし"
+      ]
+    },
+    {
+      "name": "value2",
+      "type": "choice",
+      "init": "トマト",
+      "values": [
+        "パプリカ",
+        "サツマイモ",
+        "トマト",
+        "ブロッコリー"
+      ]
+    }
+  ]
 }
