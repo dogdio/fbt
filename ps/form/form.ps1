@@ -23,6 +23,7 @@ function SaveConfig
 
         if ((IsValid $obj $false) -eq $false) { continue }
 
+#        Write-Host "SAVE: $key, $($obj.v.type)"
         if ($obj.v.type -eq "choice") {
             $ValueObj | Add-Member -MemberType NoteProperty -Name $key -Value $obj.myobj.SelectedItem
         }
@@ -39,10 +40,37 @@ function SaveConfig
         if ($obj.v.type -eq "onoff") {
             $ValueObj | Add-Member -MemberType NoteProperty -Name $key -Value $obj.myobj.Checked
         }
+        if ($obj.v.type -eq "buffer") {
+            $ValueObj | Add-Member -MemberType NoteProperty -Name $key -Value $obj.v.values
+        }
     }
 
     $json = $ValueObj | ConvertTo-Json -Depth 4
     $json | Set-Content -Path $VALUES_JSON -Encoding UTF8
+}
+
+function SetValue
+{
+    param ($obj, $value)
+
+    if ($obj.v.type -eq "choice") {
+        $obj.myobj.SelectedItem = $value
+    }
+    if ($obj.v.type -eq "number") {
+        $obj.myobj.Text = $value
+    }
+    if ($obj.v.type -eq "string") {
+        $obj.myobj.Text = $value
+    }
+    if ($obj.v.type -eq "date") {
+        $obj.myobj.Value = [System.DateTime]$($value)
+    }
+    if ($obj.v.type -eq "onoff") {
+        $obj.myobj.Checked = $value
+    }
+    if ($obj.v.type -eq "buffer") {
+        $obj.v.values = $value
+    }
 }
 
 function InitObjList
@@ -58,41 +86,12 @@ function InitObjList
         $prop = $ValueObj.PSObject.Properties[$key]
         if ($prop) {
             $value = $prop.Value
-
-            if ($obj.v.type -eq "choice") {
-                $obj.myobj.SelectedItem = $value
-            }
-            if ($obj.v.type -eq "number") {
-                $obj.myobj.Text = $value
-            }
-            if ($obj.v.type -eq "string") {
-                $obj.myobj.Text = $value
-            }
-            if ($obj.v.type -eq "date") {
-                $obj.myobj.Value = [System.DateTime]$($value)
-            }
-            if ($obj.v.type -eq "onoff") {
-                $obj.myobj.Checked = $value
-            }
+            SetValue $obj $value
             continue
         }
 
         if ($obj.v.PSObject.Properties['init']) {
-            if ($obj.v.type -eq "choice") {
-                $obj.myobj.SelectedItem = $obj.v.init
-            }
-            if ($obj.v.type -eq "number") {
-                $obj.myobj.Text = $obj.v.init
-            }
-            if ($obj.v.type -eq "string") {
-                $obj.myobj.Text = $obj.v.init
-            }
-            if ($obj.v.type -eq "date") {
-                $obj.myobj.Value = [System.DateTime]$($obj.v.init)
-            }
-            if ($obj.v.type -eq "onoff") {
-                $obj.myobj.Checked = $obj.v.init
-            }
+            SetValue $obj $obj.v.init
         }
     }
 }
@@ -162,6 +161,25 @@ function CreateComboBox
     $comboBox.SelectedItem  = $v.values[0]
     $comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList  # ユーザーの入力を無効化.
 #   Write-Host $comboBox.SelectedItem
+
+    $comboBox.Add_SelectedIndexChanged({
+        $obj = GetObject $this
+
+        if ($obj.v.PSObject.Properties['changed']) {
+            foreach ($chg in $obj.v.changed) {
+                if ($chg.action -eq "set") {
+                    $name = $chg.name
+                    $buff = $chg.name + ".buff"
+
+                    $src = GetObjectByName $buff
+                    $dst = GetObjectByName $name
+
+                    $value = $src.v.values[$this.SelectedIndex]
+                    SetValue $dst $value
+                }
+            }
+        }
+    })
 
     $tab.Controls.Add($comboBox)
     $newobj = [PSCustomObject]@{ v=$v; myobj=$comboBox; label=$null; }
@@ -365,6 +383,7 @@ function FileDialog
     }
 }
 
+# FIXME: $id, value6
 function IsValid
 {
     param ($obj, $withDialog)
@@ -465,6 +484,11 @@ function CreateMenu
     if ($v.type -eq "column") {
         $Global:MenuY = $MENU_Y0
         $Global:MenuX += $VALUE_WIDTH + $LABEL_WIDTH + $v.margin
+        return
+    }
+    if ($v.type -eq "buffer") {
+        $newobj = [PSCustomObject]@{ v=$v; myobj=$null; label=$null; }
+        SetObject $id $newobj
         return
     }
 
