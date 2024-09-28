@@ -85,6 +85,14 @@
       "type": "button"
     },
     {
+      "name": "Apply",
+      "type": "button",
+      "validation": [
+        "menu1.value2",
+        "menu1.value3"
+      ]
+    },
+    {
       "type": "column",
       "margin": 30
     },

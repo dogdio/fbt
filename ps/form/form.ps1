@@ -49,6 +49,28 @@ function SaveConfig
     $json | Set-Content -Path $VALUES_JSON -Encoding UTF8
 }
 
+function ApplyToBuffer
+{
+    param ($name)
+
+    $obj = GetObjectByName $name
+    if ($obj.v.PSObject.Properties['changed']) {
+        $index = $obj.myobj.SelectedIndex
+
+        foreach ($chg in $obj.v.changed) {
+            if ($chg.action -eq "set") {
+                $name = $chg.name
+                $buff = $chg.name + ".buff"
+
+                $value = GetValueByName $name
+                $dst = GetObjectByName $buff
+
+                $dst.v.values[$index] = $value
+            }
+        }
+    }
+}
+
 function SetValue
 {
     param ($obj, $value)
@@ -711,6 +733,12 @@ function do_OpenFile
         $obj = GetObjectByName "menu1.value6"
         $obj.myobj.Text = $fileName
     }
+}
+
+
+function do_Apply
+{
+    ApplyToBuffer "menu1.value1"
 }
 
 CreateForm 'SampleForm' 650 600 "config.json" "config2.json"
