@@ -383,37 +383,46 @@ function FileDialog
     }
 }
 
-# FIXME: $id, value6
 function IsValid
 {
     param ($obj, $withDialog)
 
-    $min = $obj.v.min
-    $max = $obj.v.max
-
+    $min = -1
+    $max = -1
+    if ($obj.v.PSObject.Properties['min']) {
+        $min = $obj.v.min
+    }
+    if ($obj.v.PSObject.Properties['max']) {
+        $max = $obj.v.max
+    }
     $text = $obj.myobj.Text
     $len = $text.Length
-    $name = $id -replace "^.*\.", ""
+    $name = $obj.v.name
     Write-Host "<< $name, $text, $min, $max"
 
     if ($obj.v.type -eq "number") {
-        $cv = [int]$text
-        if (($len -eq 0) -or ($cv -gt $max) -or ($cv -lt $min)) {
-            $msg = $name + "の値がダメです"
-            if($withDialog) {
-                $ret = [System.Windows.Forms.MessageBox]::Show($msg, "Error", [System.Windows.Forms.MessageBoxButtons]::OK)
+        if (($min -ne -1) -and ($max -ne -1)) {
+            $cv = [int]$text
+            if (($len -eq 0) -or ($cv -gt $max) -or ($cv -lt $min)) {
+                $msg = $name + "の値がダメです"
+                if($withDialog) {
+                    $ret = [System.Windows.Forms.MessageBox]::Show($msg, "Error", [System.Windows.Forms.MessageBoxButtons]::OK)
+                }
+                return $false
             }
-            return $false
         }
     }
     if ($obj.v.type -eq "string") {
-        if (($len -gt $max) -or ($len -lt $min)) {
-            $msg = $name + "の値がダメです"
-            if($withDialog) {
-                $ret = [System.Windows.Forms.MessageBox]::Show($msg, "Error", [System.Windows.Forms.MessageBoxButtons]::OK)
+        if (($min -ne -1) -and ($max -ne -1)) {
+            if (($len -gt $max) -or ($len -lt $min)) {
+                $msg = $name + "の値がダメです"
+                if($withDialog) {
+                    $ret = [System.Windows.Forms.MessageBox]::Show($msg, "Error", [System.Windows.Forms.MessageBoxButtons]::OK)
+                }
+                return $false
             }
-            return $false
         }
+
         Write-Host "<< $text, $($obj.v.pattern)"
         if ($obj.v.pattern.Length -gt 0) {
             if ($text -match $obj.v.pattern) {
